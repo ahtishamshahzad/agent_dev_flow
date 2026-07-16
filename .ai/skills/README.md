@@ -70,6 +70,17 @@ Most work starts at **`project-orchestrator`**, which then loads the right speci
 | [`dependency-audit`](dependency-audit/SKILL.md) | Inventory deps; advisories, unused/duplicate/abandoned, license/maintenance risk. |
 | [`environment-audit`](environment-audit/SKILL.md) | Env-var validation, secret handling, prod debug, environment parity. |
 
+## Domain skill packs
+
+Domain-specific skills live in subfolders and have their own index. Load a pack's skills only when working in that domain (and only the relevant ones).
+
+| Pack | Index | Covers |
+|------|-------|--------|
+| **Mobile** (36 skills) | [`mobile/README.md`](mobile/README.md) | Expo vs React Native CLI, foundations, navigation, design system/theme/fonts/icons, state (local/form/shared/server/persisted/navigation), API, auth/authorization, secure storage, notifications, deep linking, media/uploads, location/maps, background tasks, native modules, accessibility, performance, error handling/logging, unit/component/Maestro testing, builds/release, iOS/Android readiness. |
+| **Web & Dashboard** (26 skills) | [`web/README.md`](web/README.md) | Next.js vs Vite selection, foundations, existing-app audit, routing, design system/theme, state (local/form/shared/server/URL/persisted), API, forms, auth/authorization, dashboard architecture/permissions/tables/reporting/bulk operations, SEO, accessibility, performance, error handling, unit/component/Playwright testing, deployment. |
+
+Domain skills coordinate with the core skills (e.g. `mobile-performance` and `web-performance` ↔ `performance-review`, `mobile-release`/`web-deployment` ↔ `release-planning`) — see each skill's Related Skills. Whether a project needs a public web presence, marketing website, customer web app, or admin dashboard is decided **separately per application** (`application-selection`, `../system/APPLICATION_SELECTION_RULES.md`).
+
 ## Selection guidance (by request type)
 
 | Request type | Typical skills (load only these) |
@@ -86,6 +97,8 @@ Most work starts at **`project-orchestrator`**, which then loads the right speci
 | testing audit | testing-strategy → existing-project-audit |
 | deployment | release-planning → environment-audit → github-repository |
 | release | release-planning → final-quality-audit → git-workflow |
+| **mobile project** | mobile-stack-selection → expo/react-native-cli-foundation → mobile-navigation → mobile-design-system → mobile-state-management/server-state → (feature skills as needed) → mobile-unit/component-testing (+ mobile-maestro-e2e for critical flows) → mobile-builds → ios/android-readiness → mobile-release. See [`mobile/README.md`](mobile/README.md). |
+| **web project** | application-selection (public web / marketing / customer app / dashboard — each separately) → dashboard-architecture (if dashboard) → web-stack-selection → nextjs/vite-react-foundation → web-routing → web-design-system → web-state-management/server-state → (feature + dashboard skills as needed) → web-unit/component-testing (+ playwright-e2e for critical journeys) → web-deployment. See [`web/README.md`](web/README.md). |
 
 ## Dependency guidance (how skills relate)
 

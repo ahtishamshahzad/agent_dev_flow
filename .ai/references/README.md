@@ -12,11 +12,12 @@ references/
 
 ## Index
 
-_No reference topics in Phase 1._ Topic folders are added as needed.
+Topic folders are added as needed.
 
 | Topic folder | Covers | Read when |
 |--------------|--------|-----------|
-| _(none yet)_ | — | — |
+| [`mobile/`](mobile/) | Mobile examples/patterns: `screens/`, `navigation/`, `forms/`, `state/`, `native/`, `notifications/` (populated as projects develop). | Working on mobile tasks via `../skills/mobile/` skills. |
+| [`web/`](web/) | Web/dashboard examples/patterns: `routing/`, `design-system/`, `forms/`, `state/`, `dashboard/`, `seo/`, `testing/` (populated as projects develop). | Working on web/dashboard tasks via `../skills/web/` skills. |
 
 ## Conventions
 
