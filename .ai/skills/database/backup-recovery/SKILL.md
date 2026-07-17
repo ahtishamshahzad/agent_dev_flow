@@ -1,6 +1,6 @@
 ---
 name: backup-recovery
-description: Use to plan backups and recovery — RPO/RTO targets, automated backups with point-in-time recovery where needed, off-site/cross-account copies, retention, encryption, and above all restore drills: an untested backup is a hope, not a plan.
+description: "Use to plan backups and recovery — RPO/RTO targets, automated backups with point-in-time recovery where needed, off-site/cross-account copies, retention, encryption, and above all restore drills: an untested backup is a hope, not a plan."
 ---
 
 # Backup & Recovery
