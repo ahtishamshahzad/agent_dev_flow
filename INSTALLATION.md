@@ -4,6 +4,47 @@ The AI Engineering System is **primarily repository documentation**: a canonical
 
 You need: the `.ai/` directory, the entry point `AGENTS.md`, and whichever editor adapters you use (`CLAUDE.md`, `.cursor/rules/`, `.windsurf/rules/`, `.github/copilot-instructions.md`).
 
+There are two ways to consume the system, and they compose:
+
+- **A. Native skill install (Claude Code)** — install the skills as Claude Code plugins so they appear as native, namespaced skills (`/ai-core:project-orchestrator`). See "Install as Claude Code plugins" below.
+- **B. Repository documentation (all editors)** — copy the files into a project; the editor's adapter directs the agent to operate through `.ai/`. See Approaches 1 and 2 below.
+
+Most users want **both**: the plugins give Claude Code native skill invocation, while the `.ai/` files carry the full operating rules, gates, agents, hooks, workflows, templates, and references that the skills reference.
+
+## Per-editor summary
+
+| Editor / agent | How it uses the system | What you do |
+|----------------|------------------------|-------------|
+| **Claude Code** | Native plugins **and/or** `CLAUDE.md` → `.ai/` | Install plugins (below) and/or copy `.ai/` + `CLAUDE.md` |
+| **OpenAI Codex** | Reads `AGENTS.md` → `.ai/` (native agents entry point) | Copy `.ai/` + `AGENTS.md` into the project |
+| **Cursor** | `.cursor/rules/project.mdc` → `.ai/` | Copy `.ai/` + `.cursor/rules/` |
+| **Windsurf** | `.windsurf/rules/project.md` → `.ai/` | Copy `.ai/` + `.windsurf/rules/` |
+| **GitHub Copilot** | `.github/copilot-instructions.md` → `.ai/` | Copy `.ai/` + `.github/` |
+| **Antigravity / other agents** | Read `AGENTS.md` → `.ai/` | Copy `.ai/` + `AGENTS.md` |
+
+> **Codex and other agents need no plugin install** — `AGENTS.md` is their native entry point and already directs them to `.ai/` and the skills index. Just make the files present.
+
+---
+
+## Install as Claude Code plugins (native skills)
+
+The skills are packaged as installable Claude Code plugins — **one plugin per pack** — via the marketplace manifest at `.claude-plugin/marketplace.json`. The canonical skills stay in `.ai/skills/`; each plugin's `skills/` directory symlinks to the matching pack (single source of truth). See [`plugins/README.md`](plugins/README.md).
+
+```
+/plugin marketplace add ahtishamshahzad/ai-engineering-system
+/plugin install ai-core@ai-engineering-system        # recommended baseline (project-orchestrator)
+/plugin install ai-backend@ai-engineering-system     # add the packs you need
+/plugin install ai-web@ai-engineering-system
+```
+
+CLI equivalents: `claude plugin marketplace add …`, `claude plugin install …@ai-engineering-system`, `claude plugin list`.
+
+Available plugins: `ai-core` (25), `ai-mobile` (36), `ai-web` (26), `ai-backend` (30), `ai-database` (15), `ai-testing` (14), `ai-devops` (16), `ai-security` (12). Install only the packs a project needs — that matches the system's "load only what you need" rule.
+
+After install, skills are namespaced and auto-discovered by description: `/ai-core:project-orchestrator`, `/ai-backend:backend-authorization`, `/ai-security:threat-modeling`.
+
+> The plugins expose the skills natively; they do **not** replace `.ai/`. The full rules/gates/agents/hooks/workflows/templates/references still live in `.ai/` and are read via `CLAUDE.md`/`AGENTS.md`. For a complete setup, install the plugins **and** have `.ai/` present in the project.
+
 ---
 
 ## Approach 1 — Dedicated template repository (copy in)

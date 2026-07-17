@@ -1,0 +1,11 @@
+{
+  "name": "ai-devops",
+  "displayName": "AI Engineering System — DevOps",
+  "description": "DevOps skills: repository strategy, monorepo tooling (pnpm/npm workspaces, Turborepo), Docker, environment & secrets management, CI/CD generated from selected applications, GitHub Actions, deployment selection, staging, production readiness, monitoring/logging, rollback and incident readiness.",
+  "version": "1.0.0",
+  "author": { "name": "ahtishamshahzad" },
+  "homepage": "https://github.com/ahtishamshahzad/ai-engineering-system",
+  "repository": "https://github.com/ahtishamshahzad/ai-engineering-system",
+  "license": "MIT",
+  "keywords": ["devops", "ci-cd", "docker", "github-actions", "deployment", "skills"]
+}

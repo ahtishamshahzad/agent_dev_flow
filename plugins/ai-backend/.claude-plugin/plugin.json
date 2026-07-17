@@ -1,0 +1,11 @@
+{
+  "name": "ai-backend",
+  "displayName": "AI Engineering System — Backend",
+  "description": "Backend API skills: Express vs NestJS selection, foundations, API architecture, REST/GraphQL design, contracts, validation, error handling, authentication, layered authorization, rate limiting & abuse prevention, jobs/queues, realtime, webhooks, integrations, observability, performance, testing, and deployment.",
+  "version": "1.0.0",
+  "author": { "name": "ahtishamshahzad" },
+  "homepage": "https://github.com/ahtishamshahzad/ai-engineering-system",
+  "repository": "https://github.com/ahtishamshahzad/ai-engineering-system",
+  "license": "MIT",
+  "keywords": ["backend", "api", "express", "nestjs", "node", "skills"]
+}
