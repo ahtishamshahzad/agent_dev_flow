@@ -1,0 +1,11 @@
+{
+  "name": "ai-database",
+  "displayName": "AI Engineering System — Database",
+  "description": "Database skills: database and data-layer selection (PostgreSQL/MySQL/MongoDB × Prisma/Drizzle/Mongoose/native), relational & document schema design, migrations, seed data, indexing, transactions, concurrency, security, performance, backup/recovery, and data migration.",
+  "version": "1.0.0",
+  "author": { "name": "ahtishamshahzad" },
+  "homepage": "https://github.com/ahtishamshahzad/ai-engineering-system",
+  "repository": "https://github.com/ahtishamshahzad/ai-engineering-system",
+  "license": "MIT",
+  "keywords": ["database", "prisma", "drizzle", "mongoose", "postgres", "skills"]
+}

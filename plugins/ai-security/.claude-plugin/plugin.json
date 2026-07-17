@@ -1,0 +1,11 @@
+{
+  "name": "ai-security",
+  "displayName": "AI Engineering System — Security",
+  "description": "Security review skills: threat modeling; authentication/authorization security (IDOR/BOLA, escalation); API/web/mobile/database security; secrets and dependency (supply-chain) audits; abuse prevention; privacy review; security regression testing. Review lens — Confirmed vs Potential, never prints secrets, never claims 'secure'.",
+  "version": "1.0.0",
+  "author": { "name": "ahtishamshahzad" },
+  "homepage": "https://github.com/ahtishamshahzad/ai-engineering-system",
+  "repository": "https://github.com/ahtishamshahzad/ai-engineering-system",
+  "license": "MIT",
+  "keywords": ["security", "threat-modeling", "authorization", "audit", "skills"]
+}

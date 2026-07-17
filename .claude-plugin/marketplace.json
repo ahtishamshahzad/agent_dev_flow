@@ -1,0 +1,69 @@
+{
+  "name": "ai-engineering-system",
+  "description": "The AI Engineering System — 174 reusable skills for planning and building software with AI agents, packaged as installable Claude Code plugins (one per skill pack). The canonical system lives in .ai/; these plugins expose its skills natively.",
+  "version": "1.0.0",
+  "owner": {
+    "name": "ahtishamshahzad"
+  },
+  "metadata": {
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "ai-core",
+      "source": "./ai-core",
+      "description": "Core orchestration, planning, selection, review, testing, delivery, and audit skills (25). Start here with project-orchestrator.",
+      "category": "engineering",
+      "keywords": ["orchestration", "planning", "architecture", "review"]
+    },
+    {
+      "name": "ai-mobile",
+      "source": "./ai-mobile",
+      "description": "React Native / Expo mobile skills (36): foundations, navigation, state, auth, native capabilities, testing, builds, readiness.",
+      "category": "engineering",
+      "keywords": ["mobile", "react-native", "expo"]
+    },
+    {
+      "name": "ai-web",
+      "source": "./ai-web",
+      "description": "Web & dashboard skills (26): Next.js/Vite selection, routing, design system, state, forms, auth, dashboards, SEO, testing, deployment.",
+      "category": "engineering",
+      "keywords": ["web", "dashboard", "nextjs", "vite"]
+    },
+    {
+      "name": "ai-backend",
+      "source": "./ai-backend",
+      "description": "Backend API skills (30): Express/NestJS selection, API design, validation, auth/authorization, jobs/queues, realtime, webhooks, integrations, testing, deployment.",
+      "category": "engineering",
+      "keywords": ["backend", "api", "express", "nestjs"]
+    },
+    {
+      "name": "ai-database",
+      "source": "./ai-database",
+      "description": "Database skills (15): database & data-layer selection, schema design, migrations, indexing, transactions, concurrency, security, performance, backup/recovery.",
+      "category": "engineering",
+      "keywords": ["database", "prisma", "drizzle", "mongoose"]
+    },
+    {
+      "name": "ai-testing",
+      "source": "./ai-testing",
+      "description": "Testing skills (14): tool selection, unit/integration/API/contract, E2E (Playwright/Maestro), regression/smoke/visual, test data & environments, coverage audits.",
+      "category": "engineering",
+      "keywords": ["testing", "playwright", "maestro", "jest"]
+    },
+    {
+      "name": "ai-devops",
+      "source": "./ai-devops",
+      "description": "DevOps skills (16): repo strategy, monorepo tooling, Docker, env/secrets, CI/CD, GitHub Actions, deployment, staging, production readiness, monitoring, rollback, incident readiness.",
+      "category": "engineering",
+      "keywords": ["devops", "ci-cd", "docker", "deployment"]
+    },
+    {
+      "name": "ai-security",
+      "source": "./ai-security",
+      "description": "Security review skills (12): threat modeling, auth/authorization security, API/web/mobile/database security, secrets & dependency audits, abuse prevention, privacy, security regression testing.",
+      "category": "engineering",
+      "keywords": ["security", "threat-modeling", "audit"]
+    }
+  ]
+}

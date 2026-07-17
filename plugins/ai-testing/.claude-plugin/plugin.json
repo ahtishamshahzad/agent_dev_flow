@@ -1,0 +1,11 @@
+{
+  "name": "ai-testing",
+  "displayName": "AI Engineering System — Testing",
+  "description": "Testing skills: test-type/tool selection (Playwright, Maestro, Supertest, Testing Library, Jest/Vitest), unit/integration/API/contract testing, E2E, regression/smoke/visual, test data and environment management, flaky-test and risk-based coverage audits.",
+  "version": "1.0.0",
+  "author": { "name": "ahtishamshahzad" },
+  "homepage": "https://github.com/ahtishamshahzad/ai-engineering-system",
+  "repository": "https://github.com/ahtishamshahzad/ai-engineering-system",
+  "license": "MIT",
+  "keywords": ["testing", "playwright", "maestro", "jest", "vitest", "skills"]
+}

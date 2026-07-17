@@ -1,0 +1,11 @@
+{
+  "name": "ai-mobile",
+  "displayName": "AI Engineering System — Mobile",
+  "description": "React Native / Expo mobile skills: runtime selection, foundations, navigation, design system, state, API, auth/authorization, native capabilities, accessibility, performance, testing, builds, and store readiness.",
+  "version": "1.0.0",
+  "author": { "name": "ahtishamshahzad" },
+  "homepage": "https://github.com/ahtishamshahzad/ai-engineering-system",
+  "repository": "https://github.com/ahtishamshahzad/ai-engineering-system",
+  "license": "MIT",
+  "keywords": ["mobile", "react-native", "expo", "skills"]
+}
