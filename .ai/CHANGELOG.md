@@ -22,6 +22,11 @@ First complete release: the full tool-neutral operating system for planning and 
 - 36 mobile skills (`.ai/skills/mobile/`): Expo vs RN CLI, foundations, navigation, design system/theme/fonts/icons, state, API, auth/authorization, secure storage, native capabilities, accessibility, performance, error handling/logging, unit/component/Maestro testing, builds/release, iOS/Android readiness.
 - Mobile reference topic folders under `.ai/references/mobile/`.
 
+### Web & dashboard pack (Phase 4)
+
+- 26 web skills (`.ai/skills/web/`): Next.js vs Vite selection, foundations, existing-app audit, routing, design system/theme, state (local/form/shared/server/URL/persisted), API integration, forms, authentication, authorization, dashboard architecture/permissions/tables/reporting/bulk-operations, SEO, accessibility, performance, error handling, unit/component/Playwright testing, deployment.
+- Web reference topic folders under `.ai/references/web/`.
+
 ### Backend & database packs (Phase 5)
 
 - 30 backend skills (`.ai/skills/backend/`): Express vs NestJS (no universal default), API architecture, REST/GraphQL, contracts, validation, error handling, authentication, layered authorization (role/permission/ownership/tenant/object-level with negative tests), rate limiting & CAPTCHA abuse prevention, file storage, jobs/queues/scheduling, realtime, webhooks, integrations, email, security, observability, performance, unit/integration testing, deployment.
@@ -56,7 +61,7 @@ First complete release: the full tool-neutral operating system for planning and 
 
 ### Totals
 
-- 148 skills · 13 agents · 13 hooks · 12 workflows · 25 templates · 19 prompts · 18 checklists.
+- 174 skills · 13 agents · 13 hooks · 12 workflows · 25 templates · 19 prompts · 18 checklists.
 
 ### Scope (system-wide)
 

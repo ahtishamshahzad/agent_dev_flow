@@ -7,9 +7,13 @@
 | Folder | Covers |
 |--------|--------|
 | [`pages/`](pages/README.md) | Page/route layout patterns, rendering strategy, state handling. |
+| [`routing/`](routing/README.md) | Route/layout structure, nested/dynamic/protected routes, loaders/redirects. |
+| [`design-system/`](design-system/README.md) | Tokens, scales, component primitives, theming, typography. |
+| [`state/`](state/README.md) | Where state lives; server-state caching/invalidation; URL/persisted state. |
 | [`dashboard/`](dashboard/README.md) | Admin/dashboard tables, bulk actions, role-gated UI, reporting. |
 | [`forms/`](forms/README.md) | Form state, validation, accessible form UX. |
 | [`seo/`](seo/README.md) | Metadata, structured data, sitemap/robots, Core Web Vitals. |
+| [`testing/`](testing/README.md) | Component/interaction tests, critical-journey Playwright, accessible queries. |
 
 ## Conventions
 

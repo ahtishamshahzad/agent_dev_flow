@@ -32,7 +32,7 @@ Adapters never duplicate the system — they tell the editor to operate through 
 The system is layered; each layer has one job:
 
 - **`system/`** — the brain: non-negotiable operating rules, the orchestration pipeline, selection rules, and the quality gates.
-- **`skills/`** — 148 reusable capability modules (core + mobile/backend/database/testing/devops/security packs), loaded selectively.
+- **`skills/`** — 174 reusable capability modules (core + mobile/web/backend/database/testing/devops/security packs), loaded selectively.
 - **`agents/`** — 13 role definitions for optional multi-agent runs, with explicit file ownership.
 - **`hooks/`** — 13 tool-neutral lifecycle checklists (before/after events).
 - **`workflows/`** — 12 per-request-type flows keyed to classification.
