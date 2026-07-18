@@ -24,6 +24,16 @@ Skills are organized into **8 packs**: core (25), mobile (36), web & dashboard (
 
 ## Install
 
+### Fastest — one command (all editors)
+
+Set up any project with a single command. It copies `.ai/`, the `AGENTS.md` entry point, and your editor adapter(s) — no dependencies, no stack, no repo:
+
+```bash
+npx github:ahtishamshahzad/agent_dev_flow init
+```
+
+Only the editors you use: `--editor claude,cursor` (values: `claude`, `cursor`, `windsurf`, `copilot`, `codex`, `all`; default `all`). Also `--force`, `--dry-run`, `--help`. This installs the **files**; Claude Code's native skill plugins are the separate step below.
+
 ### Claude Code — native plugins
 
 The skills are packaged as installable Claude Code plugins (one per pack):
@@ -37,7 +47,7 @@ Add whichever packs a project needs — `ai-mobile`, `ai-web`, `ai-backend`, `ai
 
 ### Codex, Cursor, Windsurf, Copilot, Antigravity — copy the files
 
-These read the system through their adapters. Copy `.ai/` plus the entry point and your editor's adapter into a project:
+These read the system through their adapters. The `npx … init` command above sets them all up automatically; to copy manually instead, copy `.ai/` plus the entry point and your editor's adapter into a project:
 
 ```bash
 cp -r .ai AGENTS.md CLAUDE.md /path/to/your-project/
