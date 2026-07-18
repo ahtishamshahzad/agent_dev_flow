@@ -24,16 +24,16 @@ Each plugin has `.claude-plugin/plugin.json` and a `skills/` directory that reso
 Add the marketplace, then install the packs you need:
 
 ```
-/plugin marketplace add ahtishamshahzad/ai-engineering-system
-/plugin install ai-core@ai-engineering-system
-/plugin install ai-backend@ai-engineering-system
+/plugin marketplace add ahtishamshahzad/agent_dev_flow
+/plugin install ai-core@agent_dev_flow
+/plugin install ai-backend@agent_dev_flow
 ```
 
 CLI equivalents:
 
 ```
-claude plugin marketplace add ahtishamshahzad/ai-engineering-system
-claude plugin install ai-core@ai-engineering-system
+claude plugin marketplace add ahtishamshahzad/agent_dev_flow
+claude plugin install ai-core@agent_dev_flow
 claude plugin list
 ```
 

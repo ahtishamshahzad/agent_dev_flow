@@ -26,18 +26,39 @@ Most users want **both**: the plugins give Claude Code native skill invocation, 
 
 ---
 
+## Quick install with npx (all editors)
+
+The fastest minimum setup. From your project root, run the installer — it copies `.ai/`, `AGENTS.md`, and the editor adapters you ask for. No dependencies, no stack, no repo; files only.
+
+```bash
+# Set up every editor adapter (Claude, Cursor, Windsurf, Copilot, Codex)
+npx agentflow init
+
+# Or only the editors you use
+npx agentflow init --editor claude,cursor
+
+# Install into a specific directory
+npx agentflow init ./my-app --editor claude
+```
+
+Flags: `--editor <claude,cursor,windsurf,copilot,codex,all>` (default `all`), `--force` (overwrite existing files), `--dry-run` (preview only), `--help`. Existing files are skipped unless `--force` is passed.
+
+This installs the **files** (Approach 1 below, automated). Claude Code's **native skill plugins** are a separate step — see the next section — because plugin installation goes through Claude Code's `/plugin` marketplace, not npm.
+
+---
+
 ## Install as Claude Code plugins (native skills)
 
 The skills are packaged as installable Claude Code plugins — **one plugin per pack** — via the marketplace manifest at `.claude-plugin/marketplace.json`. The canonical skills stay in `.ai/skills/`; each plugin's `skills/` directory symlinks to the matching pack (single source of truth). See [`plugins/README.md`](plugins/README.md).
 
 ```
-/plugin marketplace add ahtishamshahzad/ai-engineering-system
-/plugin install ai-core@ai-engineering-system        # recommended baseline (project-orchestrator)
-/plugin install ai-backend@ai-engineering-system     # add the packs you need
-/plugin install ai-web@ai-engineering-system
+/plugin marketplace add ahtishamshahzad/agent_dev_flow
+/plugin install ai-core@agent_dev_flow        # recommended baseline (project-orchestrator)
+/plugin install ai-backend@agent_dev_flow     # add the packs you need
+/plugin install ai-web@agent_dev_flow
 ```
 
-CLI equivalents: `claude plugin marketplace add …`, `claude plugin install …@ai-engineering-system`, `claude plugin list`.
+CLI equivalents: `claude plugin marketplace add …`, `claude plugin install …@agent_dev_flow`, `claude plugin list`.
 
 Available plugins: `ai-core` (25), `ai-mobile` (36), `ai-web` (26), `ai-backend` (30), `ai-database` (15), `ai-testing` (14), `ai-devops` (16), `ai-security` (12). Install only the packs a project needs — that matches the system's "load only what you need" rule.
 

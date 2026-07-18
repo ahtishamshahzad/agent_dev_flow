@@ -4,8 +4,8 @@
   "description": "Backend API skills: Express vs NestJS selection, foundations, API architecture, REST/GraphQL design, contracts, validation, error handling, authentication, layered authorization, rate limiting & abuse prevention, jobs/queues, realtime, webhooks, integrations, observability, performance, testing, and deployment.",
   "version": "1.0.0",
   "author": { "name": "ahtishamshahzad" },
-  "homepage": "https://github.com/ahtishamshahzad/ai-engineering-system",
-  "repository": "https://github.com/ahtishamshahzad/ai-engineering-system",
+  "homepage": "https://github.com/ahtishamshahzad/agent_dev_flow",
+  "repository": "https://github.com/ahtishamshahzad/agent_dev_flow",
   "license": "MIT",
   "keywords": ["backend", "api", "express", "nestjs", "node", "skills"]
 }

@@ -29,8 +29,8 @@ Skills are organized into **8 packs**: core (25), mobile (36), web & dashboard (
 The skills are packaged as installable Claude Code plugins (one per pack):
 
 ```
-/plugin marketplace add ahtishamshahzad/ai-engineering-system
-/plugin install ai-core@ai-engineering-system
+/plugin marketplace add ahtishamshahzad/agent_dev_flow
+/plugin install ai-core@agent_dev_flow
 ```
 
 Add whichever packs a project needs — `ai-mobile`, `ai-web`, `ai-backend`, `ai-database`, `ai-testing`, `ai-devops`, `ai-security`. `ai-core` is the recommended baseline (it has `project-orchestrator`, which drives the whole pipeline). Invoke by namespace: `/ai-core:project-orchestrator`, `/ai-backend:backend-authorization`. See [`plugins/README.md`](plugins/README.md).

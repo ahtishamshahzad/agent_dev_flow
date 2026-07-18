@@ -4,8 +4,8 @@
   "description": "DevOps skills: repository strategy, monorepo tooling (pnpm/npm workspaces, Turborepo), Docker, environment & secrets management, CI/CD generated from selected applications, GitHub Actions, deployment selection, staging, production readiness, monitoring/logging, rollback and incident readiness.",
   "version": "1.0.0",
   "author": { "name": "ahtishamshahzad" },
-  "homepage": "https://github.com/ahtishamshahzad/ai-engineering-system",
-  "repository": "https://github.com/ahtishamshahzad/ai-engineering-system",
+  "homepage": "https://github.com/ahtishamshahzad/agent_dev_flow",
+  "repository": "https://github.com/ahtishamshahzad/agent_dev_flow",
   "license": "MIT",
   "keywords": ["devops", "ci-cd", "docker", "github-actions", "deployment", "skills"]
 }

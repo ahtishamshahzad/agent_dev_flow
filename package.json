@@ -1,0 +1,44 @@
+{
+  "name": "agentflow",
+  "version": "1.0.0",
+  "description": "Tool-neutral operating system for planning and building software with AI agents. Installs a canonical .ai/ directory plus thin editor adapters (Claude Code, Cursor, Windsurf, Copilot, Codex).",
+  "bin": {
+    "agentflow": "bin/cli.js",
+    "aies": "bin/cli.js"
+  },
+  "type": "commonjs",
+  "engines": {
+    "node": ">=16"
+  },
+  "files": [
+    "bin/",
+    ".ai/",
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".cursor/",
+    ".windsurf/",
+    ".github/copilot-instructions.md",
+    "README.md",
+    "QUICK_START.md",
+    "INSTALLATION.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "ai",
+    "agents",
+    "claude",
+    "cursor",
+    "windsurf",
+    "copilot",
+    "codex",
+    "engineering",
+    "skills",
+    "workflow"
+  ],
+  "license": "MIT",
+  "author": "ahtishamshahzad",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahtishamshahzad/agent_dev_flow.git"
+  }
+}
