@@ -66,7 +66,9 @@ Full options (copy-in vs. submodule/subtree, per-editor matrix): [`INSTALLATION.
 
 ## Use it
 
-Start with a prompt from [`QUICK_START.md`](QUICK_START.md), e.g. a new project:
+Full walkthrough — per editor, new project and existing project: **[`USAGE.md`](USAGE.md)**. Prompt-only version: [`QUICK_START.md`](QUICK_START.md).
+
+Same prompts in every editor; only the entry file differs (`CLAUDE.md`, `AGENTS.md`, `.cursor/rules/`, `.windsurf/rules/`, `.github/copilot-instructions.md`). A new project:
 
 ```
 Use the project-orchestrator skill.
@@ -74,6 +76,15 @@ This is a new project.
 Analyze my requirements, ask missing questions, select required applications,
 recommend a stack, generate architecture, dynamic phases, tasks, testing plan
 and Git strategy. Store outputs under `.ai/projects/current/`. Do not implement code.
+```
+
+An existing one:
+
+```
+Use project-orchestrator and existing-project-audit.
+Inspect the repository before planning changes.
+Preserve current conventions unless change is justified.
+Generate the plan under `.ai/projects/current/`. Do not implement code.
 ```
 
 The agent reads `CLAUDE.md`/`AGENTS.md` → `.ai/` → loads only the relevant skills. It classifies the request, then walks the pipeline, **stopping at two approval gates** before any code:
@@ -85,6 +96,8 @@ Request → Classify → Requirements → (Audit if repo exists) → Application
 ──── GATE: you approve phases + tasks ────
 → Implement → Test → Review → Release
 ```
+
+> **`.ai/` must be present in the project.** Skills reference sibling paths inside it and write your project's state to `.ai/projects/current/`. Claude Code plugins add native skill invocation on top — they do not replace the files.
 
 ## How it works (principles)
 
@@ -98,6 +111,7 @@ Request → Classify → Requirements → (Audit if repo exists) → Application
 ## Documentation
 
 - [`.ai/README.md`](.ai/README.md) — the complete 23-section usage guide (architecture, all workflows, multi-agent, token efficiency, hooks, MCP, knowledge/memory, git, phases, release, troubleshooting).
+- [`USAGE.md`](USAGE.md) — how to drive it from Claude Code, Cursor, Windsurf, Copilot, Codex, Antigravity; new-project and existing-project flows; troubleshooting.
 - [`QUICK_START.md`](QUICK_START.md) — copy-paste starters.
 - [`INSTALLATION.md`](INSTALLATION.md) — install options and per-editor setup.
 - [`plugins/README.md`](plugins/README.md) — Claude Code plugin details.

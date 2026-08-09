@@ -1,5 +1,7 @@
 # Quick Start — AI Engineering System
 
+> **Which editor?** These prompts are identical in Claude Code, Cursor, Windsurf, Copilot Chat, Codex, and Antigravity — only the entry file differs. Per-editor setup and invocation: [`USAGE.md`](USAGE.md).
+
 Copy-paste starters for the most common operations. All of them operate through the canonical `.ai/` system (see `.ai/README.md`). They **plan and govern**; they do not write application code, and they **stop at the approval gates**.
 
 > Reminder: no code before Gates 2 (applications + stack) and 4 (phases + tasks); remote/publish/deploy and merges require **explicit approval**; never force-push.
@@ -74,4 +76,4 @@ Never force-push.
 3. It defines architecture, dynamic phases, and tasks — **and stops for your approval** (Gate 4).
 4. Only then does implementation begin, phase by phase, with tests, review, and an approval-gated release.
 
-Full guide: `.ai/README.md`. Installation options: `INSTALLATION.md`.
+Per-editor usage and troubleshooting: [`USAGE.md`](USAGE.md). Full guide: [`.ai/README.md`](.ai/README.md). Installation options: [`INSTALLATION.md`](INSTALLATION.md).

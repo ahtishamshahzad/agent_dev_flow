@@ -4,6 +4,8 @@ The AI Engineering System is **primarily repository documentation**: a canonical
 
 You need: the `.ai/` directory, the entry point `AGENTS.md`, and whichever editor adapters you use (`CLAUDE.md`, `.cursor/rules/`, `.windsurf/rules/`, `.github/copilot-instructions.md`).
 
+> Installing is only half of it — for what to type in each editor once the files are in place, see [`USAGE.md`](USAGE.md).
+
 There are two ways to consume the system, and they compose:
 
 - **A. Native skill install (Claude Code)** — install the skills as Claude Code plugins so they appear as native, namespaced skills (`/ai-core:project-orchestrator`). See "Install as Claude Code plugins" below.
@@ -32,14 +34,16 @@ The fastest minimum setup. From your project root, run the installer — it copi
 
 ```bash
 # Set up every editor adapter (Claude, Cursor, Windsurf, Copilot, Codex)
-npx agentflow init
+npx github:ahtishamshahzad/agent_dev_flow init
 
 # Or only the editors you use
-npx agentflow init --editor claude,cursor
+npx github:ahtishamshahzad/agent_dev_flow init --editor claude,cursor
 
 # Install into a specific directory
-npx agentflow init ./my-app --editor claude
+npx github:ahtishamshahzad/agent_dev_flow init ./my-app --editor claude
 ```
+
+> The installer runs straight from GitHub via `npx github:…` — no npm package required.
 
 Flags: `--editor <claude,cursor,windsurf,copilot,codex,all>` (default `all`), `--force` (overwrite existing files), `--dry-run` (preview only), `--help`. Existing files are skipped unless `--force` is passed.
 
@@ -122,7 +126,7 @@ Bring the system in as a **tracked upstream** so central improvements can be pul
 ## After installing
 
 - Verify the entry point (`AGENTS.md`) and your editor adapter are present and point to `.ai/`.
-- Read `.ai/README.md` (the full guide) and `QUICK_START.md`.
+- Read [`USAGE.md`](USAGE.md) (what to type, per editor), then `.ai/README.md` (the full guide) and `QUICK_START.md`.
 - Keep `.ai/` canonical and adapters thin; put project-specific state in `.ai/projects/current/`.
 - Nothing here installs dependencies, selects a stack, or creates a repository — those remain per-project decisions under the system's approval gates.
 

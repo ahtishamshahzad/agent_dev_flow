@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "Tool-neutral operating system for planning and building software with AI agents. Installs a canonical .ai/ directory plus thin editor adapters (Claude Code, Cursor, Windsurf, Copilot, Codex).",
   "bin": {
-    "agentflow": "bin/cli.js",
-    "aies": "bin/cli.js"
+    "agentflow": "bin/cli.js"
+  },
+  "scripts": {
+    "validate": "node scripts/validate.js"
   },
   "type": "commonjs",
   "engines": {
@@ -19,6 +21,7 @@
     ".windsurf/",
     ".github/copilot-instructions.md",
     "README.md",
+    "USAGE.md",
     "QUICK_START.md",
     "INSTALLATION.md",
     "LICENSE"
