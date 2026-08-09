@@ -22,7 +22,7 @@ Refactor work items: improve structure/quality **without changing external behav
 
 ## Index
 
-_No refactors in Phase 1._
+_No refactors yet._
 
 | Refactor | Status | Risk |
 |----------|--------|------|

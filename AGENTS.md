@@ -34,6 +34,6 @@ Do not load everything. Follow `.ai/system/CONTEXT_MANAGEMENT_RULES.md` and `.ai
 
 If your editor has no dedicated adapter file in this repo, **read this `AGENTS.md` and then `.ai/`**. That is the intended path for Antigravity and any agent without a specific adapter.
 
-## Scope note (current state)
+## Scope note
 
-The repository currently contains **only the AI Engineering System (Phase 1)** — no application code, no dependencies, and no selected stack. Those are produced later, per project, under the gates above.
+The AI Engineering System itself contains **no application code, no dependencies, and no selected stack** — it is documentation and governance. Application code, dependencies, and stack belong to the project that adopts the system, and are produced per project under the gates above.

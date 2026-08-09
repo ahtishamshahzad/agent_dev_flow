@@ -6,7 +6,7 @@ How this system uses version control. Tool-neutral; applies to any agent. Remote
 
 - **Never commit or push unless asked.** When work is committable and the user requests it, proceed.
 - **Branch off the default branch first.** Do not commit directly to `main`/`master`. Create a descriptive branch (e.g. `feature/…`, `fix/…`, `refactor/…`, `chore/…`).
-- **No remote repository creation without explicit approval** (`OPERATING_RULES.md` §9). Phase 1 of this system explicitly does not create a GitHub repository.
+- **No remote repository creation without explicit approval** (`OPERATING_RULES.md` §9). The system never creates a GitHub repository on its own.
 - **Small, coherent commits.** One logical change per commit; message explains the *why*.
 - **No secrets in commits** (`SECURITY_RULES.md`). Respect `.gitignore`; if a secret was ever committed, flag it for rotation.
 

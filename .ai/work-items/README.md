@@ -28,4 +28,4 @@ Work items are the concrete units the system plans and executes. Each is classif
 
 ## Index
 
-_No work items in Phase 1._ Each subfolder has its own README describing that type.
+_No work items yet._ Each subfolder has its own README describing that type.

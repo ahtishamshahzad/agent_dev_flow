@@ -23,7 +23,7 @@ Migration work items: move from one state to another (framework/version/data/sch
 
 ## Index
 
-_No migrations in Phase 1._
+_No migrations yet._
 
 | Migration | From → To | Status |
 |-----------|-----------|--------|

@@ -15,7 +15,7 @@ Scope → design within architecture → implement → test (per `../../system/T
 
 ## Index
 
-_No features in Phase 1._
+_No features yet._
 
 | Feature | Status | Phase |
 |---------|--------|-------|

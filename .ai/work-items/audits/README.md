@@ -22,7 +22,7 @@ Audit work items: assess and report, usually **without changing code** (or with 
 
 ## Index
 
-_No audits in Phase 1._
+_No audits yet._
 
 | Audit | Kind | Status |
 |-------|------|--------|
