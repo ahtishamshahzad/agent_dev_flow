@@ -11,7 +11,7 @@
 - Intake: `../skills/request-classification`, `../skills/requirements-analysis`.
 - Selection/architecture: `../skills/application-selection`, `../skills/stack-recommendation`, `../skills/architecture-design`, `../skills/repository-architecture` (+ domain selection skills as areas demand).
 - Planning: `../skills/task-planning`.
-- Build: the relevant domain packs (`../skills/backend|database|mobile|testing|devops|security/`) — **only the areas selected**.
+- Build: the relevant domain packs (`../skills/<pack>/` — backend, database, mobile, web, testing, devops, security) — **only the areas selected**.
 - Delivery: `../skills/testing-strategy`, `../skills/security-review`, `../skills/release-planning`, `../skills/git-workflow`, `../skills/github-repository`.
 
 ## Agents Involved
