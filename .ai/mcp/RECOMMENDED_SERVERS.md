@@ -11,7 +11,7 @@ A catalog of **optional** MCP/tool servers. None are enabled by default. Each en
 - **Permissions:** repo read (metadata/PRs); write only for approved PR/issue actions.
 - **Data exposure:** repo contents and metadata to the GitHub API.
 - **Enable when:** doing approved PR/issue work on an existing repo.
-- **Disable when:** no repo work; **or** before repository creation is approved (Phase 1 forbids repo creation).
+- **Disable when:** no repo work; **or** before repository creation is approved (repo creation always requires explicit approval).
 
 ## Figma
 - **Purpose:** read design files, tokens, specs to build accurate UI.

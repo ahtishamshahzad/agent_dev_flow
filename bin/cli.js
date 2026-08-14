@@ -4,18 +4,19 @@
 /**
  * AI Engineering System — installer.
  *
- * Copies the canonical `.ai/` directory, the `AGENTS.md` entry point, and the
- * chosen editor adapter(s) into a target project. File-based only: it installs
+ * Copies the canonical `.ai/` directory, the `AGENTS.md` entry point, the
+ * usage guides, and the chosen editor adapter(s) into a target project. File-based only: it installs
  * no dependencies, selects no stack, and creates no repository.
  *
  * Usage:
- *   npx agentflow init [dir] [options]
+ *   npx github:ahtishamshahzad/agent_dev_flow init [dir] [options]
  *
  * Options:
  *   --editor <list>   Comma-separated: claude, cursor, windsurf, copilot, codex, all
  *                     (default: all). "codex" is covered by AGENTS.md, always copied.
  *   --force           Overwrite files that already exist.
  *   --dry-run         Print what would be copied; write nothing.
+ *   -v, --version     Show version.
  *   -h, --help        Show help.
  */
 
@@ -37,7 +38,7 @@ const ADAPTERS = {
   codex: [], // AGENTS.md is its native entry point; nothing extra
 };
 
-const ALWAYS = ['.ai', 'AGENTS.md'];
+const ALWAYS = ['.ai', 'AGENTS.md', 'USAGE.md', 'QUICK_START.md'];
 
 const COLORS = process.stdout.isTTY
   ? { dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', bold: '\x1b[1m', reset: '\x1b[0m' }
@@ -50,10 +51,10 @@ function printHelp() {
   log(`
 ${c('bold', 'AI Engineering System — installer')}
 
-  ${c('bold', 'npx agentflow init')} ${c('dim', '[dir] [options]')}
+  ${c('bold', 'npx github:ahtishamshahzad/agent_dev_flow init')} ${c('dim', '[dir] [options]')}
 
-Copies the canonical ${c('bold', '.ai/')} directory, ${c('bold', 'AGENTS.md')}, and your editor
-adapter(s) into a project. No dependencies, no stack, no repo — files only.
+Copies the canonical ${c('bold', '.ai/')} directory, ${c('bold', 'AGENTS.md')}, the usage guides,
+and your editor adapter(s) into a project. No dependencies, no stack, no repo — files only.
 
 ${c('bold', 'Arguments')}
   dir                 Target project directory (default: current directory)
@@ -63,24 +64,29 @@ ${c('bold', 'Options')}
                       Values: claude, cursor, windsurf, copilot, codex, all
   --force             Overwrite existing files
   --dry-run           Show what would be copied without writing
+  -v, --version       Show version
   -h, --help          Show this help
 
 ${c('bold', 'Examples')}
-  npx agentflow init
-  npx agentflow init ./my-app --editor claude,cursor
-  npx agentflow init --editor claude --force
+  npx github:ahtishamshahzad/agent_dev_flow init
+  npx github:ahtishamshahzad/agent_dev_flow init ./my-app --editor claude,cursor
+  npx github:ahtishamshahzad/agent_dev_flow init --editor claude --force
 `);
 }
 
 function parseArgs(argv) {
-  const opts = { dir: null, editors: null, force: false, dryRun: false, help: false, cmd: null };
+  const opts = { dir: null, editors: null, force: false, dryRun: false, help: false, version: false, cmd: null };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '-h' || a === '--help') opts.help = true;
+    else if (a === '-v' || a === '--version') opts.version = true;
     else if (a === '--force') opts.force = true;
     else if (a === '--dry-run') opts.dryRun = true;
-    else if (a === '--editor') opts.editors = (argv[++i] || '').toLowerCase();
-    else if (a.startsWith('--editor=')) opts.editors = a.slice('--editor='.length).toLowerCase();
+    else if (a === '--editor' || a.startsWith('--editor=')) {
+      const v = a === '--editor' ? argv[++i] : a.slice('--editor='.length);
+      if (!v || v.startsWith('-')) { log(c('red', 'Missing value for --editor')); process.exit(1); }
+      opts.editors = v.toLowerCase();
+    }
     else if (a === 'init') opts.cmd = 'init';
     else if (!a.startsWith('-') && opts.cmd === null) opts.cmd = a; // tolerate bare command
     else if (!a.startsWith('-')) opts.dir = a;
@@ -101,15 +107,6 @@ function resolveEditors(editorsArg) {
   }
   if (requested.includes('all')) return all;
   return requested;
-}
-
-// Recursively collect the list of relative file paths that copying `src` implies.
-function walk(src) {
-  const stat = fs.statSync(src);
-  if (stat.isDirectory()) {
-    return fs.readdirSync(src).flatMap((child) => walk(path.join(src, child)));
-  }
-  return [src];
 }
 
 function copyRecursive(src, dest, opts, results) {
@@ -136,6 +133,10 @@ function copyRecursive(src, dest, opts, results) {
 function main() {
   const opts = parseArgs(process.argv.slice(2));
 
+  if (opts.version) {
+    log(require(path.join(PKG_ROOT, 'package.json')).version);
+    process.exit(0);
+  }
   if (opts.help || opts.cmd === null) {
     printHelp();
     process.exit(opts.help ? 0 : 1);
@@ -196,7 +197,7 @@ function main() {
 
   log('');
   log(c('bold', 'Next steps'));
-  log('  1. Read .ai/README.md (full guide) and QUICK_START.md');
+  log('  1. Read USAGE.md (what to type, per editor), then .ai/README.md');
   if (editors.includes('claude')) {
     log('  2. Claude Code: optionally install native skill plugins:');
     log(c('dim', '       /plugin marketplace add ahtishamshahzad/agent_dev_flow'));

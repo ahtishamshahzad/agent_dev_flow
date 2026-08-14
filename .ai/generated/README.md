@@ -28,4 +28,4 @@ generated/
 
 ## Status
 
-_Empty in Phase 1._ Subfolders (`reports/`, `audits/`, `checklists/`) exist and are ready.
+_Empty — nothing generated yet._ Subfolders (`reports/`, `audits/`, `checklists/`) exist and are ready.

@@ -19,7 +19,7 @@ Plan how users prove identity and how the app carries that proof: the session/to
 
 - Auth requirements: providers (email/password, OAuth/OIDC, SSO), MFA needs, session length.
 - Backend boundary (`web-api-integration`) and framework foundation (SSR changes the options).
-- Compliance/security constraints (`../../security-review`, `../../system/SECURITY_RULES.md`).
+- Compliance/security constraints (`../../security-review`, `../../../system/SECURITY_RULES.md`).
 
 ## Discovery Questions
 

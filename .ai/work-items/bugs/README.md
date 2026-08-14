@@ -19,7 +19,7 @@ Bug work items: defects to diagnose and fix without regressing behavior.
 
 ## Index
 
-_No bugs in Phase 1._
+_No bugs yet._
 
 | Bug | Severity | Status |
 |-----|----------|--------|

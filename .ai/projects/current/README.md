@@ -32,4 +32,4 @@ _(See `../../system/QUALITY_GATES.md`. No code before gates 2 and 4 are approved
 
 ## Status
 
-**Phase 1 (system foundation) only.** No active application project yet — this is the empty, ready state.
+No active application project yet — this is the empty, ready state.

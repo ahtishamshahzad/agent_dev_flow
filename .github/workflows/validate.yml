@@ -1,0 +1,26 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Repo consistency checks
+        run: node scripts/validate.js
+      - name: Installer smoke test
+        run: |
+          node bin/cli.js init "$RUNNER_TEMP/smoke" --editor all
+          test -f "$RUNNER_TEMP/smoke/AGENTS.md"
+          test -f "$RUNNER_TEMP/smoke/CLAUDE.md"
+          test -f "$RUNNER_TEMP/smoke/.cursor/rules/project.mdc"
+          test -d "$RUNNER_TEMP/smoke/.ai/skills"
+          node bin/cli.js init "$RUNNER_TEMP/smoke" --dry-run
+          node bin/cli.js --version
