@@ -30,6 +30,8 @@ Plan how users prove identity and how the app carries that proof: the session/to
 
 ## Responsibilities
 
+- Credential **input rules** (email normalization, password policy, confirm match) come from `../../auth-form-validation` — one schema, enforced on the server too.
+
 - Decide the **credential carrier**: prefer **httpOnly, Secure, SameSite cookies** for browser apps; treat localStorage-held tokens as XSS-readable and justify any use.
 - Plan **CSRF protection** whenever cookies authenticate state-changing requests (SameSite plus token where needed).
 - Plan **SSR/middleware auth** on Next.js: reading the session in middleware/server components, redirect flow for protected pages, no auth-only content leaking into static output.
