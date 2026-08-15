@@ -29,6 +29,8 @@ Assess whether the system's **identity handling** resists attack: are credential
 
 ## Responsibilities
 
+- Confirm the credential **input contract** is enforced server-side, not only in the form (`../../auth-form-validation`) — including the breach check and enumeration-safe messages.
+
 - Verify **credential storage**: adaptive hashing (bcrypt/argon2/scrypt), never plaintext or fast hashes; no credentials/tokens in logs, errors, or URLs.
 - Assess **session/token handling**: httpOnly/secure/sameSite cookies for browsers (not localStorage tokens); short-lived access + rotating refresh with reuse detection for JWTs; signing keys managed (`secrets-audit`).
 - Verify **revocation is real**: logout and password change invalidate sessions/tokens; a pure-stateless JWT with no denylist can't truly revoke — flag the gap.

@@ -28,6 +28,8 @@ Plan authentication: sign-in/up flows, token/session lifecycle (issue, store, re
 
 ## Responsibilities
 
+- Credential **input rules** (email normalization, password policy, confirm match) come from `../../auth-form-validation` — one schema, enforced on the server too.
+
 - Plan **login/signup** and session establishment.
 - Handle **token lifecycle**: issue, **secure storage**, **refresh**, revoke on logout.
 - Attach tokens via the **API layer** (`mobile-api-integration`).

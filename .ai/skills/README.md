@@ -57,6 +57,7 @@ Most work starts at **`project-orchestrator`**, which then loads the right speci
 | [`testing-strategy`](testing-strategy/SKILL.md) | Choose levels + tools per risk/app; regression test every bug fix. |
 | [`documentation`](documentation/SKILL.md) | Write canonically and concisely inside `.ai/`; keep adapters thin; archive stale reports. |
 | [`application-documentation`](application-documentation/SKILL.md) | The product's `docs/` tree: a folder per app, an index per level, a file per screen/page/endpoint/job. |
+| [`auth-form-validation`](auth-form-validation/SKILL.md) | Login/signup/reset field rules: one credential schema through the RHF resolver, re-enforced server-side, enumeration-safe copy. |
 
 ### Delivery & Ops
 | Skill | Description |

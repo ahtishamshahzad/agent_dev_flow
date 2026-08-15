@@ -22,6 +22,7 @@ Plan validation: define Zod (or equivalent) schemas for form input and API bound
 ## Discovery Questions
 
 - What are the field rules (types, ranges, formats, required)?
+- Are any of these **credential** fields? Email/password rules come from `../../auth-form-validation`, not from scratch.
 - Can schemas be shared between forms and API parsing?
 - What error messages does the UX need?
 
@@ -31,6 +32,7 @@ Plan validation: define Zod (or equivalent) schemas for form input and API bound
 - Produce **clear, user-facing error messages**.
 - **Reuse schemas** across forms and API boundaries.
 - Coordinate with `mobile-forms` (resolver) and `mobile-api-integration` (response parsing).
+- Defer credential fields to `../../auth-form-validation` — the same schema must hold on the server.
 
 ## Required Workflow
 

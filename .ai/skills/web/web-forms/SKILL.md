@@ -14,6 +14,7 @@ Plan form architecture: form state handling, schema validation shared between cl
 - When planning any non-trivial form (signup, checkout, settings, admin editors).
 - When an existing app hand-rolls form state or duplicates validation ad hoc.
 - **Not** for the validation rules' business content (domain) or auth flows themselves (`web-authentication`).
+- **Not** for login/signup/reset field rules — those are `../../auth-form-validation` (one credential schema, client + server).
 
 ## Inputs
 
@@ -79,7 +80,7 @@ A recorded forms plan — library choice, schema contract with server-side enfor
 
 ## Related Skills
 
-`web-api-integration`, `web-server-state`, `web-accessibility`, `web-design-system`, `web-state-management`, `web-authentication`, `dashboard-bulk-operations`, `../../application-documentation`.
+`../../auth-form-validation`, `web-api-integration`, `web-server-state`, `web-accessibility`, `web-design-system`, `web-state-management`, `web-authentication`, `dashboard-bulk-operations`, `../../application-documentation`.
 
 ## Related Knowledge
 
