@@ -55,7 +55,8 @@ Most work starts at **`project-orchestrator`**, which then loads the right speci
 | Skill | Description |
 |-------|-------------|
 | [`testing-strategy`](testing-strategy/SKILL.md) | Choose levels + tools per risk/app; regression test every bug fix. |
-| [`documentation`](documentation/SKILL.md) | Write canonically and concisely; keep adapters thin; archive stale reports. |
+| [`documentation`](documentation/SKILL.md) | Write canonically and concisely inside `.ai/`; keep adapters thin; archive stale reports. |
+| [`application-documentation`](application-documentation/SKILL.md) | The product's `docs/` tree: a folder per app, an index per level, a file per screen/page/endpoint/job. |
 
 ### Delivery & Ops
 | Skill | Description |

@@ -33,6 +33,7 @@ Evaluate GraphQL against the project's needs and, if chosen, design the schema, 
 - Use **connection-style pagination** for lists; no unbounded list fields.
 - Design mutations with typed payloads including user-facing errors; transport errors stay in the errors array.
 - Set **query depth/cost limits**, disable production introspection unless required, and plan **field-level authorization** (`backend-authorization`) — the resolver is the enforcement point.
+- Document the unit as it is built — the schema/resource files under `docs/<app>/api/` (`../../application-documentation`).
 
 ## Required Workflow
 
@@ -79,7 +80,7 @@ A recorded fit decision and, if GraphQL, a schema + resolver design with N+1 pro
 
 ## Related Skills
 
-`rest-api-design`, `api-contracts`, `backend-authorization`, `ownership-authorization`, `rate-limiting`, `backend-performance`, `../../database/database-performance`.
+`rest-api-design`, `api-contracts`, `backend-authorization`, `ownership-authorization`, `rate-limiting`, `backend-performance`, `../../database/database-performance`, `../../application-documentation`.
 
 ## Related Knowledge
 

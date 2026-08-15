@@ -14,7 +14,8 @@ After a feature/task's implementation completes, before it is considered done.
 
 - [ ] Acceptance criteria met; the feature does what was approved (no scope drift, no false completion — `../skills/ai-output-review`).
 - [ ] Required cases covered and passing (happy, invalid input, error, **authorization denial**, regression).
-- [ ] Docs/notes updated for the change (`../agents/documentation-engineer.md`).
+- [ ] Product docs written for the units this feature adds — `docs/<app>/…` plus the parent index row (`../skills/application-documentation`).
+- [ ] Project state/notes updated for the change (`../agents/documentation-engineer.md`).
 - [ ] Work item / `../projects/current/` state updated (stage, what's done, what's next).
 - [ ] If multi-agent: this slice's output is ready for the synchronization point and integration review.
 

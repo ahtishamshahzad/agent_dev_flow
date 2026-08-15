@@ -35,6 +35,7 @@ Plan form architecture: form state handling, schema validation shared between cl
 - Plan **error UX**: inline, per-field, announced accessibly (labels, `aria-describedby`, focus to first error), plus form-level errors from the server.
 - Plan **submit states**: pending indication, double-submit prevention, success routing, server-error mapping back onto fields.
 - Handle **special cases** deliberately: multi-step (state stays in the form flow, not global), file uploads (validate size/type client-side as UX; server re-validates), autosave where required.
+- Document the unit as it is built — the page file under `docs/<app>/pages/` (`../../application-documentation`).
 
 ## Required Workflow
 
@@ -78,7 +79,7 @@ A recorded forms plan — library choice, schema contract with server-side enfor
 
 ## Related Skills
 
-`web-api-integration`, `web-server-state`, `web-accessibility`, `web-design-system`, `web-state-management`, `web-authentication`, `dashboard-bulk-operations`.
+`web-api-integration`, `web-server-state`, `web-accessibility`, `web-design-system`, `web-state-management`, `web-authentication`, `dashboard-bulk-operations`, `../../application-documentation`.
 
 ## Related Knowledge
 

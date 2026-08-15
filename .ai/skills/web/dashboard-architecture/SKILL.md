@@ -37,6 +37,7 @@ Decide the admin dashboard's placement and boundaries **before** any dashboard w
 - Score each against the six factors above for **this** project.
 - Recommend one placement with justification and consequences (repo layout, stack choice scope, auth session sharing, UI sharing mechanism).
 - Feed the decision to `../../repository-architecture`, `web-stack-selection` (separate app gets its own framework decision), and `web-routing` (embedded gets a route group plan).
+- Document the unit as it is built — `docs/<app>/README.md` and one file per page under `docs/<app>/pages/` (`../../application-documentation`).
 
 ## Required Workflow
 
@@ -81,7 +82,7 @@ A recorded, justified dashboard-placement decision — one of in-app / route gro
 
 ## Related Skills
 
-`../../application-selection`, `../../repository-architecture`, `web-stack-selection`, `web-routing`, `web-authorization`, `dashboard-permissions`, `web-design-system`, `web-deployment`.
+`../../application-selection`, `../../repository-architecture`, `web-stack-selection`, `web-routing`, `web-authorization`, `dashboard-permissions`, `web-design-system`, `web-deployment`, `../../application-documentation`.
 
 ## Related Knowledge
 

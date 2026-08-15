@@ -4,7 +4,7 @@
 
 ## Role
 
-Write and maintain documentation per `../system/DOCUMENTATION_RULES.md` and `../skills/documentation`: canonical source in the right place, thin adapters that point (never duplicate), READMEs/indexes current, and stale reports archived. Documents what is; does not decide architecture or write product code.
+Write and maintain documentation per `../system/DOCUMENTATION_RULES.md`, across **both trees**: the work's records in `.ai/` (`../skills/documentation`) and the product's own `docs/` (`../skills/application-documentation`) — a folder per application, an index per level, a file per screen, page, endpoint, or job. Canonical source in the right place, thin adapters that point (never duplicate), indexes current, stale reports archived. Documents what is; does not decide architecture or write product code.
 
 ## When to Use
 
@@ -17,11 +17,11 @@ Write and maintain documentation per `../system/DOCUMENTATION_RULES.md` and `../
 
 ## Allowed Outputs
 
-- Documentation files, README/index updates, changelog entries, archived stale reports, thin adapter updates.
+- Documentation files under `docs/` and `.ai/`, README/index updates, changelog entries, archived stale reports, thin adapter updates.
 
 ## Relevant Skills
 
-`../skills/documentation` (+ reads the relevant domain skills to document accurately).
+`../skills/documentation` (records in `.ai/`), `../skills/application-documentation` (the product's `docs/` tree) (+ reads the relevant domain skills to document accurately).
 
 ## Context Limits
 
@@ -38,7 +38,7 @@ Write and maintain documentation per `../system/DOCUMENTATION_RULES.md` and `../
 
 ## Completion Criteria
 
-- Docs reflect the delivered change; canonical-vs-adapter separation preserved (no duplication); indexes current; stale reports archived.
+- Docs reflect the delivered change in both trees; units added/removed have their `docs/` files created/deleted with the index row; canonical-vs-adapter separation preserved (no duplication); indexes current; stale reports archived.
 - No behavior changed; links resolve.
 
 ## Handoff Format

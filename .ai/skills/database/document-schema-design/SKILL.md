@@ -39,6 +39,7 @@ Design MongoDB collections around **how the data is read and written**: embed wh
 - Add **schema validation** (JSON Schema on collections and/or `mongoose-mongodb` schemas): required fields, types, enums — variability is scoped, not total.
 - Keep single-document atomicity as the default write model; flag cross-document invariants to `transactions`.
 - Tenancy: tenant key on every scoped document, in every query and index (`indexing`, `ownership-authorization`).
+- Document the unit as it is built — `docs/<app>/database/` (collection notes per area) (`../../application-documentation`).
 
 ## Required Workflow
 
@@ -85,7 +86,7 @@ A recorded document design — per-relationship embed/reference decisions tied t
 
 ## Related Skills
 
-`database-selection`, `mongoose-mongodb`, `indexing`, `transactions`, `concurrency`, `database-security`, `../../backend/ownership-authorization`, `data-migration` (reshaping later).
+`database-selection`, `mongoose-mongodb`, `indexing`, `transactions`, `concurrency`, `database-security`, `../../backend/ownership-authorization`, `data-migration` (reshaping later), `../../application-documentation`.
 
 ## Related Knowledge
 

@@ -9,7 +9,7 @@
     {
       "name": "ai-core",
       "source": "./plugins/ai-core",
-      "description": "Core orchestration, planning, selection, review, testing, delivery, and audit skills (25). Start here with project-orchestrator.",
+      "description": "Core orchestration, planning, selection, review, testing, delivery, documentation, and audit skills (26). Start here with project-orchestrator.",
       "category": "engineering",
       "keywords": ["orchestration", "planning", "architecture", "review"]
     },

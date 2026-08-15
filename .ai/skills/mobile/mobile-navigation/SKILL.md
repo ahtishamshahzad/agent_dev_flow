@@ -34,6 +34,7 @@ Plan the app's navigation: pick Expo Router or React Navigation, structure navig
 - Define typed route params and the protected-route strategy (`mobile-authorization`).
 - Coordinate deep linking (`mobile-deep-linking`) and safe-area handling.
 - Keep navigation state owned by the navigator (`mobile-state-management`).
+- Document the unit as it is built — `docs/mobile/navigation.md`, and one file per screen under `docs/mobile/screens/` (`../../application-documentation`).
 
 ## Required Workflow
 
@@ -78,7 +79,7 @@ A recorded navigation plan: chosen router, navigator tree, typed params, protect
 
 ## Related Skills
 
-`mobile-deep-linking`, `mobile-authorization`, `mobile-authentication`, `mobile-state-management`, `expo-foundation`, `react-native-cli-foundation`
+`mobile-deep-linking`, `mobile-authorization`, `mobile-authentication`, `mobile-state-management`, `expo-foundation`, `react-native-cli-foundation`, `../../application-documentation`.
 
 ## Related Knowledge
 

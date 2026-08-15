@@ -33,6 +33,7 @@ Move work that shouldn't block a request (slow, retryable, bursty, or failure-pr
 - Define retry policy per job: max attempts, exponential backoff, what's retryable vs terminal; terminal failures go to a dead-letter path with alerting (`queues`, `backend-observability`).
 - Preserve scope: jobs touching tenant/user data carry and enforce the same scoping as requests (`ownership-authorization`).
 - Design status visibility where users wait on results (job status records, notifications).
+- Document the unit as it is built — one file per job under `docs/<app>/jobs/` (`../../application-documentation`).
 
 ## Required Workflow
 
@@ -78,7 +79,7 @@ A recorded job design — boundaries, idempotent handlers, retry/failure policy,
 
 ## Related Skills
 
-`queues`, `scheduled-jobs`, `../../database/transactions`, `../../database/concurrency`, `backend-error-handling`, `backend-observability`, `ownership-authorization`, `email-notifications`.
+`queues`, `scheduled-jobs`, `../../database/transactions`, `../../database/concurrency`, `backend-error-handling`, `backend-observability`, `ownership-authorization`, `email-notifications`, `../../application-documentation`.
 
 ## Related Knowledge
 

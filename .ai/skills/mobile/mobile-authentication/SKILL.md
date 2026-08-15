@@ -32,6 +32,7 @@ Plan authentication: sign-in/up flows, token/session lifecycle (issue, store, re
 - Handle **token lifecycle**: issue, **secure storage**, **refresh**, revoke on logout.
 - Attach tokens via the **API layer** (`mobile-api-integration`).
 - Coordinate **protected routes** (`mobile-authorization`, `mobile-navigation`).
+- Document the unit as it is built — `docs/mobile/screens/` (the auth screens) — permissions and failure modes included (`../../application-documentation`).
 
 ## Required Workflow
 
@@ -74,7 +75,7 @@ A recorded authentication plan: login/signup, secure token lifecycle with refres
 
 ## Related Skills
 
-`mobile-authorization`, `mobile-secure-storage`, `mobile-api-integration`, `mobile-navigation`, `../../security-review`
+`mobile-authorization`, `mobile-secure-storage`, `mobile-api-integration`, `mobile-navigation`, `../../security-review`, `../../application-documentation`.
 
 ## Related Knowledge
 

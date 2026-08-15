@@ -32,6 +32,7 @@ Plan forms: manage form state with React Hook Form (or equivalent), handle input
 - Handle **submission**, loading, and **error display**.
 - Delegate **validation** to `mobile-validation` (e.g. Zod resolver).
 - Coordinate accessibility (`mobile-accessibility`).
+- Document the unit as it is built — the screen file under `docs/mobile/screens/` (`../../application-documentation`).
 
 ## Required Workflow
 
@@ -74,7 +75,7 @@ A recorded form plan: library-managed form state, wired inputs and submission wi
 
 ## Related Skills
 
-`mobile-validation`, `mobile-state-management`, `mobile-accessibility`, `mobile-api-integration`, `mobile-server-state`
+`mobile-validation`, `mobile-state-management`, `mobile-accessibility`, `mobile-api-integration`, `mobile-server-state`, `../../application-documentation`.
 
 ## Related Knowledge
 

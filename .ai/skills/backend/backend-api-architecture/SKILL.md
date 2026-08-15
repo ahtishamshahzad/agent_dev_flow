@@ -32,6 +32,7 @@ Define how the backend is organized internally — layers, domain boundaries, de
 - Draw **domain boundaries**; cross-domain calls go through service interfaces, not each other's tables.
 - Place cross-cutting concerns: validation at the edge (`backend-validation`), authorization at the edge + service (`backend-authorization`), transactions in services (`../../database/transactions`), errors centrally (`backend-error-handling`).
 - Define DTO/model separation: transport shapes ≠ database entities (`api-contracts`).
+- Document the unit as it is built — `docs/<app>/README.md` and the per-resource files under `docs/<app>/api/` (`../../application-documentation`).
 
 ## Required Workflow
 
@@ -75,7 +76,7 @@ A recorded internal architecture — layers, boundaries, concern placement, mapp
 
 ## Related Skills
 
-`../../architecture-design`, `express-foundation`, `nestjs-foundation`, `rest-api-design`, `api-contracts`, `backend-validation`, `backend-authorization`, `backend-error-handling`, `../../database/transactions`.
+`../../architecture-design`, `express-foundation`, `nestjs-foundation`, `rest-api-design`, `api-contracts`, `backend-validation`, `backend-authorization`, `backend-error-handling`, `../../database/transactions`, `../../application-documentation`.
 
 ## Related Knowledge
 

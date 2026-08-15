@@ -48,6 +48,7 @@ Reusable **document templates** — fill-in-the-blank, tool-neutral. They give c
 | [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md) | Evidence-based Gate 7 readiness + approval. |
 | [`INCIDENT_REPORT.md`](INCIDENT_REPORT.md) | Timeline, root cause, blameless postmortem + regression. |
 | [`FINAL_AUDIT.md`](FINAL_AUDIT.md) | Aggregated reviews → go/no-go. |
+| [`APP_DOC.md`](APP_DOC.md) | One unit of product documentation — screen, page, endpoint, or job. |
 
 ## Conventions
 

@@ -35,6 +35,7 @@ Design the app's route architecture: the route/layout tree, dynamic segments, pr
 - Plan **protected routes**: middleware/guards, redirect-to-login with return path — as UX only; the server enforces access (`web-authorization`).
 - Treat the **URL as state** for filters, pagination, tabs, and search so views are shareable and back/forward works (`web-state-management`).
 - Plan not-found and error routes (`web-error-handling`).
+- Document the unit as it is built — one file per page under `docs/<app>/pages/` (`../../application-documentation`).
 
 ## Required Workflow
 
@@ -78,7 +79,7 @@ A recorded route architecture — tree, layouts, dynamic segments, protection po
 
 ## Related Skills
 
-`nextjs-foundation`, `vite-react-foundation`, `web-authorization`, `web-state-management`, `web-error-handling`, `dashboard-architecture`, `web-seo`.
+`nextjs-foundation`, `vite-react-foundation`, `web-authorization`, `web-state-management`, `web-error-handling`, `dashboard-architecture`, `web-seo`, `../../application-documentation`.
 
 ## Related Knowledge
 
