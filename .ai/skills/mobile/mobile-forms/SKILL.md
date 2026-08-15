@@ -27,6 +27,8 @@ Plan forms: manage form state with React Hook Form (or equivalent), handle input
 
 ## Responsibilities
 
+- For login/signup/reset forms, take the credential rules from `../../auth-form-validation` rather than defining them here.
+
 - Manage **form state** with a form library (React Hook Form or equivalent), not global state.
 - Wire **controlled/uncontrolled inputs**, focus, and keyboard handling.
 - Handle **submission**, loading, and **error display**.

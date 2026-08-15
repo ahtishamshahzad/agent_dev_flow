@@ -24,6 +24,7 @@ Ensure every input crossing into the backend is validated against an explicit sc
 - What entry points exist beyond HTTP bodies — query/params/headers, file uploads, webhooks, queue messages, scheduled-job inputs?
 - Can validation schemas derive from the API contract (one definition)?
 - What are the domain constraints (lengths, ranges, formats, enums) per input?
+- Is this an auth endpoint? Credential rules come from `../../auth-form-validation` and must match the client's schema exactly.
 
 ## Responsibilities
 

@@ -28,6 +28,8 @@ Establish the caller's identity safely: credential handling, session/token strat
 
 ## Responsibilities
 
+- Credential **input rules** (email normalization, password policy, confirm match) come from `../../auth-form-validation` — one schema, enforced on the server too.
+
 - Store credentials only as strong adaptive hashes (bcrypt/argon2); never reversible, never logged.
 - Choose **session vs JWT** on requirements: revocability, horizontal scale, third-party consumption — and record the trade-off. Short-lived access + refresh rotation when JWTs are chosen; httpOnly/secure/sameSite cookies for browsers.
 - Define lifecycle: issuance, expiry, refresh rotation (reuse detection), revocation, logout (and logout-all).
