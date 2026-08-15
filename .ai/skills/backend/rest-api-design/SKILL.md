@@ -34,6 +34,7 @@ Design a consistent, predictable REST surface: resources, verbs, status codes, p
 - Define one **error response shape** (`backend-error-handling`) and one envelope convention — used everywhere.
 - Plan versioning (URL prefix or header) and what counts as a breaking change (`api-contracts`).
 - Mark idempotent operations; require idempotency keys for unsafe-to-retry POSTs.
+- Document the unit as it is built — one file per resource under `docs/<app>/api/` (`../../application-documentation`).
 
 ## Required Workflow
 
@@ -79,7 +80,7 @@ A recorded endpoint design — resources, methods, status codes, conventions, au
 
 ## Related Skills
 
-`api-contracts`, `graphql-api-design`, `backend-api-architecture`, `backend-validation`, `backend-error-handling`, `backend-authorization`, `rate-limiting`.
+`api-contracts`, `graphql-api-design`, `backend-api-architecture`, `backend-validation`, `backend-error-handling`, `backend-authorization`, `rate-limiting`, `../../application-documentation`.
 
 ## Related Knowledge
 

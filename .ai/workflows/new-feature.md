@@ -26,7 +26,7 @@ Gate 4 (tasks + acceptance criteria approved), Gate 5 (tests), Gate 6 (review). 
 
 ## Documents Generated
 
-Feature plan + tasks, tests, code/security review notes, doc updates.
+Feature plan + tasks, tests, code/security review notes, and the product docs for the units added (`docs/<app>/…` + index rows — `../skills/application-documentation`).
 
 ## Validation
 

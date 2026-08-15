@@ -36,6 +36,7 @@ Turn the domain model into a relational schema whose **constraints enforce the b
 - Normalize to ~3NF by default; **denormalize only for a measured/known access pattern, recorded with its consistency-maintenance story**.
 - Set conventions once: naming (snake_case tables/columns, consistent id/created_at/updated_at), soft-delete pattern (and its unique-index interaction), audit/history tables where the domain demands them.
 - Include the tenancy column strategy on scoped tables (org_id on every tenant row, indexed — feeds `ownership-authorization` query filters).
+- Document the unit as it is built — `docs/<app>/database/` (schema notes per area) (`../../application-documentation`).
 
 ## Required Workflow
 
@@ -84,7 +85,7 @@ A recorded relational schema — tables, keys, constrained relationships, precis
 
 ## Related Skills
 
-`database-selection`, `prisma-relational`, `drizzle-relational`, `database-migrations`, `indexing`, `transactions`, `concurrency`, `database-security`, `../../backend/ownership-authorization`.
+`database-selection`, `prisma-relational`, `drizzle-relational`, `database-migrations`, `indexing`, `transactions`, `concurrency`, `database-security`, `../../backend/ownership-authorization`, `../../application-documentation`.
 
 ## Related Knowledge
 

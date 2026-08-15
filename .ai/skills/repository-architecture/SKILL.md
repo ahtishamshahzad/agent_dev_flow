@@ -31,6 +31,7 @@ Translate the logical architecture into a concrete repository layout: how apps a
 
 - Decide **repo strategy** (single-app · multi-app monorepo) with justification.
 - Define **top-level layout** (apps, packages, shared, tooling, docs).
+- Place **`docs/` at the root** with one folder per application, named as the apps are named here (`application-documentation`).
 - Set **directory conventions** per application type.
 - Place **shared code** (types, UI, utilities) so ≥2 consumers can use it cleanly.
 - Keep the layout consistent with the approved stack and `../../system/` conventions.
@@ -40,7 +41,7 @@ Translate the logical architecture into a concrete repository layout: how apps a
 
 1. Read architecture + selected apps + stack.
 2. Choose repo strategy.
-3. Define top-level and per-app directory layout.
+3. Define top-level and per-app directory layout, including `docs/` and its per-app folders.
 4. Decide shared-code placement.
 5. Record the layout (in `../../projects/current/` / `../../knowledge/`).
 6. Hand off to task/phase generation.
@@ -70,6 +71,7 @@ Translate the logical architecture into a concrete repository layout: how apps a
 - [ ] Repo strategy chosen + justified.
 - [ ] Top-level layout defined.
 - [ ] Per-app conventions defined.
+- [ ] `docs/` placed at the root, one folder per application.
 - [ ] Shared-code placement decided.
 - [ ] Consistent with stack + existing conventions.
 - [ ] No code committed.
@@ -80,7 +82,7 @@ A recorded repository layout (strategy, top-level tree, per-app conventions, sha
 
 ## Related Skills
 
-`architecture-design`, `application-selection`, `stack-recommendation`, `task-planning`, `git-workflow`, `github-repository`.
+`architecture-design`, `application-selection`, `stack-recommendation`, `application-documentation`, `task-planning`, `git-workflow`, `github-repository`.
 
 ## Related Knowledge
 

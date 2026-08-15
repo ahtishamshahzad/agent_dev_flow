@@ -28,6 +28,9 @@ All seven. **Gate 2** (apps+stack) and **Gate 4** (phases+tasks) require explici
 
 ## Documents Generated
 
+`docs/` is created with the applications (one folder per app, indexed) — `../skills/application-documentation`.
+
+
 Requirements doc, application+stack decision, architecture doc, repository layout, phases+tasks, test plan, review + security reports, release-readiness go/no-go — in `../projects/current/` and `../generated/`.
 
 ## Validation

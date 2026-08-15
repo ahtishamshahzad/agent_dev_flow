@@ -2,6 +2,8 @@
 
 Where things get written, how much, and how to keep it lean. Documentation serves the next agent and the user — not archival volume.
 
+Two trees, two jobs. **`.ai/` holds the work**: rules, plans, decisions, work items, reports. **`docs/` holds the product**: what the applications are and how to use them. A fact belongs to exactly one of them.
+
 ## Where documentation lives
 
 | Content | Location |
@@ -15,6 +17,16 @@ Where things get written, how much, and how to keep it lean. Documentation serve
 | Reusable templates | `../templates/` |
 | Reusable checklists | `../checklists/` |
 | Generated reports/audits (archivable) | `../generated/` |
+| **Application documentation** (screens, pages, endpoints, jobs) | **`docs/` at the repo root** — see `../skills/application-documentation` |
+
+## Application documentation (`docs/`)
+
+The software being built documents itself in one `docs/` tree at the repository root: one folder per application, unit folders matching the application's type (`screens/`, `pages/`, `api/`, `jobs/`), a `README.md` index at every level, and one file per unit named after the route or screen it documents. Full structure and rules: `../skills/application-documentation`; unit template: `../templates/APP_DOC.md`.
+
+- **Docs ship with the change.** A screen without its doc is an incomplete task, not a follow-up.
+- **A doc that contradicts the code is a defect**, reported at review like any other.
+- **Don't copy plans into `docs/`.** `../projects/current/` says what we decided and why; `docs/` says what exists. Link, never duplicate.
+- **Existing conventions win.** In an established repo, keep its documentation folder name and apply the shape inside it.
 
 ## Principles
 

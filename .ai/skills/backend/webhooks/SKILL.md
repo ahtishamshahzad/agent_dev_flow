@@ -38,6 +38,7 @@ Design webhook handling as the untrusted, unreliable channel it is: inbound hook
 - Sign payloads (HMAC + timestamp), document verification for consumers.
 - Deliver via `background-jobs`/`queues`: retries with exponential backoff, terminal-failure handling (disable + notify after N days dead), delivery log per consumer.
 - Version payloads (`api-contracts`); provide event IDs and a replay/reconciliation path for consumers.
+- Document the unit as it is built — `docs/<app>/integrations/` (inbound and outbound contracts) (`../../application-documentation`).
 
 ## Required Workflow
 
@@ -81,7 +82,7 @@ A recorded two-direction webhook design — verified/deduped/async inbound, sign
 
 ## Related Skills
 
-`background-jobs`, `queues`, `backend-validation`, `backend-security`, `third-party-integrations`, `api-contracts`, `backend-observability`.
+`background-jobs`, `queues`, `backend-validation`, `backend-security`, `third-party-integrations`, `api-contracts`, `backend-observability`, `../../application-documentation`.
 
 ## Related Knowledge
 

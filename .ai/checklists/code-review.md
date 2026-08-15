@@ -2,6 +2,12 @@
 
 > Verifiable items for code review. Maps to Gate 6.
 
+## Documentation
+
+- [ ] Units added in this change have their doc under `docs/<app>/…`; units removed have theirs deleted (`../skills/application-documentation`).
+- [ ] Parent index README updated with the new/removed row.
+- [ ] No doc left contradicting the code it describes.
+
 ## Pass Criteria
 
 - [ ] **Correctness:** logic is right; edge cases and error paths handled.

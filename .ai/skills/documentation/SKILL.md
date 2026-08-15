@@ -1,18 +1,21 @@
 ---
 name: documentation
-description: Use to write or update documentation in the right canonical place, concisely, without duplicating the system. Keeps adapters thin, records decisions and their reasons, and archives stale generated content.
+description: Use to write or update documentation of the work inside `.ai/` — decisions, project state, work items, knowledge, generated reports — concisely and in its canonical place. For the applications' own documentation (the `docs/` tree), use `application-documentation` instead.
 ---
 
 # Documentation
 
 ## Purpose
 
-Produce and maintain documentation that serves the next agent and the user — placed canonically, kept concise, and never duplicated. Implements `../../system/DOCUMENTATION_RULES.md`.
+Produce and maintain documentation of **the work** — placed canonically, kept concise, and never duplicated. Implements `../../system/DOCUMENTATION_RULES.md`.
+
+Scope: everything under `.ai/`. The **applications' own documentation** — the `docs/` tree with a folder per app and a file per screen, page, endpoint, or job — belongs to `application-documentation`. Both are needed; neither restates the other.
 
 ## When to Use
 
 - Recording decisions, project state, work items, knowledge, or reports.
 - Updating READMEs/indexes when structure changes.
+- **Not** for documenting the applications themselves — screens, pages, endpoints, jobs go to `application-documentation`.
 - **Not** to pad output with narration or restate canonical rules.
 
 ## Inputs
@@ -23,6 +26,7 @@ Produce and maintain documentation that serves the next agent and the user — p
 ## Discovery Questions
 
 - Is this canonical (`../../system/`), project state (`../../projects/current/`), knowledge (`../../knowledge/`), or generated (`../../generated/`)?
+- Or is it a fact about the built product? Then it is `docs/`, not `.ai/` — hand to `application-documentation`.
 - Does a doc already cover this (update vs create)?
 - Who reads this next, and what do they need?
 
@@ -77,7 +81,7 @@ Documentation placed canonically, concise, non-duplicative, with decisions and r
 
 ## Related Skills
 
-`project-orchestrator`, `code-review`, `final-quality-audit`, and any skill producing records.
+`application-documentation` (the `docs/` half), `project-orchestrator`, `code-review`, `final-quality-audit`, and any skill producing records.
 
 ## Related Knowledge
 
