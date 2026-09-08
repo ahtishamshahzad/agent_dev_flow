@@ -20,7 +20,7 @@ Additive: new rules, skills, and packaging around the 1.0.0 core. No breaking ru
 ### Added — distribution
 
 - `bin/cli.js` — zero-dependency installer (`npx github:ahtishamshahzad/agent_dev_flow init`), copying `.ai/`, `AGENTS.md`, the usage guides, and the selected editor adapters. Installs nothing, selects no stack, creates no repository.
-- `scripts/validate.js` + `.github/workflows/validate.yml` — repo consistency checks (manifest/version sync, skill frontmatter, plugin symlinks, claimed skill counts, installer bundle completeness, relative-link resolution) and an installer smoke test in CI.
+- `scripts/validate.js` + `.github/workflows/validate.yml` — repo consistency checks and an installer smoke test in CI: manifest/version sync, skill frontmatter, plugin symlinks, **every count claimed in prose** (totals and per-pack, across `README.md`, `USAGE.md`, `.ai/README.md`, `.ai/skills/README.md`, `plugins/README.md`, `marketplace.json`), **CHANGELOG newest entry vs `VERSION` and its totals**, installer bundle completeness, and relative-link resolution. A claim that stops matching its pattern fails too — a check that silently stops checking is worse than no check.
 - `plugins/` + `.claude-plugin/marketplace.json` — the eight skill packs as installable Claude Code plugins, each `skills/` a symlink to `.ai/skills/`, so there is still one source of truth.
 - `USAGE.md` (what to type, per editor), root `README.md`, `LICENSE` (MIT), and the `references/` topic folders the skills point at.
 
