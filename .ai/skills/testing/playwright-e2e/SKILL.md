@@ -27,6 +27,7 @@ Verify **critical web/dashboard journeys** work end-to-end in a real browser aga
 
 ## Responsibilities
 
+- Take the behavior to be covered from its **Gherkin scenarios** (`gherkin-specifications`) — implement one test per scenario rather than inventing a parallel case list.
 - Cover **critical journeys** end-to-end: the **happy path** through the real UI, plus the key **invalid-input**, **error**, and **authorization-denied** variants that matter at the journey level (e.g. a user can't reach another user's dashboard).
 - Write **resilient selectors and waits**: role/label/test-id locators (`../../mobile/mobile-accessibility` parity), Playwright **auto-waiting** — never fixed `sleep`s, which cause flakiness (`flaky-test-audit`).
 - Control **data and state**: seed via API/factory before the run, clean up after; deterministic starting state, no dependence on leftover data.

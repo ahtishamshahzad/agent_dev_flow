@@ -30,6 +30,7 @@ Plan and structure Playwright tests that exercise the app's **critical user jour
 
 ## Responsibilities
 
+- Take the journeys to be covered from their **Gherkin scenarios** (`../../testing/gherkin-specifications`) — one test per scenario, no parallel case list.
 - Select **critical user journeys** — signup/login, the product's core loop, checkout if commerce, key dashboard workflows — and keep the suite small and meaningful.
 - Test **authentication**: login (success/failure), logout, protected-route redirects with return path, session expiry behavior; reuse authenticated state via `storageState` per role so every test doesn't re-login through the UI.
 - Test **authorization**: per role, assert both what's reachable **and** that forbidden routes/actions are denied (direct-URL access, API-backed actions) — proving `web-authorization`'s enforcement from the outside.

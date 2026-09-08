@@ -27,6 +27,7 @@ Verify that units work **together across real boundaries** — services + data l
 
 ## Responsibilities
 
+- Take the behavior to be covered from its **Gherkin scenarios** (`gherkin-specifications`) — implement one test per scenario rather than inventing a parallel case list.
 - Exercise the **real wiring**: real database (same engine as production — never SQLite-for-Postgres), real repositories/services; fake only true externals (`../../backend/third-party-integrations` interfaces).
 - Cover the **required cases** per workflow: **happy path**, **invalid input** (rejected at the right boundary), **error path** (dependency failure handled, no partial state — `../../database/transactions`), and **authorization denial** (an actor lacking rights is refused — `../../backend/backend-authorization`).
 - Manage data with factories + isolation (`test-data-management`), so tests own their state and don't depend on order.

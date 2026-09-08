@@ -27,6 +27,7 @@ Prove the HTTP API behaves correctly end-to-end within the backend: real request
 
 ## Responsibilities
 
+- Take the behavior to be covered from its **Gherkin scenarios** (`gherkin-specifications`) — implement one test per scenario rather than inventing a parallel case list.
 - Send **real HTTP** via Supertest through the assembled app + real production-engine DB (migrations applied, seeded to known state).
 - Cover per endpoint the **required cases**: success (status + contract shape — `../../backend/api-contracts`), **invalid input** (malformed / unknown-field / oversize rejected — `../../backend/backend-validation`), **error path** (mapped status + safe shape — `../../backend/backend-error-handling`), and the **authorization-denial suite**:
   - anonymous → 401 on protected routes;

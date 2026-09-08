@@ -14,7 +14,13 @@
 
 ## Required Cases (per critical behavior)
 
+Each case is **one Gherkin scenario** (`../system/GHERKIN_RULES.md`, `../skills/testing/gherkin-specifications`) — never bundled into a single scenario:
+
 - [ ] happy path · [ ] invalid input · [ ] error path · [ ] **authorization denial** · [ ] regression · [ ] critical environment/config validation
+
+| Scenario | Level | Test (file/case) | Automated? |
+|----------|-------|------------------|------------|
+| <scenario title> | <unit/integration/api/e2e> | <> | yes / not yet |
 
 ## Coverage by Risk
 

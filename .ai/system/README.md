@@ -26,6 +26,7 @@ These files are the **brain** of the AI Engineering System. They are canonical a
 | Approval checkpoints | `QUALITY_GATES.md` |
 | How and where to document | `DOCUMENTATION_RULES.md` |
 | Choosing testing tools/levels | `TESTING_SELECTION_RULES.md` |
+| How behavior is specified (Gherkin scenarios) | `GHERKIN_RULES.md` |
 | Security expectations | `SECURITY_RULES.md` |
 | Branching, commits, PRs | `GIT_WORKFLOW_RULES.md` |
 

@@ -33,7 +33,7 @@ Plan a feature: define its scope within the architecture, its design decisions, 
 
 - Define the feature's **scope and boundaries** (in/out).
 - Fit it to existing **architecture and patterns**.
-- Produce **tasks** (via `task-planning`) with acceptance criteria.
+- Produce **tasks** (via `task-planning`) with acceptance criteria written as Gherkin scenarios (`testing/gherkin-specifications`, `../../system/GHERKIN_RULES.md`) — including the required cases, one scenario each.
 - Attach a **testing plan** (`testing-strategy`) and **security requirements** (`security-review`) where relevant.
 - Record the feature work item and its status.
 

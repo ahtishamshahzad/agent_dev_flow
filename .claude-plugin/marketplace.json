@@ -1,7 +1,7 @@
 {
   "name": "agent_dev_flow",
-  "description": "The AI Engineering System — 174 reusable skills for planning and building software with AI agents, packaged as installable Claude Code plugins (one per skill pack). The canonical system lives in .ai/; these plugins expose its skills natively.",
-  "version": "1.0.0",
+  "description": "The AI Engineering System — 177 reusable skills for planning and building software with AI agents, packaged as installable Claude Code plugins (one per skill pack). The canonical system lives in .ai/; these plugins expose its skills natively.",
+  "version": "1.1.0",
   "owner": {
     "name": "ahtishamshahzad"
   },
@@ -44,7 +44,7 @@
     {
       "name": "ai-testing",
       "source": "./plugins/ai-testing",
-      "description": "Testing skills (14): tool selection, unit/integration/API/contract, E2E (Playwright/Maestro), regression/smoke/visual, test data & environments, coverage audits.",
+      "description": "Testing skills (15): Gherkin scenario specification, tool selection, unit/integration/API/contract, E2E (Playwright/Maestro), regression/smoke/visual, test data & environments, coverage audits.",
       "category": "engineering",
       "keywords": ["testing", "playwright", "maestro", "jest"]
     },

@@ -8,7 +8,7 @@ Break each generated phase into concrete, verifiable **tasks**. Tasks are the un
 - **Context** — the minimal background and links (not duplicated content).
 - **Inputs** — files, decisions, or prior tasks it depends on.
 - **Outputs** — the concrete artifacts it produces (files changed, docs, tests).
-- **Acceptance criteria** — how "done" is verified (observable, testable).
+- **Acceptance criteria** — how "done" is verified, written as **Gherkin scenarios** (`GHERKIN_RULES.md`): one behavior each, with observable outcomes. The scenario *is* the criterion — do not write it twice in two dialects.
 - **Required skills** — the loaded skill(s) for this task (`SKILL_SELECTION_RULES.md`).
 - **Risk / behavior impact** — low/medium/high; note if it changes product behavior.
 

@@ -2,6 +2,37 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] — 2026-09-08
+
+Additive: new rules, skills, and packaging around the 1.0.0 core. No breaking rule or structure changes.
+
+### Added — behavior specification
+
+- `.ai/system/GHERKIN_RULES.md` — the canonical **Gherkin contract** for every behavior this system specifies: one behavior per scenario, domain-level steps, strict Given/When/Then, observable outcomes, formatting and vocabulary rules, and the required-case set expressed one scenario at a time. Binding in every project; adopting a Cucumber-family runner stays a stack decision.
+- `skills/testing/gherkin-specifications` — applying that contract: writing and reviewing scenarios, covering the required cases separately, and mapping each scenario to one named test.
+- Wired through the flow: `TASK_GENERATION_RULES` (acceptance criteria *are* scenarios), `QUALITY_GATES` (Gates 4 and 5), `TESTING_SELECTION_RULES`, the testing pack index and its level/E2E skills, `web/playwright-e2e`, `mobile/mobile-maestro-e2e`, `testing-strategy`, `task-planning`, `feature-planning`, `bug-investigation`, the feature/bugfix/testing-audit workflows, `hooks/before-feature`, the FEATURE/TASK/BUG/TEST_PLAN templates, and the feature/bugfix/testing checklists.
+
+### Added — skills
+
+- `skills/application-documentation` — the product's `docs/` tree: a folder per app, an index per level, a file per screen/page/endpoint/job; with `templates/APP_DOC.md`.
+- `skills/auth-form-validation` — the credential input contract for login/signup/reset: one schema through the RHF resolver, re-enforced server-side, enumeration-safe copy.
+
+### Added — distribution
+
+- `bin/cli.js` — zero-dependency installer (`npx github:ahtishamshahzad/agent_dev_flow init`), copying `.ai/`, `AGENTS.md`, the usage guides, and the selected editor adapters. Installs nothing, selects no stack, creates no repository.
+- `scripts/validate.js` + `.github/workflows/validate.yml` — repo consistency checks (manifest/version sync, skill frontmatter, plugin symlinks, claimed skill counts, installer bundle completeness, relative-link resolution) and an installer smoke test in CI.
+- `plugins/` + `.claude-plugin/marketplace.json` — the eight skill packs as installable Claude Code plugins, each `skills/` a symlink to `.ai/skills/`, so there is still one source of truth.
+- `USAGE.md` (what to type, per editor), root `README.md`, `LICENSE` (MIT), and the `references/` topic folders the skills point at.
+
+### Changed
+
+- Skill counts corrected across `README.md`, `USAGE.md`, `.ai/README.md`, `.ai/skills/README.md`, `plugins/README.md`, and `marketplace.json` — several still claimed 174 after skills were added. The validator now covers the ones it can check.
+- Build-phase language dropped from the system docs; repository references renamed to `agent_dev_flow`.
+
+### Totals
+
+- 177 skills · 13 agents · 13 hooks · 12 workflows · 26 templates · 19 prompts · 18 checklists.
+
 ## [1.0.0] — 2026-07-17
 
 First complete release: the full tool-neutral operating system for planning and building software with AI agents. Governance and documentation only — no application code, no dependencies, no selected stack, no repository creation.

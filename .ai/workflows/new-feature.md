@@ -10,7 +10,7 @@
 
 - Plan: `../skills/feature-planning`, `../skills/task-planning`.
 - Build: the relevant domain skills for the feature's area (backend/web/mobile/database) — selectively.
-- Test/review: `../skills/testing-strategy` + the needed `../skills/testing/*`; `../skills/code-review` (+ `../skills/security-review` if sensitive).
+- Test/review: `../skills/testing/gherkin-specifications` (acceptance criteria and required cases as scenarios — `../system/GHERKIN_RULES.md`), `../skills/testing-strategy` + the needed `../skills/testing/*`; `../skills/code-review` (+ `../skills/security-review` if sensitive).
 
 ## Agents Involved
 

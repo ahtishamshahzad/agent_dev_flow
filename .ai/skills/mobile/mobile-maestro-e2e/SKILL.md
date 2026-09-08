@@ -29,6 +29,7 @@ Plan and structure Maestro end-to-end tests that exercise critical mobile user j
 
 ## Responsibilities
 
+- Take the journeys to be covered from their **Gherkin scenarios** (`../../testing/gherkin-specifications`) — one test per scenario, no parallel case list.
 - Identify the **critical-path flows** to automate (not all screens).
 - Define **Maestro flows** with stable selectors and clear assertions.
 - Plan **test data/auth** and environment for repeatable runs.

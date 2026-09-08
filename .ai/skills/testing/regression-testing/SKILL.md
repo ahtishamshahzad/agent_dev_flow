@@ -28,6 +28,7 @@ Stop fixed bugs from coming back and protect critical behaviors from silent brea
 
 ## Responsibilities
 
+- Take the behavior to be covered from its **Gherkin scenarios** (`gherkin-specifications`) — implement one test per scenario rather than inventing a parallel case list.
 - For each fixed bug, write a test that **reproduces it and fails on the unfixed code**, then passes with the fix — at the **lowest level** that captures it (unit if logic, integration if wiring, API if endpoint, E2E only if genuinely end-to-end).
 - Name the test for the bug/behavior it guards so a future failure is self-explaining.
 - **Maintain a regression suite** as part of the normal test suites (not a separate silo), run in CI on every change (`../../devops/ci-cd`) — a regression test that isn't run guards nothing.

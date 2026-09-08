@@ -27,6 +27,7 @@ Verify **critical mobile journeys** end-to-end on a device/emulator using **Maes
 
 ## Responsibilities
 
+- Take the behavior to be covered from its **Gherkin scenarios** (`gherkin-specifications`) — implement one test per scenario rather than inventing a parallel case list.
 - Cover **critical device journeys**: **happy path** through the real app, plus key **error** and **authorization-denied** variants at the journey level.
 - Define a **smoke set**: minimal, fast flows proving the build is fundamentally alive (launch → auth → primary screen) — run after builds/deploys (`smoke-testing`, `../../devops/production-readiness`).
 - Use Maestro's **resilient waiting** (element-based, not fixed sleeps); stable selectors (ids/accessibility labels — `../../mobile/mobile-accessibility`).

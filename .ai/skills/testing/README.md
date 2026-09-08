@@ -11,6 +11,11 @@ Testing skills select tools by project need (Playwright for web/dashboard E2E, M
 |-------|-------------|
 | [`testing-selection`](testing-selection/SKILL.md) | Choose test types + tools per application; adopt only what the project needs. |
 
+### Specification
+| Skill | Description |
+|-------|-------------|
+| [`gherkin-specifications`](gherkin-specifications/SKILL.md) | Write behavior as Gherkin scenarios — acceptance criteria and required cases, one behavior each, observable outcomes (`../../system/GHERKIN_RULES.md`). |
+
 ### Levels
 | Skill | Description |
 |-------|-------------|
@@ -44,6 +49,7 @@ Testing skills select tools by project need (Playwright for web/dashboard E2E, M
 
 | Situation | Load (only these) |
 |---|---|
+| Writing acceptance criteria / required cases | `gherkin-specifications` (always — the format is not optional) |
 | New project testing | `testing-selection` → the per-level skills the apps need |
 | Backend logic + API | `unit-testing` + `api-integration-testing` (+ `integration-testing`) |
 | Web app | `playwright-e2e` (critical journeys) + component tests (Testing Library) |
@@ -57,6 +63,7 @@ Testing skills select tools by project need (Playwright for web/dashboard E2E, M
 
 ## Dependency guidance (how testing skills relate)
 
+- **Specification first** (`gherkin-specifications`): the behavior is written as scenarios before the level is chosen — those scenarios are the acceptance criteria at Gate 4 and the cases every level skill below implements.
 - **Selection first** (`testing-selection`) drives which level skills and tools are used, and feeds `../devops/ci-cd` job generation.
 - **Levels layer**: unit → integration/API → E2E (few, critical); `contract-testing` guards cross-deploy boundaries.
 - **Data + environment** (`test-data-management`, `test-environment-management`) underpin every above-unit test; personas enable authorization-denial coverage.

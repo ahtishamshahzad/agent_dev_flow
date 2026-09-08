@@ -32,6 +32,7 @@ Generate the implementation plan: dependency-ordered dynamic phases and concrete
 
 - **Generate phases dynamically** from applications, dependencies, architecture, security, testing, deployment, and existing state.
 - Break each phase into **tasks**: title, context, inputs, outputs, acceptance criteria, required skills, risk.
+- Write each task's acceptance criteria as **Gherkin scenarios** (`../../system/GHERKIN_RULES.md`, `testing/gherkin-specifications`) — one behavior per scenario, observable outcomes. The scenario is the criterion; it is not restated in prose.
 - Order tasks by dependency; mark **parallel-safe** vs **same-file** tasks.
 - Attach an **exit gate** to each phase.
 - Record everything in `../../work-items/` and `../../projects/current/`.

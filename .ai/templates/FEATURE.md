@@ -28,12 +28,37 @@
 
 ## Test Plan
 
-- Required cases: happy · invalid input · error · **authorization denial** · regression.
+- Required cases: happy · invalid input · error · **authorization denial** · regression — **one scenario each**, below.
 - Levels/tools: <per `../skills/testing/testing-selection`>
+- Scenario → test mapping: <scenario title → test file/case, or "not yet automated">
 
 ## Acceptance Criteria
 
-- [ ] <Feature meets its goal, tested, reviewed, no creep>
+Written as Gherkin scenarios — one behavior each, observable outcomes (`../system/GHERKIN_RULES.md`, `../skills/testing/gherkin-specifications`). These scenarios *are* the criteria; do not restate them in prose.
+
+```gherkin
+Feature: <behavior area>
+  As a <role>
+  I want <goal>
+  So that <reason>
+
+  Scenario: <happy path>
+    Given <context>
+    When <action>
+    Then <observable outcome>
+
+  Scenario: <invalid input>
+    Given <context>
+    When <action with invalid input>
+    Then <observable rejection>
+
+  Scenario: <authorization denial>
+    Given <actor without the required permission>
+    When <the actor attempts the action>
+    Then <observable refusal>
+```
+
+- [ ] Every scenario above passes, is reviewed, and adds no scope beyond this work item.
 
 ## Related
 

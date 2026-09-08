@@ -30,6 +30,7 @@ Decide the testing levels and tools for a piece of work, sized to risk, and defi
 
 ## Responsibilities
 
+- Express what is being tested as **Gherkin scenarios** before choosing levels (`testing/gherkin-specifications`, `../../system/GHERKIN_RULES.md`) — the scenario set is the coverage definition, not a separate document.
 - Choose **levels**: unit · integration · E2E · contract · regression.
 - Choose **tools** per application (Jest · Vitest · Supertest · Playwright · Maestro · RNTL), aligned to the stack.
 - Prioritize the **critical path**; record deferred coverage.
@@ -79,7 +80,7 @@ A recorded testing plan: levels, tools, critical-path coverage, regression tests
 
 ## Related Skills
 
-`feature-planning`, `bug-investigation`, `refactor-planning`, `migration-planning`, `code-review`, `stack-recommendation`, `project-orchestrator`.
+`testing/gherkin-specifications`, `feature-planning`, `bug-investigation`, `refactor-planning`, `migration-planning`, `code-review`, `stack-recommendation`, `project-orchestrator`.
 
 ## Related Knowledge
 

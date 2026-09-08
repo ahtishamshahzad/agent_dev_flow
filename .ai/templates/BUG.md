@@ -25,6 +25,15 @@
 
 ## Regression Test
 
+Specified as a scenario — the reproduction as `Given`/`When`, the correct behavior as an observable `Then` (`../system/GHERKIN_RULES.md`):
+
+```gherkin
+Scenario: <the behavior that was broken, stated correctly>
+  Given <the state that triggered the bug>
+  When <the action that exposed it>
+  Then <the observable correct outcome>
+```
+
 - **Level:** unit | integration | api | e2e (lowest that captures it)
 - **Fails before fix / passes after:** [ ] confirmed
 - **Security regression (if vuln):** <`../skills/security/security-regression-testing`>

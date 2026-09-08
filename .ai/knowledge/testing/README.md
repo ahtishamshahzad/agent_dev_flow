@@ -27,6 +27,7 @@
 ## How skills reference this
 
 - `../../skills/testing/*` link here for tool-version-sensitive knowledge and reusable flakiness patterns.
+- `../../skills/testing/gherkin-specifications` links here for the project's scenario vocabulary decisions; the format contract itself is canonical in `../../system/GHERKIN_RULES.md`.
 
 ## Index
 
