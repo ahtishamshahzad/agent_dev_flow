@@ -29,6 +29,7 @@ Decide the **test types and tools** for the project from its actual applications
 
 ## Responsibilities
 
+- Take the behavior to be covered from its **Gherkin scenarios** (`gherkin-specifications`) — implement one test per scenario rather than inventing a parallel case list.
 - Map each application to its **levels + tools**, adopting **only what's needed**:
   - **Unit + integration logic** → **Jest or Vitest** (one, per stack convention — Vitest for Vite/modern TS, Jest where established); pure logic, services, reducers, hooks.
   - **Backend API integration** → **Supertest** (real HTTP against the app + real DB) — pairs with `../../backend/backend-integration-testing`.

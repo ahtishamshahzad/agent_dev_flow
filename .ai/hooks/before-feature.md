@@ -17,7 +17,8 @@ Before starting implementation of a feature/task (`../system/ORCHESTRATION_WORKF
 - [ ] The feature fits the approved architecture (no unresolved design).
 - [ ] Only the relevant skills are loaded (`../system/SKILL_SELECTION_RULES.md`); scope is bounded (no creep).
 - [ ] If parallel: this agent's file scope is **disjoint** from others; shared contracts are defined first (`../agents/multi-agent-execution.md`).
-- [ ] Test approach for the required cases is known (happy, invalid input, error, authorization denial, regression).
+- [ ] Test approach for the required cases is known (happy, invalid input, error, authorization denial, regression), each written as its **own Gherkin scenario** (`../system/GHERKIN_RULES.md`).
+- [ ] Acceptance criteria exist as approved scenarios — implementation targets those, not a reinterpretation of them.
 
 ## Failure Conditions
 

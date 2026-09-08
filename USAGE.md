@@ -210,7 +210,7 @@ More starters: [`.ai/prompts/`](.ai/prompts/README.md).
 | Path | Holds |
 |------|-------|
 | `.ai/system/` | Non-negotiable rules — gates, orchestration, security, git, context budget |
-| `.ai/skills/` | 174 capability modules, indexed in [`.ai/skills/README.md`](.ai/skills/README.md) |
+| `.ai/skills/` | 177 capability modules, indexed in [`.ai/skills/README.md`](.ai/skills/README.md) |
 | `.ai/workflows/` | One per request type (new project, existing project, bugfix, release, …) |
 | `.ai/agents/` | 13 roles for multi-agent runs |
 | `.ai/hooks/` · `.ai/checklists/` | Tool-neutral lifecycle gates and verifiable checks |

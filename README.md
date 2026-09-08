@@ -12,7 +12,7 @@ It is **documentation and governance**, not application code: no dependencies, n
 
 | Layer | Count | Where |
 |-------|-------|-------|
-| **Skills** (reusable capability modules) | **176** | [`.ai/skills/`](.ai/skills/README.md) |
+| **Skills** (reusable capability modules) | **177** | [`.ai/skills/`](.ai/skills/README.md) |
 | **Agents** (roles for multi-agent runs) | 13 | [`.ai/agents/`](.ai/agents/README.md) |
 | **Hooks** (tool-neutral lifecycle checklists) | 13 | [`.ai/hooks/`](.ai/hooks/README.md) |
 | **Workflows** (per request type) | 12 | [`.ai/workflows/`](.ai/workflows/README.md) |
@@ -20,7 +20,7 @@ It is **documentation and governance**, not application code: no dependencies, n
 | **Prompts** (tool-neutral starters) | 19 | [`.ai/prompts/`](.ai/prompts/README.md) |
 | **Checklists** (verifiable gate/hook checks) | 18 | [`.ai/checklists/`](.ai/checklists/README.md) |
 
-Skills are organized into **8 packs**: core (27), mobile (36), web & dashboard (26), backend (30), database (15), testing (14), devops (16), security (12). Plus system rules, knowledge, memory, and references — all in [`.ai/`](.ai/README.md).
+Skills are organized into **8 packs**: core (27), mobile (36), web & dashboard (26), backend (30), database (15), testing (15), devops (16), security (12). Plus system rules, knowledge, memory, and references — all in [`.ai/`](.ai/README.md).
 
 ## Install
 

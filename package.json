@@ -1,6 +1,6 @@
 {
   "name": "agentflow",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Tool-neutral operating system for planning and building software with AI agents. Installs a canonical .ai/ directory plus thin editor adapters (Claude Code, Cursor, Windsurf, Copilot, Codex).",
   "bin": {
     "agentflow": "bin/cli.js"

@@ -17,11 +17,11 @@ Gates are **mandatory checkpoints**. A phase cannot move forward when its requir
 **Blocks:** phase/task generation from proceeding on an unresolved architecture.
 
 ### Gate 4 — Implementation readiness
-**Passes when:** phases are generated dynamically (`PHASE_GENERATION_RULES.md`), tasks are defined with acceptance criteria (`TASK_GENERATION_RULES.md`), relevant skills are selected, **and the user approves**.
+**Passes when:** phases are generated dynamically (`PHASE_GENERATION_RULES.md`), tasks are defined with acceptance criteria written as Gherkin scenarios (`TASK_GENERATION_RULES.md`, `GHERKIN_RULES.md`), relevant skills are selected, **and the user approves**.
 **Blocks:** all coding until approved. *(This is a user-approval gate.)*
 
 ### Gate 5 — Testing
-**Passes when:** the testing strategy (`TESTING_SELECTION_RULES.md`) is applied, required tests exist and pass (or unrun checks are explicitly flagged), and acceptance criteria are met.
+**Passes when:** the testing strategy (`TESTING_SELECTION_RULES.md`) is applied, required tests exist and pass (or unrun checks are explicitly flagged), each approved scenario maps to a named test (`GHERKIN_RULES.md`), and acceptance criteria are met.
 **Blocks:** review/release on failing or missing required tests.
 
 ### Gate 6 — Security & quality review

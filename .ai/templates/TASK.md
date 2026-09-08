@@ -18,8 +18,17 @@
 
 ## Acceptance Criteria
 
-- [ ] <Observable, testable condition 1>
-- [ ] <Required test cases where applicable: happy / invalid input / error / authorization denial / regression>
+Gherkin scenarios — one behavior each, observable `Then` (`../system/GHERKIN_RULES.md`). The scenario is the criterion.
+
+```gherkin
+Scenario: <single behavior this task delivers>
+  Given <context>
+  When <action>
+  Then <observable outcome>
+```
+
+- [ ] Each scenario above passes at the level chosen in the test plan.
+- [ ] Required cases covered where applicable, one scenario each: happy · invalid input · error · authorization denial · regression.
 
 ## File Ownership (scope)
 

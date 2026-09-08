@@ -10,6 +10,12 @@ Choose testing **levels and tools** per application and per change — proportio
 - **Contract** — API request/response shapes between client and server.
 - **Regression** — a test that pins a fixed bug so it can't return.
 
+## Scenario format (not a tool choice)
+
+Behavior is specified as **Gherkin scenarios** — one behavior per scenario, domain-level steps, observable outcomes — per `GHERKIN_RULES.md`. That is the writing contract for acceptance criteria and required cases, and it holds in every project regardless of runner.
+
+Adopting a Cucumber-family runner is a separate **stack decision** (`STACK_DECISION_RULES.md`). Without one, the scenarios still exist — in the work item — and the chosen framework implements them one test per scenario (`../skills/testing/gherkin-specifications`).
+
 ## Tool options (decision space, not defaults)
 
 | Area | Options |

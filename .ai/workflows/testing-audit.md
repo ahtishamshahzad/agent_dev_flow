@@ -8,7 +8,7 @@
 
 ## Skills Required
 
-`../skills/testing-strategy` + `../skills/testing/*` (test-coverage-audit, testing-selection, unit/integration/api-integration/contract, playwright/maestro, regression/smoke, flaky-test-audit, test-data/environment-management), `../skills/existing-project-audit` for context.
+`../skills/testing-strategy` + `../skills/testing/*` (gherkin-specifications, test-coverage-audit, testing-selection, unit/integration/api-integration/contract, playwright/maestro, regression/smoke, flaky-test-audit, test-data/environment-management), `../skills/existing-project-audit` for context.
 
 ## Agents Involved
 

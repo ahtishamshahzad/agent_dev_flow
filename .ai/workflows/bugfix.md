@@ -8,7 +8,7 @@
 
 ## Skills Required
 
-`../skills/bug-investigation`, `../skills/testing/regression-testing` (+ `../skills/security/security-regression-testing` if security-relevant), the relevant domain skill for the fix area, `../skills/code-review`.
+`../skills/bug-investigation`, `../skills/testing/regression-testing` (+ `../skills/security/security-regression-testing` if security-relevant), `../skills/testing/gherkin-specifications` (the regression scenario), the relevant domain skill for the fix area, `../skills/code-review`.
 
 ## Agents Involved
 

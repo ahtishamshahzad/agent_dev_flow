@@ -27,6 +27,7 @@ Test units of logic in isolation — fast, deterministic, independent of network
 
 ## Responsibilities
 
+- Take the behavior to be covered from its **Gherkin scenarios** (`gherkin-specifications`) — implement one test per scenario rather than inventing a parallel case list.
 - Cover, per unit, the **required cases**: **happy path**, **invalid input** (bad types, out-of-range, empty, boundary), and **error path** (dependency throws, precondition fails) — error behavior is logic, not an afterthought.
 - Isolate with focused doubles at **owned boundaries** (repository/provider interfaces); don't mock deep internals or the framework.
 - Keep tests **deterministic**: fake clock, seeded/injected randomness and IDs, no real I/O, no order dependence.

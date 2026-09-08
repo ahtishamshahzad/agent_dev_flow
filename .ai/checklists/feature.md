@@ -4,7 +4,7 @@
 
 ## Pass Criteria
 
-- [ ] Gate 4 approved: tasks with acceptance criteria; fits existing architecture.
+- [ ] Gate 4 approved: tasks with acceptance criteria **written as Gherkin scenarios** (`../system/GHERKIN_RULES.md`); fits existing architecture.
 - [ ] Implemented **within the assigned scope**; no scope creep; cross-scope changes routed through the orchestrator.
 - [ ] Everything enforced server-side; client checks are UX.
 - [ ] **Required cases covered:** happy · invalid input · error · **authorization denial** · regression.

@@ -32,7 +32,7 @@ Diagnose a defect and plan its fix without regressing behavior: reproduce it, fi
 - **Reproduce** reliably (or document why not, with evidence).
 - Find the **root cause** — the actual mechanism, not the surface symptom.
 - Plan a **minimal, behavior-preserving fix** (except for the defect).
-- Add a **regression test** that fails before and passes after.
+- Add a **regression test** that fails before and passes after, specified as a Gherkin scenario stating the reproduction and the observable correct outcome (`testing/gherkin-specifications`).
 - Plan **validation** in the relevant build/environment.
 
 ## Required Workflow
