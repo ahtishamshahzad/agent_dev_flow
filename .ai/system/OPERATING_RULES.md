@@ -11,7 +11,8 @@ The non-negotiable rules that govern every request handled through this system. 
 ## 2. Plan before code — gates are mandatory
 
 - No application code, dependency install, or stack commitment happens before the planning gates are approved (see `QUALITY_GATES.md`).
-- The required sequence before implementation: classify → analyze → (audit if existing) → ask missing questions → select applications → recommend stack → **user approval** → architecture → select skills → generate phases → generate tasks → **user approval**.
+- The required sequence before implementation: classify → analyze → (audit if existing) → ask missing questions → **specify the behavior change in Gherkin** → select applications → recommend stack → **user approval** → architecture → select skills → generate phases → generate tasks → **user approval**.
+- **No behavior change without an approved Gherkin specification** (`GHERKIN_RULES.md` — mandatory policy and its exceptions). When unsure whether behavior changes, specify it.
 - If a gate's inputs are unresolved, stop and resolve them. Do not "proceed to be helpful."
 
 ## 3. Classify every request first

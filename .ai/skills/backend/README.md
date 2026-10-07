@@ -60,6 +60,7 @@ Backend skills evaluate requirements rather than apply universal defaults (Expre
 | [`realtime-communication`](realtime-communication/SKILL.md) | Polling vs SSE vs WebSockets; socket auth, channel authorization, reconnect recovery, fan-out. |
 | [`webhooks`](webhooks/SKILL.md) | Inbound: verify/ack/process-async/dedupe. Outbound: sign/retry/track. |
 | [`third-party-integrations`](third-party-integrations/SKILL.md) | Provider isolation, timeouts/retries/breakers, error mapping, sandbox separation. |
+| [`payments-subscriptions`](payments-subscriptions/SKILL.md) | Checkout, subscriptions, seats, proration, dunning, entitlements from verified provider events; no double charges. |
 | [`email-notifications`](email-notifications/SKILL.md) | Transactional email: templates, async sends, deliverability, suppression, abuse-safe triggers. |
 
 ### Cross-Cutting Quality
@@ -89,6 +90,7 @@ Backend skills evaluate requirements rather than apply universal defaults (Expre
 | Async work | `background-jobs` → `queues` / `scheduled-jobs` |
 | Live updates | `realtime-communication` |
 | External services | `third-party-integrations` (+ `webhooks`, `email-notifications`) |
+| Payments / subscriptions | `payments-subscriptions` (+ `webhooks`, `../database/transactions`) |
 | Hardening | `backend-security` → `../security-review` |
 | Diagnosing slowness | `backend-performance` (+ `../database/database-performance`) |
 | Testing | `backend-unit-testing` / `backend-integration-testing` |

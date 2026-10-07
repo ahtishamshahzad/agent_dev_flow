@@ -1,21 +1,22 @@
 ---
 name: gherkin-specifications
-description: Use to write and review behavior specifications as Gherkin scenarios — acceptance criteria, required cases, and *.feature files — so one behavior per scenario, domain-level steps, and observable outcomes. Applies the canonical contract in system/GHERKIN_RULES.md; a Cucumber-family runner is a stack decision, the scenario format is not optional.
+description: Use before designing or coding any behavior change — features, bug fixes, API, UI, mobile, auth, payments, AI — to write the Gherkin scenarios that are its mandatory, approved behavioral contract (system/GHERKIN_RULES.md), then keep them as permanent regression coverage.
 ---
 
 # Gherkin Specifications
 
 ## Purpose
 
-Turn a behavior into a **concrete example a stakeholder can read and an agent can execute**. Scenarios written here are the acceptance criteria at Gate 4 and the required-case list at Gate 5 — the same text, not a restatement. The contract they must satisfy is canonical in `../../../system/GHERKIN_RULES.md`; this skill is how it is applied, reviewed, and kept alive.
+Turn a behavior into a **concrete example a stakeholder can read and an agent can execute**, before anyone designs or builds it. Scenarios written here are what the user approves at Gate 2, the acceptance criteria at Gate 4, the required-case list at Gate 5, and the release-blocking checks at Gate 7 — the same text, not a restatement. **Mandatory for every behavior change** (policy and exceptions: `../../../system/GHERKIN_RULES.md` §Mandatory policy). Gherkin says what the system must do; tests are the evidence that it does. The contract they must satisfy is canonical in `../../../system/GHERKIN_RULES.md`; this skill is how it is applied, reviewed, and kept alive.
 
 Format only — *which* levels and tools run the scenarios is `testing-selection` and `../../testing-strategy`.
 
 ## When to Use
 
-- Writing **acceptance criteria** for a feature, task, bug, or refactor's behavior guarantee.
+- **Any behavior change, before design** — the behavior-specification stage of every new project, enhancement, and feature.
+- **Every bug** — the regression scenario that fails today and stays forever.
 - Defining the **required cases** on a critical behavior (happy · invalid input · error · authorization denial · regression · environment validation).
-- Authoring or reviewing **`*.feature` files** when the approved stack includes a Cucumber-family runner.
+- Authoring or reviewing **`features/**/*.feature` files** — they exist whether or not a Cucumber-family runner is used.
 - Reviewing scenarios that have drifted into UI scripts, or that assert "it works".
 - **Not** for choosing test levels/tools (`testing-selection`), and not a reason to add a BDD runner to a project that never asked for one (`../../../system/STACK_DECISION_RULES.md`).
 
@@ -46,16 +47,31 @@ Format only — *which* levels and tools run the scenarios is `testing-selection
 
 ## Required Workflow
 
-1. State the behavior area and write the `Feature:` title plus its user story.
-2. Identify the actors, the starting states, and the observable outcomes.
-3. Write the happy-path scenario first — the shortest complete example.
-4. Add one scenario per remaining required case (invalid input, error, authorization denial, environment validation; regression when fixing a bug).
-5. Collapse only genuine input variations of the *same* behavior into a `Scenario Outline`.
-6. Review against the checklist in `../../../system/GHERKIN_RULES.md`.
-7. Map each scenario to its test at the chosen level; record which are automated and which stay documentation for now.
+1. **Does this change observable behavior?** No (formatting, renames, proven zero-change refactor) → record why and stop. Yes or unsure → continue.
+2. **Find the existing scenarios** in `features/<area>/` — update them before adding new ones; conflicting duplicates are worse than none.
+3. Answer: what changes · who is affected · success · failure · edge cases · what must stay unchanged.
+4. State the behavior area; write the `Feature:` title and its user story.
+5. Write the happy-path scenario first — the shortest complete example.
+6. Add one scenario per required case, then walk the edge cases that apply: empty · missing · invalid · minimum/maximum · duplicate (idempotency) · expired · unauthenticated · unauthorized · concurrent · offline · timeout · external service down.
+7. Collapse only genuine input variations of the *same* behavior into a `Scenario Outline`. Tag by behavior; mark release-blocking ones `@critical`.
+8. Check structure with `agentflow gherkin validate`, then the checklist in `../../../system/GHERKIN_RULES.md`.
+9. Present for approval (Gate 2), save to `features/<area>/<behavior>.feature`, and later map each scenario to its test at the chosen level.
+
+### Writing for each kind of behavior
+
+| Behavior | Specify | Not |
+|---|---|---|
+| API | Who may call it; success response; validation and error responses; idempotency; pagination/filtering; ownership; state transitions | Every unit-level assertion |
+| UI / mobile | What the user sees and can do; offline, pending-sync, and failure states | `component X calls function Y` |
+| Security | Denials by actor (cross-user, cross-tenant, expired token, role escalation) | That it "is secure" — scenarios state expectations, tests and review provide evidence |
+| Integrations, jobs, webhooks | Retries, duplicates, out-of-order events, provider down | Queue internals |
+| AI features | Grounded answers, refusing out-of-scope requests, "I don't know" over fabrication, tool and model failure, human approval | Exact wording — the model is probabilistic; verify by repeated runs, never claim determinism |
+
+Examples of each: `examples/gherkin/` in the AgentFlow repository.
 
 ## Decision Rules
 
+- **Behavior first.** No design or code for a behavior change until its scenarios are approved; behavior discovered mid-build that no scenario covers stops for classification (`../../../system/GHERKIN_RULES.md`, scope control).
 - **One behavior per scenario.** Two `When`s, or a second concern, means two scenarios.
 - **State over navigation** unless the navigation path is the behavior being specified.
 - **`Scenario` over `Scenario Outline`** unless the inputs materially vary the same behavior.
@@ -82,9 +98,15 @@ Format only — *which* levels and tools run the scenarios is `testing-selection
 - A `Scenario Outline` with twenty rows and no distinct behavioral value.
 - Feature files kept as decoration while the real coverage lives somewhere else and disagrees.
 - Adding Cucumber to a project because scenarios were written.
+- Happy-path-only specifications.
+- Deleting a regression scenario when its bug closes.
+- Gherkin for a variable rename or an extracted helper.
 
 ## Validation Checklist
 
+- [ ] Written before design; approved at Gate 2 (or the bug-fix exception applies).
+- [ ] `agentflow gherkin validate` reports no errors.
+- [ ] Negative and edge cases present, not only the happy path.
 - [ ] One `Feature` per file; kebab-case name aligned with the title; user story present.
 - [ ] Each scenario specifies one behavior and runs independently.
 - [ ] Required cases each have their own scenario, including authorization denial.

@@ -38,11 +38,12 @@ Diagnose a defect and plan its fix without regressing behavior: reproduce it, fi
 ## Required Workflow
 
 1. Gather symptoms + environment; confirm the bug has its `BUG-NNN` record and is not a duplicate (`project-management` intake).
-2. Reproduce (record the repro).
-3. Trace to root cause.
-4. Plan the minimal fix + regression test.
-5. Define validation steps.
-6. Record the bug work item (P0–P3 priority, repro, cause, fix, test) and hand back to `project-management` to schedule the fix task and update the ledger.
+2. State the expected behavior: find the existing scenarios for the area (`features/`); if none covers it, write one (`../../system/GHERKIN_RULES.md`).
+3. Reproduce (record the repro) and compare expected vs actual. Write the **regression scenario** — it must fail on the current code.
+4. Trace to root cause — the fix must explain why the scenario failed.
+5. Plan the minimal fix + the regression test that implements the scenario; the scenario stays in `features/` permanently, tagged `@regression @bug-NNN`.
+6. Define validation steps, including the regression suite.
+7. Record the bug work item (P0–P3 priority, repro, cause, fix, test) and hand back to `project-management` to schedule the fix task and update the ledger.
 
 ## Decision Rules
 

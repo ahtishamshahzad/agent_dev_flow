@@ -14,7 +14,7 @@ On a tracked project, whatever you run is recorded by [`project-management`](pro
 | Decide which apps and which stack | [`application-selection`](application-selection/SKILL.md) → [`stack-recommendation`](stack-recommendation/SKILL.md) |
 | Design the architecture or repo layout | [`architecture-design`](architecture-design/SKILL.md), [`repository-architecture`](repository-architecture/SKILL.md) |
 | Break work into phases and tasks | [`task-planning`](task-planning/SKILL.md) |
-| Plan a feature | [`feature-planning`](feature-planning/SKILL.md) |
+| Plan a feature | [`gherkin-specifications`](testing/gherkin-specifications/SKILL.md) (behavior first) → [`feature-planning`](feature-planning/SKILL.md) |
 | Track weeks, bugs, status, reports, change requests | [`project-management`](project-management/SKILL.md) |
 | Refactor or migrate safely | [`refactor-planning`](refactor-planning/SKILL.md), [`migration-planning`](migration-planning/SKILL.md) |
 
@@ -29,7 +29,7 @@ On a tracked project, whatever you run is recorded by [`project-management`](pro
 | Design the database | [`database-selection`](database/database-selection/SKILL.md) → [`relational-schema-design`](database/relational-schema-design/SKILL.md) or [`document-schema-design`](database/document-schema-design/SKILL.md) |
 | Add login and signup | [`backend-authentication`](backend/backend-authentication/SKILL.md), [`web-authentication`](web/web-authentication/SKILL.md) / [`mobile-authentication`](mobile/mobile-authentication/SKILL.md), [`auth-form-validation`](auth-form-validation/SKILL.md) |
 | Add roles and permissions | [`role-permission-design`](backend/role-permission-design/SKILL.md), [`ownership-authorization`](backend/ownership-authorization/SKILL.md) |
-| Add payments or subscriptions | No dedicated skill yet — [`third-party-integrations`](backend/third-party-integrations/SKILL.md) + [`webhooks`](backend/webhooks/SKILL.md), with [`transactions`](database/transactions/SKILL.md) |
+| Add payments or subscriptions | [`payments-subscriptions`](backend/payments-subscriptions/SKILL.md) (+ [`webhooks`](backend/webhooks/SKILL.md), [`transactions`](database/transactions/SKILL.md)) |
 | Upload files, images, video | [`file-storage`](backend/file-storage/SKILL.md), [`mobile-file-upload`](mobile/mobile-file-upload/SKILL.md), [`mobile-camera-media`](mobile/mobile-camera-media/SKILL.md) |
 | Send email or push notifications | [`email-notifications`](backend/email-notifications/SKILL.md), [`mobile-notifications`](mobile/mobile-notifications/SKILL.md) |
 | Run background or scheduled work | [`background-jobs`](backend/background-jobs/SKILL.md), [`queues`](backend/queues/SKILL.md), [`scheduled-jobs`](backend/scheduled-jobs/SKILL.md) |
@@ -41,9 +41,9 @@ On a tracked project, whatever you run is recorded by [`project-management`](pro
 | I want to… | Start with |
 |---|---|
 | Decide what and how to test | [`testing-strategy`](testing-strategy/SKILL.md) → [`testing-selection`](testing/testing-selection/SKILL.md) |
-| Write acceptance criteria as scenarios | [`gherkin-specifications`](testing/gherkin-specifications/SKILL.md) |
+| Specify behavior before building — BDD, acceptance criteria, user stories, acceptance tests | [`gherkin-specifications`](testing/gherkin-specifications/SKILL.md) — mandatory for every behavior change |
 | End-to-end test a web or mobile app | [`playwright-e2e`](testing/playwright-e2e/SKILL.md), [`maestro-e2e`](testing/maestro-e2e/SKILL.md) |
-| Pin a fixed bug | [`regression-testing`](testing/regression-testing/SKILL.md) |
+| Pin a fixed bug (regression scenario + test) | [`gherkin-specifications`](testing/gherkin-specifications/SKILL.md) → [`regression-testing`](testing/regression-testing/SKILL.md) |
 | Find what's under-tested or flaky | [`test-coverage-audit`](testing/test-coverage-audit/SKILL.md), [`flaky-test-audit`](testing/flaky-test-audit/SKILL.md) |
 
 ## Review and secure
@@ -51,7 +51,7 @@ On a tracked project, whatever you run is recorded by [`project-management`](pro
 | I want to… | Start with |
 |---|---|
 | Review a change | [`code-review`](code-review/SKILL.md) |
-| Fix a bug | [`project-management`](project-management/SKILL.md) (intake) → [`bug-investigation`](bug-investigation/SKILL.md) |
+| Fix a bug | [`project-management`](project-management/SKILL.md) (intake) → [`bug-investigation`](bug-investigation/SKILL.md) (regression scenario first) |
 | Check security | [`security-review`](security-review/SKILL.md), [`threat-modeling`](security/threat-modeling/SKILL.md) |
 | Check access control (IDOR, escalation) | [`authorization-security`](security/authorization-security/SKILL.md) |
 | Stop abuse (bots, brute force, spam) | [`abuse-prevention`](security/abuse-prevention/SKILL.md), [`rate-limiting`](backend/rate-limiting/SKILL.md) |

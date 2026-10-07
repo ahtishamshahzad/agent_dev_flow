@@ -2,7 +2,7 @@
 
 [![validate](https://github.com/ahtishamshahzad/agent_dev_flow/actions/workflows/validate.yml/badge.svg)](https://github.com/ahtishamshahzad/agent_dev_flow/actions/workflows/validate.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**An operating system for AI-assisted software engineering.** It makes a coding agent work like a disciplined engineering team: classify the request, understand it, plan it, get your approval, then build, test, review, secure, release — and track it week by week. It is not a prompt collection: it is rules, gates, 178 skills, and a project record your agent reads and writes inside your repo.
+**An operating system for AI-assisted software engineering.** It makes a coding agent work like a disciplined engineering team: classify the request, understand it, plan it, get your approval, then build, test, review, secure, release — and track it week by week. It is not a prompt collection: it is rules, gates, a library of focused skills, and a project record your agent reads and writes inside your repo.
 
 ```bash
 npx github:ahtishamshahzad/agent_dev_flow init      # adds .ai/ + your editor's adapter to a project
@@ -10,7 +10,7 @@ npx github:ahtishamshahzad/agent_dev_flow init      # adds .ai/ + your editor's 
 
 Then, in your agent: *"Use the project-orchestrator skill. This is a new project: <what you want>. Do not implement code."* It stops twice for your approval before writing any code.
 
-> Version **1.3.0** · MIT · Node 18+ for the installer · Full guide: [`.ai/README.md`](.ai/README.md)
+> Version **1.4.0** · MIT · Node 18+ for the installer · Full guide: [`.ai/README.md`](.ai/README.md)
 
 **Names:** *AgentFlow* is the product and the `agentflow` installer. The *AI Engineering System* is what it installs — the canonical `.ai/` directory. `agent_dev_flow` is this repository.
 
@@ -21,23 +21,42 @@ flowchart TD
     R(["Your request"]) --> C["Classify the request"]
     C --> Q["Requirements: confirmed, assumptions, questions"]
     Q --> A{"Existing code?"}
-    A -- yes --> AU["Audit the repository"] --> S
-    A -- no --> S["Select applications"]
+    A -- yes --> AU["Audit the repository"] --> B
+    A -- no --> B["Behavior spec: Gherkin scenarios, success + failure + edge cases"]
+    B --> S["Select applications"]
     S --> ST["Recommend stack, with alternatives"]
-    ST --> G1{{"GATE 1: you approve apps + stack"}}
-    G1 --> AR["Architecture"]
-    AR --> P["Dynamic phases, then tasks with acceptance criteria"]
-    P --> G2{{"GATE 2: you approve phases + tasks"}}
+    ST --> G1{{"Gate 2: you approve behavior + apps + stack"}}
+    G1 --> AR["Architecture, designed from the scenarios"]
+    AR --> P["Dynamic phases, then tasks naming their scenarios"]
+    P --> G2{{"Gate 4: you approve phases + tasks"}}
     G2 --> T["Track: roadmap, IDs, weekly plan"]
     T --> M{"Independent parts?"}
     M -- "no (default)" --> SA["Single agent"]
-    M -- yes --> PA["Contracts, file ownership, parallel agents, sync, integration review"]
-    SA --> TE["Test"]
+    M -- yes --> PA["Shared scenarios + contracts, file ownership, parallel agents, sync, integration review"]
+    SA --> TE["Test: every scenario has a passing test, then regression suite"]
     PA --> TE
-    TE --> CR["Code review"] --> SR["Security review"] --> RL{{"Release: needs your approval"}}
-    T -. "new request mid-build" .-> SC{"Changes approved scope?"}
-    SC -- "yes: SCOPE CHANGE" --> G2
+    TE --> CR["Code review"] --> SR["Security review"] --> RL{{"Release: @critical scenarios verified, your approval"}}
+    T -. "behavior no scenario covers" .-> SC{"Changes approved scope?"}
+    SC -- "yes: SCOPE CHANGE" --> G1
 ```
+
+### Behavior-driven development
+
+AgentFlow uses **Gherkin as the behavioral contract** across the whole lifecycle — not as a test format bolted on at the end:
+
+```
+Requirement → Gherkin scenarios (approved) → Architecture → Tasks → Implementation → Tests → Regression → Release
+```
+
+- **Before any behavior change**, the agent finds the existing scenarios, updates or writes them — success, failure, and the edge cases that matter — and you approve them before anything is designed.
+- **Architecture is designed from them**: an offline scenario forces local storage, sync, and idempotency into the design.
+- **Every scenario maps to a test that passes.** Gherkin says what the system must do; tests are the evidence. Writing a scenario proves nothing on its own.
+- **Every bug leaves a regression scenario** that failed before the fix and stays forever.
+- **Behavior no scenario covers is a scope question**, not a coding decision; parallel agents all build against the same approved scenarios.
+- **`@critical` scenarios block the release** until verified.
+- Not for renames, formatting, or refactors proven to change nothing.
+
+`npx github:ahtishamshahzad/agent_dev_flow gherkin validate` lints a project's `features/` against the contract. Policy: [`.ai/system/GHERKIN_RULES.md`](.ai/system/GHERKIN_RULES.md) · Examples: [`examples/gherkin/`](examples/gherkin/README.md).
 
 ### Works with
 
@@ -62,7 +81,7 @@ Skills load one at a time, only when needed. What stays in context every turn is
 
 | Layer | Count | Where |
 |-------|-------|-------|
-| **Skills** (reusable capability modules) | **178** | [`.ai/skills/`](.ai/skills/README.md) |
+| **Skills** (reusable capability modules) | **179** | [`.ai/skills/`](.ai/skills/README.md) |
 | **Agents** (roles for multi-agent runs) | 13 | [`.ai/agents/`](.ai/agents/README.md) |
 | **Hooks** (tool-neutral lifecycle checklists) | 13 | [`.ai/hooks/`](.ai/hooks/README.md) |
 | **Workflows** (per request type) | 12 | [`.ai/workflows/`](.ai/workflows/README.md) |
@@ -70,7 +89,7 @@ Skills load one at a time, only when needed. What stays in context every turn is
 | **Prompts** (tool-neutral starters) | 19 | [`.ai/prompts/`](.ai/prompts/README.md) |
 | **Checklists** (verifiable gate/hook checks) | 18 | [`.ai/checklists/`](.ai/checklists/README.md) |
 
-Skills are organized into **8 packs**: core (28), mobile (36), web & dashboard (26), backend (30), database (15), testing (15), devops (16), security (12). Plus system rules, knowledge, memory, and references — all in [`.ai/`](.ai/README.md).
+Skills are organized into **8 packs**: core (28), mobile (36), web & dashboard (26), backend (31), database (15), testing (15), devops (16), security (12). Plus system rules, knowledge, memory, and references — all in [`.ai/`](.ai/README.md).
 
 **Find a skill by what you want to do:** [`.ai/skills/SKILLS_INDEX.md`](.ai/skills/SKILLS_INDEX.md) — "I want to add login", "…design the database", "…set up CI".
 

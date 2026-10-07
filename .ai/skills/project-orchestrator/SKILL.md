@@ -37,10 +37,11 @@ Ask only what blocks a correct plan:
 2. **Inspect provided files and repository** (delegate to `existing-project-audit` when a codebase exists).
 3. **Extract requirements** (delegate to `requirements-analysis`).
 4. **Separate confirmed facts, assumptions, and questions** — keep these three lists explicit.
+4a. **Specify the behavior change in Gherkin** (delegate to `testing/gherkin-specifications`; contract `../../system/GHERKIN_RULES.md`). Does this change observable behavior? Yes or unsure → find existing scenarios, update or add them. No → record why and skip.
 5. **Determine required applications** (delegate to `application-selection`).
 6. **Recommend stack and alternatives** (delegate to `stack-recommendation`).
-7. **Wait for approval** — Gate 2 (`../../system/QUALITY_GATES.md`).
-8. **Design architecture** (delegate to `architecture-design`, `repository-architecture`).
+7. **Wait for approval** — Gate 2 (`../../system/QUALITY_GATES.md`): the scenarios, plus apps and stack when they change. It fires for every behavior change.
+8. **Design architecture** from the approved scenarios (delegate to `architecture-design`, `repository-architecture`).
 9. **Select only relevant skills** (`../../system/SKILL_SELECTION_RULES.md`).
 10. **Generate dynamic phases** (delegate to `task-planning`; `../../system/PHASE_GENERATION_RULES.md`).
 11. **Generate work items and tasks** (`task-planning`, `feature-planning`, `bug-investigation`, etc.).
@@ -59,9 +60,10 @@ Request
  → request-classification
  → existing-project-audit (if code exists)
  → requirements-analysis  → record confirmed / assumptions / questions
+ → gherkin-specifications → the behavior change as scenarios (skip only if no observable change)
  → application-selection
  → stack-recommendation
- ── GATE 2: user approval (applications + stack) ──
+ ── GATE 2: user approval (behavior + applications + stack) ──
  → architecture-design + repository-architecture
  → select relevant skills
  → dynamic phases + task-planning (+ feature/bug/refactor/migration planning)
@@ -107,6 +109,7 @@ Record stage and gate status in `CURRENT_STATUS.md` in `../../projects/current/`
 - [ ] Request classified.
 - [ ] Existing repo audited (or greenfield noted).
 - [ ] Requirements extracted; confirmed/assumptions/questions separated.
+- [ ] Behavior specified as approved-ready Gherkin scenarios (or "no observable change" recorded).
 - [ ] Applications selected with justification.
 - [ ] Stack recommended with alternatives.
 - [ ] Gate 2 approval recorded.

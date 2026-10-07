@@ -6,7 +6,9 @@
 
 ## Functional Requirements
 
-| # | Requirement | Priority (must/should/could) | Acceptance signal |
+Each acceptance signal is, or maps one-to-one to, a Gherkin scenario (`../system/GHERKIN_RULES.md`) — requirement and scenario must never contradict.
+
+| # | Requirement | Priority (must/should/could) | Acceptance signal → scenario |
 |---|-------------|------------------------------|-------------------|
 | F1 | <> | must | <observable> |
 

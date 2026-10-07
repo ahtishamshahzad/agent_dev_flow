@@ -38,8 +38,8 @@ Define the system's shape: modules and their boundaries, how data flows, where i
 
 ## Required Workflow
 
-1. Read approved apps/stack + requirements.
-2. Identify domains and boundaries.
+1. Read the approved behavior scenarios (`../../system/GHERKIN_RULES.md`), apps/stack, and requirements.
+2. Identify domains and boundaries **from the behavior**: every scenario's preconditions, failures, and edge cases need a home — an offline scenario demands local persistence, sync, retries, idempotency, and conflict handling; a duplicate-request scenario demands an idempotency mechanism.
 3. Define data flow and contracts.
 4. Decide cross-cutting approaches.
 5. Record the architecture (Gate 3) in `../../projects/current/` / `../../knowledge/`.

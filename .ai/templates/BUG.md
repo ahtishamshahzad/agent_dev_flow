@@ -34,7 +34,11 @@
 
 ## Regression Test
 
-Specified as a scenario — the reproduction as `Given`/`When`, the correct behavior as an observable `Then` (`../system/GHERKIN_RULES.md`):
+Specified as a scenario — the reproduction as `Given`/`When`, the correct behavior as an observable `Then` (`../system/GHERKIN_RULES.md`). It **fails on the current code**, and stays permanently in `features/<area>/<behavior>.feature`, tagged `@regression @bug-NNN`.
+
+- **Existing scenario that covers it:** <file — title> | none (expected behavior written below)
+- **Expected vs actual:** <one line each>
+
 
 ```gherkin
 Scenario: <the behavior that was broken, stated correctly>

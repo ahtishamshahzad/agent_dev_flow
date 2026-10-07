@@ -1,6 +1,6 @@
 # Claude Code Plugins — AI Engineering System
 
-This directory packages the AI Engineering System's 178 skills as **installable Claude Code plugins**, one per skill pack. The **canonical system remains in `../.ai/`** — each plugin's `skills/` directory is a symlink to the matching pack under `../.ai/skills/`, so there is a single source of truth and no duplication.
+This directory packages the AI Engineering System's 179 skills as **installable Claude Code plugins**, one per skill pack. The **canonical system remains in `../.ai/`** — each plugin's `skills/` directory is a symlink to the matching pack under `../.ai/skills/`, so there is a single source of truth and no duplication.
 
 The marketplace manifest is at [`../.claude-plugin/marketplace.json`](../.claude-plugin/marketplace.json).
 
@@ -11,7 +11,7 @@ The marketplace manifest is at [`../.claude-plugin/marketplace.json`](../.claude
 | `ai-core` | 28 | orchestration, planning, project management, selection, review, testing, delivery, documentation, audits |
 | `ai-mobile` | 36 | React Native / Expo |
 | `ai-web` | 26 | web & dashboard |
-| `ai-backend` | 30 | backend API |
+| `ai-backend` | 31 | backend API, payments |
 | `ai-database` | 15 | database & data layer |
 | `ai-testing` | 15 | testing |
 | `ai-devops` | 16 | CI/CD, deploy, ops |

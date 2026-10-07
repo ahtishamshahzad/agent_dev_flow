@@ -36,7 +36,7 @@ Plan a refactor that improves structure or quality **without changing external b
 
 ## Required Workflow
 
-1. Read the target + dependents + tests.
+1. Read the target + dependents + tests. A refactor with zero observable change needs no new Gherkin — the existing scenarios and tests prove it unchanged. If any observable behavior changes (an API field, an error, a response), it is a feature: specify it first (`../../system/GHERKIN_RULES.md`).
 2. If coverage is inadequate, plan to add characterization tests first.
 3. Break the refactor into small reversible steps.
 4. Define per-step verification (tests green, behavior identical).

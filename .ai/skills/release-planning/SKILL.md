@@ -38,7 +38,7 @@ Validate that work is ready to ship and plan the release safely. Enforces Gate 7
 
 ## Required Workflow
 
-1. Confirm Gates 5–6 passed.
+1. Confirm Gates 5–6 passed, and list the release-blocking `@critical` scenarios with the passing test behind each (`../../system/GHERKIN_RULES.md`). One without a passing test blocks the release.
 2. Verify docs, changelog, and version are updated.
 3. Confirm git state (merged/tagged as required).
 4. Confirm explicit approval for publish/deploy.

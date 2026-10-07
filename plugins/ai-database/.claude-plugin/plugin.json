@@ -2,7 +2,7 @@
   "name": "ai-database",
   "displayName": "AI Engineering System — Database",
   "description": "Database skills: database and data-layer selection (PostgreSQL/MySQL/MongoDB × Prisma/Drizzle/Mongoose/native), relational & document schema design, migrations, seed data, indexing, transactions, concurrency, security, performance, backup/recovery, and data migration.",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "author": { "name": "ahtishamshahzad" },
   "homepage": "https://github.com/ahtishamshahzad/agent_dev_flow",
   "repository": "https://github.com/ahtishamshahzad/agent_dev_flow",

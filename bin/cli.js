@@ -92,11 +92,17 @@ ${c('bold', 'Examples')}
   npx github:ahtishamshahzad/agent_dev_flow init
   npx github:ahtishamshahzad/agent_dev_flow init ./my-app --editor claude,cursor
   npx github:ahtishamshahzad/agent_dev_flow init --editor claude --force
+
+${c('bold', 'Gherkin')}
+  npx github:ahtishamshahzad/agent_dev_flow gherkin validate ${c('dim', '[path ...]')}
+                      Check .feature files against the behavior contract
+                      (.ai/system/GHERKIN_RULES.md). Default path: features/
+                      Exits 1 on any error; warnings do not fail.
 `);
 }
 
 function parseArgs(argv) {
-  const opts = { dir: null, editors: null, force: false, dryRun: false, help: false, version: false, cmd: null };
+  const opts = { dir: null, editors: null, force: false, dryRun: false, help: false, version: false, cmd: null, args: [] };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '-h' || a === '--help') opts.help = true;
@@ -108,9 +114,8 @@ function parseArgs(argv) {
       if (!v || v.startsWith('-')) { fail('Missing value for --editor'); process.exit(1); }
       opts.editors = v.toLowerCase();
     }
-    else if (a === 'init') opts.cmd = 'init';
-    else if (!a.startsWith('-') && opts.cmd === null) opts.cmd = a; // tolerate bare command
-    else if (!a.startsWith('-')) opts.dir = a;
+    else if (!a.startsWith('-') && opts.cmd === null) opts.cmd = a;
+    else if (!a.startsWith('-')) { opts.dir = a; opts.args.push(a); }
     else { fail(`Unknown option: ${a}`); process.exit(1); }
   }
   return opts;
@@ -166,6 +171,7 @@ function main() {
     printHelp();
     process.exit(opts.help ? 0 : 1);
   }
+  if (opts.cmd === 'gherkin') return gherkin(opts.args);
   if (opts.cmd !== 'init') {
     fail(`Unknown command: ${opts.cmd}`);
     printHelp();
@@ -233,6 +239,47 @@ function main() {
   }
   log('  3. Keep .ai/ canonical; put project state in .ai/projects/current/');
   log('');
+}
+
+// `gherkin validate [path ...]` — lint .feature files against the contract.
+function gherkin(args) {
+  const [sub, ...paths] = args;
+  if (sub !== 'validate') {
+    fail(sub ? `Unknown gherkin command: ${sub}` : 'Missing gherkin command — use: gherkin validate [path ...]');
+    process.exit(1);
+  }
+  const { lint } = require(path.join(PKG_ROOT, 'lib', 'gherkin-lint.js'));
+  const SKIP = new Set(['node_modules', '.git', 'dist', 'build', 'coverage']);
+  const roots = paths.length ? paths : ['features'];
+  const files = [];
+  const collect = (p) => {
+    const st = fs.statSync(p);
+    if (st.isDirectory()) {
+      for (const child of fs.readdirSync(p)) if (!SKIP.has(child)) collect(path.join(p, child));
+    } else if (p.endsWith('.feature')) files.push(p);
+  };
+  for (const r of roots) {
+    const abs = path.resolve(process.cwd(), r);
+    if (!fs.existsSync(abs)) { fail(`Path not found: ${r}`); process.exit(1); }
+    collect(abs);
+  }
+  if (!files.length) {
+    fail(`No .feature files found in ${roots.join(', ')}`);
+    process.exit(1);
+  }
+
+  let errors = 0;
+  let warnings = 0;
+  for (const f of files.sort()) {
+    const rel = path.relative(process.cwd(), f) || f;
+    for (const p of lint(fs.readFileSync(f, 'utf8'), f)) {
+      if (p.level === 'error') errors++; else warnings++;
+      log(`${rel}:${p.line}  ${p.level === 'error' ? c('red', 'error  ') : c('yellow', 'warning')}  ${p.message}`);
+    }
+  }
+  const summary = `${files.length} feature file(s), ${errors} error(s), ${warnings} warning(s)`;
+  if (errors) { fail(summary); process.exit(1); }
+  log(c('green', summary));
 }
 
 try {

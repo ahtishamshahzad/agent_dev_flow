@@ -8,6 +8,7 @@
 
 ## Skills Required (per stage)
 
+- Specify: `../skills/testing/gherkin-specifications` — the feature's scenarios **first**, before design or tasks (`../system/GHERKIN_RULES.md`).
 - Plan: `../skills/feature-planning`, `../skills/task-planning`.
 - Build: the relevant domain skills for the feature's area (backend/web/mobile/database) — selectively.
 - Test/review: `../skills/testing/gherkin-specifications` (acceptance criteria and required cases as scenarios — `../system/GHERKIN_RULES.md`), `../skills/testing-strategy` + the needed `../skills/testing/*`; `../skills/code-review` (+ `../skills/security-review` if sensitive).
@@ -22,7 +23,7 @@ The feature scope, the relevant architecture slice, the API/data contracts it to
 
 ## Gates
 
-Gate 4 (tasks + acceptance criteria approved), Gate 5 (tests), Gate 6 (review). Gates 2–3 only if the feature unexpectedly needs new apps/stack or architecture change (then escalate).
+**Gate 2 — the feature's scenarios approved** before design (apps/stack only if the feature unexpectedly needs new ones — then escalate), Gate 4 (tasks, each naming the scenarios it delivers), Gate 5 (every scenario → a passing test), Gate 6 (review). Gate 3 only if the architecture changes.
 
 ## Documents Generated
 
@@ -41,7 +42,7 @@ Plan → implement → test → review → docs, via Handoff Format; ready for P
 ## Stop Condition
 
 - **Stop** and escalate if the feature actually needs new apps/stack or an architecture change (wrong workflow — go through Gates 2–3).
-- **Stop** if scope creeps beyond the approved tasks.
+- **Stop** if scope creeps beyond the approved tasks — behavior no approved scenario covers is classified and, if new, approved first (`../system/GHERKIN_RULES.md`, scope control).
 - **Complete** when the feature meets acceptance criteria, is tested and reviewed, and docs are updated.
 
 ## Related

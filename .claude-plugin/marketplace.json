@@ -1,7 +1,7 @@
 {
   "name": "agent_dev_flow",
-  "description": "The AI Engineering System — 178 reusable skills for planning and building software with AI agents, packaged as installable Claude Code plugins (one per skill pack). The canonical system lives in .ai/; these plugins expose its skills natively.",
-  "version": "1.3.0",
+  "description": "The AI Engineering System — 179 reusable skills for planning and building software with AI agents, packaged as installable Claude Code plugins (one per skill pack). The canonical system lives in .ai/; these plugins expose its skills natively.",
+  "version": "1.4.0",
   "owner": {
     "name": "ahtishamshahzad"
   },
@@ -30,7 +30,7 @@
     {
       "name": "ai-backend",
       "source": "./plugins/ai-backend",
-      "description": "Backend API skills (30): Express/NestJS selection, API design, validation, auth/authorization, jobs/queues, realtime, webhooks, integrations, testing, deployment.",
+      "description": "Backend API skills (31): Express/NestJS selection, API design, validation, auth/authorization, payments/subscriptions, jobs/queues, realtime, webhooks, integrations, testing, deployment.",
       "category": "engineering",
       "keywords": ["backend", "api", "express", "nestjs"]
     },
