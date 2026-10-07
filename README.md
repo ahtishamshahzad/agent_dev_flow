@@ -184,6 +184,14 @@ New work that changes the approved plan is flagged **`SCOPE CHANGE`** and comes 
 - [`plugins/README.md`](plugins/README.md) — Claude Code plugin details.
 - [`.ai/CHANGELOG.md`](.ai/CHANGELOG.md) — version history.
 
+## See it on a real-sized project
+
+[`examples/multi-tenant-saas/`](examples/multi-tenant-saas/README.md) walks one fictional SaaS — mobile + web + API + PostgreSQL, tenancy, roles, subscriptions, photo uploads, offline — through every stage: request, requirements, application and stack decisions, architecture, phases and Gherkin tasks, testing strategy, threat model, week-1 tracking with a caught scope change, and the release checklist. Every file is labelled **PROPOSED**: it shows what the system produces, not a product that exists.
+
+## Does it actually help? — evaluation
+
+Validation proves the repo is consistent; it doesn't prove AgentFlow makes an agent better. [`evals/`](evals/README.md) defines how to measure that: six cases (planning, architecture, bug-fixing, security, testing, scope control), each with a planted trap and pass/fail properties, run against a baseline agent and the same agent with AgentFlow. **No results have been recorded yet** — the method and cases are ready to run.
+
 ## Develop and contribute
 
 ```bash

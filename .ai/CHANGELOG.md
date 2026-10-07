@@ -19,6 +19,9 @@ Tooling, tests, and CI for the installer and the repository. No rule or skill re
 
 - `skills/SKILLS_INDEX.md` — find a skill by intent ("I want to add login"); every entry is a link, so a wrong name fails validation. Payments/subscriptions is listed honestly as having no dedicated skill.
 - `CONTRIBUTING.md` and five issue templates (bug, feature, new skill, adapter, evaluation).
+- `examples/multi-tenant-saas/` — one fictional SaaS planned through every stage, request to release checklist, including week-1 tracking with a caught scope change. Every file carries a status label (PROPOSED / APPROVED (simulated)); nothing claims to be implemented. Not shipped by the installer.
+- `evals/` — effectiveness evaluation, distinct from validation: method (baseline vs AgentFlow, ≥3 runs per arm, blind scoring), a scoresheet, and six cases with planted traps — planning, architecture, bug-fixing, security, testing, scope control. No results recorded; none invented.
+- Validator: every relative link in the root guides, `plugins/README.md`, `examples/`, and `evals/` must resolve; every example file must carry a status label; every eval case must have its three files and be listed.
 - README: what AgentFlow is in the first screen, a Mermaid diagram of the pipeline (gates, single vs parallel agents, tracking, scope change), which agents get native integration versus an adapter file, and context cost.
 - Validator: the intent index must cover every pack; the README's quoted version must match.
 
