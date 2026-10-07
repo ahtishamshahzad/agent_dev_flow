@@ -94,8 +94,22 @@ Request → Classify → Requirements → (Audit if repo exists) → Application
 ──── GATE: you approve applications + stack ────
 → Architecture → Dynamic phases → Tasks
 ──── GATE: you approve phases + tasks ────
-→ Implement → Test → Review → Release
+→ Track (roadmap, IDs, weekly plan) → Implement → Test → Review → Release
 ```
+
+### After approval: track it week by week
+
+Once the plan is approved, `project-management` keeps a living record in `.ai/projects/current/`: a roadmap, one plan per week, a unique ID and status for every task and bug, development/bug/scope-change logs, risks, decisions, and reports a client can read.
+
+```
+Fix this bug: <describe it>          → duplicate check, BUG-NNN, root cause, priority, week, bug log — then fix
+Plan next week.                      → carry-forward + P0 bugs + ready tasks, sized to capacity
+Update project status.               → CURRENT_STATUS.md reconciled against the code
+What are the current blockers?
+Prepare weekly report. / Prepare meeting report.   → business language, verified work only
+```
+
+New work that changes the approved plan is flagged **`SCOPE CHANGE`** and comes back to you for approval. Rules: [`.ai/system/PROJECT_MANAGEMENT_RULES.md`](.ai/system/PROJECT_MANAGEMENT_RULES.md).
 
 > **`.ai/` must be present in the project.** Skills reference sibling paths inside it and write your project's state to `.ai/projects/current/`. Claude Code plugins add native skill invocation on top — they do not replace the files.
 
@@ -105,6 +119,7 @@ Request → Classify → Requirements → (Audit if repo exists) → Application
 - **Load only what you need** — the minimum relevant skills, one stage at a time.
 - **Everything is enforced server-side**; client checks are UX. Authorization is distinct from authentication and from abuse prevention.
 - **Multi-agent is optional** and only for genuinely independent work with non-overlapping file ownership — conflicts are prevented by construction, never used just because it's possible.
+- **Records claim only verified work** — the code outranks the status file; progress is derived, never asserted; logs are append-only.
 - **Reviews report Confirmed vs Potential**, never print secrets, and never claim a system is "secure."
 - **`.ai/` is canonical**; editor adapters are thin pointers that never duplicate it.
 
