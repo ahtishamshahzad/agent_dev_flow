@@ -28,6 +28,8 @@ Gate 1 (requirements + audit), Gate 3 if architecture shifts, Gate 4 (tasks) if 
 
 Audit report, scoped requirements, (optional) architecture delta, phases/tasks, test + review reports, release record.
 
+**Tracking:** after Gate 4, `../skills/project-management` sets up tracking (first run imports any bugs already recorded), or — if the project is already tracked — schedules the new tasks and logs the change in `CHANGE-LOG.md` (`../system/PROJECT_MANAGEMENT_RULES.md`).
+
 ## Validation
 
 Change validated against acceptance criteria and the existing behavior it must not break (regression tests); reviews clear; no unauthorized cross-scope edits.

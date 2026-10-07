@@ -43,7 +43,7 @@ Validate that work is ready to ship and plan the release safely. Enforces Gate 7
 3. Confirm git state (merged/tagged as required).
 4. Confirm explicit approval for publish/deploy.
 5. Execute (or hand off) the approved release with a rollback plan.
-6. Verify and record the outcome.
+6. Verify and record the outcome — on a tracked project as a `DEPLOY-` task in the week, a development-log entry, and the week's report (`project-management`, `../../system/PROJECT_MANAGEMENT_RULES.md`).
 
 ## Decision Rules
 
@@ -80,7 +80,7 @@ Release readiness is validated (Gate 7): tests green, reviews done, docs/changel
 
 ## Related Skills
 
-`git-workflow`, `github-repository`, `testing-strategy`, `security-review`, `final-quality-audit`, `migration-planning` (cutover), `project-orchestrator`.
+`git-workflow`, `github-repository`, `testing-strategy`, `security-review`, `final-quality-audit`, `migration-planning` (cutover), `project-orchestrator`, `project-management`.
 
 ## Related Knowledge
 

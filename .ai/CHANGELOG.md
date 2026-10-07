@@ -2,6 +2,26 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.1] — 2026-10-07
+
+Fix: project management reaches every workflow, and a bug on an untracked project has a path.
+
+### Fixed
+
+- A reported bug on a project with no approved plan was routed back through full planning: bugfix required project-management intake, and intake required Gate 4. Bugs are now recorded from day one (`BUG-NNN`, bug-log row) and fixed under the bugfix workflow; the week and fix-task steps apply once the project is tracked, and first-run tracking imports them.
+- `project-management` no longer writes fixes itself — it hands the fix to the owning domain skill under the bugfix workflow and tracks it.
+- Bug intake re-checks for a duplicate by root cause after diagnosis, not only by symptom.
+- The bug prompts, bugfix checklist, and the skills index's bug row now include intake. `start-phase`, the feature checklist, and `.ai/README.md` point at the project's `CURRENT_STATUS.md` instead of the `PROGRESS.md` template.
+
+### Added
+
+- `PROJECT_MANAGEMENT_RULES.md` §Recording work: what each workflow records on a tracked project — review/audit findings (confirmed → bug intake, suggestions → `TECH-` backlog), refactor and migration steps, releases and deployments (`DEPLOY-`), incidents — plus the untracked-project path. `OPERATING_RULES` §10 makes it apply to any skill or plugin, including domain packs invoked directly.
+- `code-review`, `security-review`, `release-planning`, `refactor-planning`, `migration-planning`, and the eleven remaining workflows each name what they record.
+
+### Totals
+
+- 178 skills · 13 agents · 13 hooks · 12 workflows · 31 templates · 19 prompts · 18 checklists.
+
 ## [1.2.0] — 2026-10-07
 
 Additive: a project-management layer on top of the planning pipeline. No gate, rule, or structure removed; existing templates extended in place.

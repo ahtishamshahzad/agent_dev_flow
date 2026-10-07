@@ -18,6 +18,7 @@ The vocabulary — IDs, statuses, priorities, estimates, file layout — is cano
 - New work arrives mid-project (feature request, change request, client ask).
 - Tracking requests: "what should I work on this week", "update project status", "what are the blockers", "what was completed this week", "plan next week".
 - Reporting: "prepare weekly report", "prepare meeting report".
+- Another workflow produced something to record: review/audit findings, refactor or migration steps, a release or deployment, an incident.
 - **Not** for producing the plan itself — classification, requirements, architecture, phases, and tasks belong to `project-orchestrator` and `task-planning`. **Not** for diagnosing a bug's cause — that is `bug-investigation`.
 
 ## Inputs
@@ -55,10 +56,10 @@ Each request below is a mode. Run only the mode the request needs.
 ### 1. First run — set up tracking
 
 1. Inspect the repository (`existing-project-audit` if not already done) and whatever already exists in `../../projects/current/` and `../../work-items/`.
-2. If no plan is approved yet → stop and hand to `project-orchestrator`. Tracking starts after Gate 4.
+2. If no plan is approved yet → stop and hand to `project-orchestrator`. Tracking starts after Gate 4. (Bugs are the exception: they are recorded from day one — mode 3.)
 3. Preserve every existing record; extend it. Never overwrite a filled file with a template.
 4. Create `PROJECT.md` (`../../templates/PROJECT_BRIEF.md`), `ROADMAP.md` (`../../templates/ROADMAP.md`), and one `phases/PHASE-NN.md` per approved phase.
-5. Assign IDs to the approved tasks, estimate them, and record dependencies.
+5. Assign IDs to the approved tasks, estimate them, and record dependencies. Import bugs and work items recorded before tracking began — open bugs get a fix task and a week; nothing is renumbered.
 6. Plan `weekly/WEEK-01.md` in detail; leave later weeks as roadmap entries until they are near.
 7. Write `CURRENT_STATUS.md` (`../../templates/PROGRESS.md`) and the first `logs/DEVELOPMENT-LOG.md` entry.
 8. Where information is missing, write a preliminary plan and mark each assumption.
@@ -72,17 +73,17 @@ Each request below is a mode. Run only the mode the request needs.
 
 ### 3. Bug intake — "fix this bug"
 
-No code changes until steps 1–8 are done.
+No code changes until steps 1–8 are done. On an **untracked project** (no `CURRENT_STATUS.md`), run steps 1–4, 7, 8, and 9 and skip 5–6 — the bug is still recorded and fixed under `../../workflows/bugfix.md`, without sending it through full planning (`../../system/PROJECT_MANAGEMENT_RULES.md`, untracked projects).
 
 1. **Check for a duplicate:** search `logs/BUG-LOG.md` and `../../work-items/bugs/`. If it is already recorded, update that bug — new symptoms, environment, priority — and do not open another.
 2. **Open the bug:** next `BUG-NNN`, file at `../../work-items/bugs/BUG-<NNN>.md` (`../../templates/BUG.md`), status `OPEN`, with reporter, environment, platform, expected and actual behavior.
-3. **Diagnose:** hand to `bug-investigation` — inspect the code, reproduce, find the root cause, map the affected areas. Record the findings in the bug file.
+3. **Diagnose:** hand to `bug-investigation` — inspect the code, reproduce, find the root cause, map the affected areas. Record the findings in the bug file. Then check for a duplicate again, by **root cause**: two reports with different symptoms may be one bug — mark the newer `DUPLICATE` of the older and merge the symptoms.
 4. **Prioritize:** P0–P3 by impact (`../../system/PROJECT_MANAGEMENT_RULES.md`); estimate the fix.
 5. **Create the fix task:** a `TASK-`/`TECH-` ID that links to the bug, including its regression test.
 6. **Schedule it:** add the bug and the task to a week — P0 into the current week, displacing work as `CARRIED_FORWARD`; others by priority and capacity.
 7. **Record it:** add a row to `logs/BUG-LOG.md`.
 8. **Write the fix plan** in the bug file.
-9. **Fix → test → verify:** implement, run the regression test (fails before, passes after), and check nearby behavior. Move the bug through `FIXED` → `VERIFIED` → `CLOSED` only as each is actually true.
+9. **Fix → test → verify:** hand the fix to the owning domain skill under `../../workflows/bugfix.md` — regression test first (fails before, passes after), then the minimal fix, then `code-review`. This skill does not write the fix; it tracks it. Move the bug through `FIXED` → `VERIFIED` → `CLOSED` only as each is actually true.
 10. **Close out:** update the bug file, the week, `BUG-LOG.md`, `DEVELOPMENT-LOG.md`, and `CURRENT_STATUS.md`.
 
 The chain is always: `BUG-NNN → task ID → WEEK-NN → fix → test → verify → closed`, visible in all three of the bug file, the week file, and the ledger.
@@ -133,7 +134,8 @@ Append to `logs/DEVELOPMENT-LOG.md` (date, work done, files changed, tests actua
 
 ## Decision Rules
 
-- No approved plan → hand to `project-orchestrator`; do not invent a roadmap.
+- No approved plan → hand to `project-orchestrator`; do not invent a roadmap. A bug is the exception — record and fix it on the untracked path.
+- Output of a review, audit, refactor, migration, release, or incident on a tracked project → record it per the table in `../../system/PROJECT_MANAGEMENT_RULES.md` (recording work).
 - Request is a bug → mode 3 before touching code, every time.
 - Addition changes approved scope → `SCOPE CHANGE` and approval; otherwise schedule it.
 - A dependency isn't done → schedule the dependent task later, unless both sides can build against an agreed contract.

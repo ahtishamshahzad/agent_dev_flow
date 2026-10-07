@@ -40,7 +40,7 @@ Plan a refactor that improves structure or quality **without changing external b
 2. If coverage is inadequate, plan to add characterization tests first.
 3. Break the refactor into small reversible steps.
 4. Define per-step verification (tests green, behavior identical).
-5. Record the work item (steps, risk, verification).
+5. Record the work item (steps, risk, verification); on a tracked project, each step or group becomes a `TECH-` task scheduled by `project-management` (`../../system/PROJECT_MANAGEMENT_RULES.md`).
 
 ## Decision Rules
 
@@ -75,7 +75,7 @@ A recorded refactor work item with a clear goal, sufficient test coverage (or a 
 
 ## Related Skills
 
-`existing-project-audit`, `testing-strategy`, `task-planning`, `code-review`, `performance-review` (if perf-motivated), `project-orchestrator`.
+`existing-project-audit`, `testing-strategy`, `task-planning`, `code-review`, `performance-review` (if perf-motivated), `project-orchestrator`, `project-management`.
 
 ## Related Knowledge
 

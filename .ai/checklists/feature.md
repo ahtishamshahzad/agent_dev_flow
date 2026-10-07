@@ -9,7 +9,7 @@
 - [ ] Everything enforced server-side; client checks are UX.
 - [ ] **Required cases covered:** happy · invalid input · error · **authorization denial** · regression.
 - [ ] Acceptance criteria met; no false completion (`../skills/ai-output-review`).
-- [ ] Docs/notes updated; `../templates/PROGRESS.md` current.
+- [ ] Docs/notes updated; the project's `CURRENT_STATUS.md` (in `../projects/current/`) and week file current — not the template.
 - [ ] Ready for code review (+ security review if it touches auth/data/payments).
 
 ## Fail / Stop

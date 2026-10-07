@@ -28,6 +28,8 @@ Gate 4 (tasks + acceptance criteria approved), Gate 5 (tests), Gate 6 (review). 
 
 Feature plan + tasks, tests, code/security review notes, and the product docs for the units added (`docs/<app>/…` + index rows — `../skills/application-documentation`).
 
+**Tracking (tracked project):** `FEAT-` task IDs, phase and week assignment, development-log entries; `SCOPE CHANGE` if the feature was not in the approved plan (`../skills/project-management`).
+
 ## Validation
 
 Acceptance criteria met; required cases covered (happy, invalid input, error, **authorization denial**, regression); no scope creep (`../skills/ai-output-review`); review clear.

@@ -26,6 +26,8 @@ Gate 7 (release readiness); Gates 1–6 must already have passed.
 
 Final quality audit, release-readiness go/no-go, version bump, changelog/release notes, release record in `../projects/current/`.
 
+**Tracking (tracked project):** a `DEPLOY-` task in the current week, the outcome in `DEVELOPMENT-LOG.md`, and the release in the weekly report (`../skills/project-management`).
+
 ## Validation
 
 All prior gates passed; release criteria met with evidence (tests green, security/quality clear, docs + changelog updated, version handled, production-readiness verified, rollback rehearsed); go/no-go produced.

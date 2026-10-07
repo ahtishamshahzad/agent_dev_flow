@@ -26,6 +26,8 @@ Gate 7 (release/deploy readiness). Deploys are **approval-gated**.
 
 Deployment plan (target, artifact promotion, migration ordering, health-gated rollout), rollback runbook, post-deploy smoke result, monitoring/alert setup.
 
+**Tracking (tracked project):** a `DEPLOY-` task in the current week; the outcome and smoke result in `DEVELOPMENT-LOG.md`; a failed rollout opens a bug through intake (`../skills/project-management`).
+
 ## Validation
 
 One immutable artifact promoted with config injected; migrations ordered safely (expand/contract); readiness verified with evidence (backups + tested restore, monitoring, rollback rehearsed); **post-deploy smoke** green; no jobs/infra for apps that don't exist.

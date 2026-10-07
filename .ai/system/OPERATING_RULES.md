@@ -52,6 +52,7 @@ Every request is classified before anything else (see `ORCHESTRATION_WORKFLOW.md
 ## 10. Keep the record current
 
 - Decisions, approvals, and phase/task state live in `../projects/current/` and `../work-items/`.
+- On a tracked project, every piece of work — whichever skill or plugin started it — is recorded under a task or bug ID (`PROJECT_MANAGEMENT_RULES.md`, recording work).
 - Durable, reusable decisions go to `../memory/`.
 - Generated reports go to `../generated/` and are archived when no longer active (`DOCUMENTATION_RULES.md`).
 

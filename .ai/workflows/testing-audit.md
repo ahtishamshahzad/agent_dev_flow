@@ -26,6 +26,8 @@ Gate 5 (testing) primarily.
 
 Coverage-by-risk assessment, gap list (esp. error and **authorization-denial** branches), prioritized test recommendations, new tests, flaky-test findings.
 
+**Tracking (tracked project):** each accepted gap becomes a `TECH-` task; flaky tests found are logged as bugs through intake (`../system/PROJECT_MANAGEMENT_RULES.md`, recording work).
+
 ## Validation
 
 Critical paths tested at the right level; required cases present (happy, invalid input, error, authorization denial, regression, critical env validation); **no coverage-percentage chased without risk justification**; flakiness root-caused; suite hermetic and CI-gating.

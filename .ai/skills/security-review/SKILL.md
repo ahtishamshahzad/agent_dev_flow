@@ -47,6 +47,7 @@ Report findings with **severity** and **Confirmed vs Potential**.
 3. Run available tools where possible; quote or mark "unverified until run."
 4. Record findings (severity, Confirmed/Potential, `file:line`, redacted).
 5. List secrets to rotate; recommend human review for money/PII at scale.
+6. On a tracked project, record them via `project-management`: each Confirmed finding through bug intake (Critical/High → P0/P1), Potential ones as `TECH-` tasks to verify (`../../system/PROJECT_MANAGEMENT_RULES.md`, recording work).
 
 ## Decision Rules
 
@@ -83,7 +84,7 @@ A security review report with severity-rated, Confirmed/Potential findings (secr
 
 ## Related Skills
 
-`code-review`, `dependency-audit`, `environment-audit`, `ai-output-review`, `final-quality-audit`, `release-planning`, `project-orchestrator`.
+`code-review`, `dependency-audit`, `environment-audit`, `ai-output-review`, `final-quality-audit`, `release-planning`, `project-orchestrator`, `project-management`.
 
 ## Related Knowledge
 

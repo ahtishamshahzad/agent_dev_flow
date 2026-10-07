@@ -33,6 +33,8 @@ All seven. **Gate 2** (apps+stack) and **Gate 4** (phases+tasks) require explici
 
 Requirements doc, application+stack decision, architecture doc, repository layout, phases+tasks, test plan, review + security reports, release-readiness go/no-go — in `../projects/current/` and `../generated/`.
 
+**Tracking:** after Gate 4, `../skills/project-management` turns the approved plan into `ROADMAP.md`, `PHASE-NN`, `WEEK-01`, and `CURRENT_STATUS.md`; from then on every task, bug, and release is recorded per `../system/PROJECT_MANAGEMENT_RULES.md` (recording work).
+
 ## Validation
 
 Each stage validated against its gate; final validation aggregates tests, reviews, security, and production-readiness into a go/no-go (`../skills/final-quality-audit`). Parallel streams get a single integration review.

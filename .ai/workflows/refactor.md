@@ -26,6 +26,8 @@ Gate 5 (behavior preserved — tests green before and after), Gate 6 (review). A
 
 Refactor plan (small steps), characterization/safety-net tests if added, review note.
 
+**Tracking (tracked project):** one `TECH-` task per step or group of steps, scheduled into weeks (`../system/PROJECT_MANAGEMENT_RULES.md`, recording work).
+
 ## Validation
 
 Behavior is **unchanged** — the same tests pass before and after; each step is independently verifiable and reversible; no feature slipped in.

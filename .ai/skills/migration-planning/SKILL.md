@@ -43,7 +43,7 @@ Plan a safe, incremental migration from a current state to a target state, keepi
 3. Break into incremental, reversible steps.
 4. Define verification per step + rollback.
 5. Define cutover criteria.
-6. Record the migration work item; mark approval-required steps.
+6. Record the migration work item; mark approval-required steps. On a tracked project, steps become `TECH-` tasks and the cutover a `DEPLOY-` task, scheduled by `project-management` (`../../system/PROJECT_MANAGEMENT_RULES.md`).
 
 ## Decision Rules
 
@@ -81,7 +81,7 @@ A recorded migration work item: characterized gap, compatibility strategy, incre
 
 ## Related Skills
 
-`existing-project-audit`, `dependency-audit`, `environment-audit`, `task-planning`, `testing-strategy`, `security-review`, `release-planning`, `project-orchestrator`.
+`existing-project-audit`, `dependency-audit`, `environment-audit`, `task-planning`, `testing-strategy`, `security-review`, `release-planning`, `project-orchestrator`, `project-management`.
 
 ## Related Knowledge
 

@@ -26,6 +26,8 @@ Gate 3 if the data model changes shape, Gate 5 (verification), Gate 6 (review), 
 
 Migration plan (expand→migrate→contract), transformation spec + dirty-data rulings, backup/snapshot record, verification criteria + results, rollback ruling.
 
+**Tracking (tracked project):** `TECH-` tasks per step and a `DEPLOY-` task for the cutover; the migration risk in `RISKS.md` (`../system/PROJECT_MANAGEMENT_RULES.md`, recording work).
+
 ## Validation
 
 Migration is idempotent, resumable, batched; **backup taken and restore tested**; verification criteria (counts/checksums) pass; rehearsed at production scale; rollback path defined.
