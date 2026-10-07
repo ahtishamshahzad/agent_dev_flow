@@ -2,7 +2,7 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.5.0] — unreleased
+## [1.5.0] — 2026-10-07
 
 Technology governance: context-aware version and documentation decisions instead of "always the latest". Additive.
 
