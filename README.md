@@ -209,7 +209,7 @@ New work that changes the approved plan is flagged **`SCOPE CHANGE`** and comes 
 
 ## Does it actually help? — evaluation
 
-Validation proves the repo is consistent; it doesn't prove AgentFlow makes an agent better. [`evals/`](evals/README.md) defines how to measure that: six cases (planning, architecture, bug-fixing, security, testing, scope control), each with a planted trap and pass/fail properties, run against a baseline agent and the same agent with AgentFlow. **No results have been recorded yet** — the method and cases are ready to run.
+Validation proves the repo is consistent; it doesn't prove AgentFlow makes an agent better. [`evals/`](evals/README.md) defines how to measure that: six cases (planning, architecture, bug-fixing, security, testing, scope control), each with a planted trap and pass/fail properties, run against a baseline agent and the same agent with AgentFlow — `node evals/run.js` reproduces it. A first **pilot** (Claude Code, Opus 5.5, one run per arm, scored unblinded by the author) is in [`evals/results/`](evals/results/README.md): AgentFlow scored 40/41 properties against the baseline's 34/41, with the gains in process discipline rather than technical findings, at about 3× the cost per request. Too small to conclude anything; it says what to measure next.
 
 ## Develop and contribute
 

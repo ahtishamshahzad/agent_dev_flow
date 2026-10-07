@@ -24,6 +24,8 @@ Gherkin becomes the mandatory behavioral contract across the lifecycle — speci
 - `examples/gherkin/` — seven specifications: a feature, a bug regression, an API with a `Scenario Outline`, password reset, mobile offline sync, a subscription upgrade, and an AI assistant.
 - `skills/backend/payments-subscriptions` — checkout, subscriptions, seats, proration, dunning, and entitlements driven by verified, idempotent provider events.
 - Tag standard (`@critical` is release-blocking) and change-detection rules.
+- `evals/run.js` — runs eval cases against Claude Code headless, both arms, in fresh temp projects with user settings excluded and read-only tools, saving every transcript with turns, tokens, cost, and time. Each case gains a `prompt.md` and optional per-arm setup; `evals/workflow-checks/` adds five lifecycle checks (new feature, bug, API change, security change, pure refactor) against a small fixture API with planted gaps.
+- The first recorded runs: the five workflow checks and a six-case pilot (one run per arm) — transcripts in `evals/results/raw/`, scored in `evals/results/`. A pilot, not a benchmark.
 - Validator: lints every `.feature` in the repo; requires the mandatory policy and its reference from the workflow, gates, key skills, workflows, and all adapters; **fails on any wording that makes the specification non-mandatory**; checks the CLI's runtime modules ship. 29 new tests for the linter and command; the tarball test runs `gherkin validate` from the packed package.
 
 ### Totals

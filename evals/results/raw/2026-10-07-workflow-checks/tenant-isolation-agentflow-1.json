@@ -1,0 +1,53 @@
+{
+  "id": "tenant-isolation-agentflow-1",
+  "case": "tenant-isolation",
+  "suite": "workflow-checks",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.4.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 44946,
+  "turns": 12,
+  "costUsd": 0.31477659999999996,
+  "usage": {
+    "input_tokens": 10,
+    "cache_creation_input_tokens": 28486,
+    "cache_read_input_tokens": 97943,
+    "output_tokens": 3363,
+    "output_tokens_details": {
+      "thinking_tokens": 540
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28486,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2049,
+        "cache_read_input_tokens": 33102,
+        "cache_creation_input_tokens": 2468,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2468
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "prompt": "Prevent users from accessing another company's resources.",
+  "result": "I couldn't implement this, because the workspace has no application to change. It contains only the `.ai/` planning system: no source code, data models, API routes or `features/` folder. There's no `CURRENT_STATUS.md`, no work items, and it isn't a git repo. So there's no code where a company check could go, and I've changed nothing.\n\nThe project's rules also require you to approve the expected behavior (written as test scenarios) before any code that changes behavior. Keeping companies' data separate counts as one of those changes. So I've done the planning steps and need a few answers from you.\n\n## Where this stands\n\n- **Request type:** Feature, covering security and permissions (who can see which company's data).\n- **Step reached:** Describing the behavior. Your approval of it is the first sign-off, and nothing has been designed or built yet.\n\n## What I need from you\n\n1. **Where is the application?** Is it in another folder or repo I should look at, or is this a new project?\n2. **What are the \"resources\"?** For example invoices, projects or files. I've used \"invoice\" below as a stand-in.\n3. **Can a user belong to more than one company?** If so, how do they pick the active one?\n4. **What happens when someone asks for another company's resource?** I recommend \"not found\", so they can't even confirm it exists. The alternative is \"access denied\".\n5. **Can anyone see across companies,** such as your own support staff or a platform admin? If so, should that access be logged?\n\n## Draft scenarios for your approval\n\nThese are written in Gherkin and don't depend on any particular technology:\n\n```gherkin\nFeature: Company data isolation\n  As a member of a company\n  I want my company's resources to be visible only to my company\n  So that no other company can read or change our data\n\n  Background:\n    Given the company \"Acme Ltd\" owns invoice \"INV-1001\"\n    And the company \"Globex Inc\" owns invoice \"INV-2001\"\n\n  @critical @security @authorization\n  Scenario: A member views their own company's invoice\n    Given \"dana@acme.example\" is signed in as a member of \"Acme Ltd\"\n    When Dana requests invoice \"INV-1001\"\n    Then Dana sees invoice \"INV-1001\"\n\n  @critical @security @authorization\n  Scenario: A member cannot view another company's invoice\n    Given \"dana@acme.example\" is signed in as a member of \"Acme Ltd\"\n    When Dana requests invoice \"INV-2001\"\n    Then Dana is told the invoice is not found\n    And no details of invoice \"INV-2001\" are revealed\n\n  @critical @security @authorization\n  Scenario: A member cannot change another company's invoice\n    Given \"dana@acme.example\" is signed in as a member of \"Acme Ltd\"\n    When Dana tries to update invoice \"INV-2001\"\n    Then Dana is told the invoice is not found\n    And invoice \"INV-2001\" is unchanged\n\n  @critical @security @authorization\n  Scenario: A member cannot delete another company's invoice\n    Given \"dana@acme.example\" is signed in as a member of \"Acme Ltd\"\n    When Dana tries to delete invoice \"INV-2001\"\n    Then Dana is told the invoice is not found\n    And invoice \"INV-2001\" still exists\n\n  @critical @security @authorization\n  Scenario: Lists show only the member's own company's invoices\n    Given \"dana@acme.example\" is signed in as a member of \"Acme Ltd\"\n    When Dana lists invoices\n    Then the list contains \"INV-1001\"\n    And the list does not contain \"INV-2001\"\n\n  @critical @security @authorization\n  Scenario: A company named in the request is ignored\n    Given \"dana@acme.example\" is signed in as a member of \"Acme Ltd\"\n    When Dana creates an invoice that names \"Globex Inc\" as its company\n    Then the new invoice belongs to \"Acme Ltd\"\n\n  @critical @security @authorization\n  Scenario: Exports include only the member's own company's data\n    Given \"dana@acme.example\" is signed in as a member of \"Acme Ltd\"\n    When Dana exports all invoices\n    Then the export contains \"INV-1001\"\n    And the export does not contain \"INV-2001\"\n```\n\n**Not yet covered (depends on your answers):** switching between companies (question 3), staff or admin access across companies and its logging (question 5), and background jobs and webhooks working only on their own company's data.\n\n## How it would be built, once approved\n\nThis follows the project's permissions checklist (`.ai/checklists/authorization.md`):\n\n- The user's company is always taken from their login, never from anything they send in the request.\n- The company filter is applied when the data is fetched, rather than loading the data and checking afterwards. It applies everywhere: lists, single items, updates, deletes, exports, background jobs and admin tools.\n- The check lives in one shared place, not repeated in every route.\n- Every scenario above gets a matching automated test that must pass.\n\nIf you tell me where the code is and answer the questions above, I'll check the existing code, revise the scenarios and send them back for your approval."
+}

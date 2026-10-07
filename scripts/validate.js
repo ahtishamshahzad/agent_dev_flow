@@ -383,13 +383,22 @@ for (const ex of examples) {
 }
 const evRoot = path.join(ROOT, 'evals');
 const evalReadme = read('evals/README.md');
-const cases = fs.readdirSync(evRoot).filter((d) => d !== 'results' && fs.statSync(path.join(evRoot, d)).isDirectory());
+const NOT_CASES = new Set(['results', 'fixtures', 'workflow-checks']);
+const cases = fs.readdirSync(evRoot).filter((d) => !NOT_CASES.has(d) && fs.statSync(path.join(evRoot, d)).isDirectory());
 if (cases.length < 1) fail('evals/: no cases');
 for (const c of cases) {
-  for (const f of ['input.md', 'expected-properties.md', 'evaluation.md']) {
+  for (const f of ['input.md', 'prompt.md', 'expected-properties.md', 'evaluation.md']) {
     if (!fs.existsSync(path.join(evRoot, c, f))) fail(`evals/${c}/: missing ${f}`);
   }
   if (!evalReadme.includes(`(${c}/)`)) fail(`evals/README.md: case "${c}" is not listed`);
+}
+const wcRoot = path.join(evRoot, 'workflow-checks');
+const wcReadme = read('evals/workflow-checks/README.md');
+for (const c of fs.readdirSync(wcRoot).filter((d) => fs.statSync(path.join(wcRoot, d)).isDirectory())) {
+  for (const f of ['prompt.md', 'expected-properties.md']) {
+    if (!fs.existsSync(path.join(wcRoot, c, f))) fail(`evals/workflow-checks/${c}/: missing ${f}`);
+  }
+  if (!wcReadme.includes(`(${c}/)`)) fail(`evals/workflow-checks/README.md: check "${c}" is not listed`);
 }
 
 // ---- 11. Gherkin: the contract is enforced, mandatory, and wired in ---------

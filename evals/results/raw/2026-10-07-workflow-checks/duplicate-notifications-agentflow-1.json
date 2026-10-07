@@ -1,0 +1,53 @@
+{
+  "id": "duplicate-notifications-agentflow-1",
+  "case": "duplicate-notifications",
+  "suite": "workflow-checks",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.4.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 44188,
+  "turns": 17,
+  "costUsd": 0.354385,
+  "usage": {
+    "input_tokens": 14,
+    "cache_creation_input_tokens": 28893,
+    "cache_read_input_tokens": 151225,
+    "output_tokens": 4647,
+    "output_tokens_details": {
+      "thinking_tokens": 1291
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28893,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2257,
+        "cache_read_input_tokens": 30818,
+        "cache_creation_input_tokens": 5159,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 5159
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "prompt": "Users are receiving duplicate notifications when their order status changes. Please fix it.",
+  "result": "I couldn't apply the fix: this session only has read and search tools, with no Edit, Write or Bash. I've found the root cause, and below is the exact change, regression scenario and test ready to apply. Nothing has been changed or run.\n\n## Root cause\n\nA status change sends the email twice, through two separate paths:\n\n- **`src/app.js:27-28`** — the PATCH route emits `order.statusChanged`, then also calls `notifyStatusChange(order)` directly.\n- **`src/notifications/sendOnStatusChange.js:9`** — the module subscribes to `order.statusChanged` and calls `notifyStatusChange` itself. `app.js` loads this module, so the listener is always active.\n\nThe result is one email from the event listener and a second from the direct call, every time.\n\n## Proposed fix (one line)\n\nRemove the direct call and keep the event as the only way notifications are sent. That's what the comment in `sendOnStatusChange.js` says the design is, and it means anything else that emits the event later also notifies the customer, exactly once.\n\n```diff\n // src/app.js\n app.patch('/orders/:id/status', requireLogin, async (req, res) => {\n   const order = await db.orders.update(req.params.id, { status: req.body.status });\n   events.emit('order.statusChanged', order);\n-  await notifyStatusChange(order);\n   res.json(order);\n });\n```\n\nAlso delete the now-unused import on line 5 (`const { notifyStatusChange } = require(...)`), but replace it with `require('./notifications/sendOnStatusChange');` so the listener is still registered.\n\n## Regression scenario (`features/orders/status-notifications.feature`)\n\n```gherkin\n@regression @bug-001\nFeature: Order status notifications\n  Scenario: Customer gets exactly one notification per status change\n    Given a logged-in user and an order for \"customer@example.com\"\n    When the order's status is changed to \"shipped\"\n    Then exactly one notification is sent to \"customer@example.com\"\n    And it says the order is now \"shipped\"\n```\n\n## Regression test (`test/orderStatusNotification.test.js`, runs with `npm test`)\n\n```js\nconst test = require('node:test');\nconst assert = require('node:assert');\nconst path = require('node:path');\nconst { EventEmitter } = require('node:events');\n\nconst src = (p) => require.resolve(path.join(__dirname, '../src', p));\nconst stub = (p, exports) => { require.cache[src(p)] = { id: src(p), filename: src(p), loaded: true, exports }; };\n\ntest('@bug-001 one notification per order status change', async () => {\n  const sent = [];\n  stub('mailer', { send: async (to, msg) => sent.push({ to, msg }) });\n  stub('events', new EventEmitter());\n  stub('auth', { requireLogin: (req, res, next) => { req.user = { companyId: 1 }; next(); } });\n  stub('db', { orders: { update: async (id, { status }) => ({ id, status, customerEmail: 'customer@example.com' }) } });\n  stub('services/userService', {});\n\n  const app = require('../src/app');\n  const server = app.listen(0);\n  const { port } = server.address();\n  await fetch(`http://localhost:${port}/orders/42/status`, {\n    method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ status: 'shipped' }),\n  });\n  server.close();\n\n  assert.strictEqual(sent.length, 1);\n  assert.match(sent[0].msg, /order 42 is now shipped/);\n});\n```\n\nOn the current code this test should fail with 2 emails sent, and pass after the fix. I haven't run it either way, so treat that as unverified. Two things could stop it running:\n- `src/db`, `src/mailer`, `src/events` and `src/auth` aren't in the repo (the test replaces them with stubs).\n- I couldn't check whether `express` is installed.\n\n## Workflow records (per `.ai/workflows/bugfix.md`)\n- Classified as a **bug**. The expected behavior (one email per change) isn't disputed, so the full planning gates don't apply.\n- Still to create: `.ai/work-items/bugs/BUG-001.md` with the root cause above, and the scenario file under `features/`.\n\n## Separate issue (not part of this fix)\nThe event listener doesn't catch errors from the mailer. If sending fails, the promise rejection goes unhandled and can crash Node. It should get its own work item.\n\nIf you enable editing and Bash, I'll apply the fix, add the scenario, test and bug record, and run the test against the old and new code."
+}

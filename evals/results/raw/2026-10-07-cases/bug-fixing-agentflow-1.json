@@ -1,0 +1,53 @@
+{
+  "id": "bug-fixing-agentflow-1",
+  "case": "bug-fixing",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.4.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 42453,
+  "turns": 12,
+  "costUsd": 0.251539,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 20434,
+    "cache_read_input_tokens": 71175,
+    "output_tokens": 3690,
+    "output_tokens_details": {
+      "thinking_tokens": 1590
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 20434,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2591,
+        "cache_read_input_tokens": 25541,
+        "cache_creation_input_tokens": 1977,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1977
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "prompt": "Bug: Customers sometimes get charged twice. It seems to happen when the payment page is slow. Can you fix it? The payment route is in orders.js.",
+  "result": "I found the cause, but I haven't changed any code yet. The fix depends on parts of your stack that aren't in this repo, and I don't want to guess at them.\n\n## Root cause\n\n`orders.js:2-8` checks the order's status and only writes \"paid\" later, after the charge finishes:\n\n```js\nconst order = await db.orders.find(req.params.id);\nif (order.status === 'paid') return res.status(409)...      // check\nconst charge = await payments.charge(...);                  // slow, external call\nawait db.orders.update(order.id, { status: 'paid', ... });  // only now marked paid\n```\n\nWhen the payment page is slow, customers click Pay again, refresh, or the browser retries. A second request that arrives while the first charge is still running still sees the order as unpaid, so it charges again. The slower the payment provider, the bigger that window. That's why it only happens \"sometimes, when it's slow.\"\n\n## Proposed fix\n\n1. **Claim the order in a single database step before charging.** Something like `UPDATE orders SET status='processing' WHERE id=? AND status='unpaid'`. Only one request can win; any other gets a 409. If the charge fails, set the order back to `unpaid` so the customer can retry.\n2. **Send an idempotency key with the charge** (for example `order-<id>`). This covers the case where a charge times out on our side but actually went through at the provider. A retry then can't create a second charge.\n\nDisabling the Pay button on the page would help, but it isn't a fix on its own because the server still has the race.\n\n## Proposed regression scenarios (for your approval)\n\n```gherkin\n@regression @bug-001 @critical\nFeature: Paying for an order charges the customer once\n\n  Scenario: Two payment requests at the same time charge only once\n    Given an unpaid order for 50.00\n    When two payment requests for that order arrive at the same time\n    Then the customer is charged exactly once\n    And one request succeeds and the other is rejected with 409\n\n  Scenario: A failed charge can be retried\n    Given an unpaid order and the payment provider declines the first charge\n    When the customer retries the payment\n    Then the order can be paid successfully\n\n  Scenario: A retry after a timed-out charge does not charge again\n    Given a charge that succeeded at the provider but timed out for us\n    When the customer retries the payment\n    Then no second charge is created\n```\n\n## What I need from you\n\n1. **What is `db`** (Postgres/Knex, Prisma, Mongoose, something else)? The claim step has to be a single conditional update, and the exact call depends on the library.\n2. **Which payment provider is behind `payments.charge`,** and can it take an idempotency key? Stripe can, for example.\n3. **What status does an unpaid order have** (`'unpaid'`, `'pending'`, missing)?\n4. **Where do your tests live?** This repo only contains `orders.js`, with no `package.json` or test setup. I can't run a test that fails before the fix and passes after it until I know how tests run.\n\nOnce you answer these and approve the scenarios (or tell me to proceed on assumptions, e.g. Postgres and Stripe), I'll record the bug as BUG-001, add the scenarios to `features/`, write the test, and make the fix."
+}

@@ -1,0 +1,64 @@
+{
+  "id": "tenant-isolation-agentflow-1",
+  "case": "tenant-isolation",
+  "suite": "workflow-checks",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.4.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 49099,
+  "turns": 19,
+  "costUsd": 0.39249120000000004,
+  "usage": {
+    "input_tokens": 14,
+    "cache_creation_input_tokens": 32965,
+    "cache_read_input_tokens": 185276,
+    "output_tokens": 4583,
+    "output_tokens_details": {
+      "thinking_tokens": 1057
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 32965,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1836,
+        "cache_read_input_tokens": 37677,
+        "cache_creation_input_tokens": 2372,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2372
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "README.md",
+    "USAGE.md",
+    "package.json",
+    "src/app.js",
+    "src/notifications/sendOnStatusChange.js",
+    "src/services/userService.js"
+  ],
+  "prompt": "Prevent users from accessing another company's resources.",
+  "result": "I haven't changed any code yet. This repo's rules (`.ai/system/GHERKIN_RULES.md`) count tenant isolation as a behavior change, and it needs your approval before code. Below are what I found and the plan I'm proposing.\n\n## Classification\n**Bug, security-relevant:** company isolation is broken. It goes through `.ai/workflows/bugfix.md`.\n\n## Audit findings (confirmed by reading the code)\n\n| Route | Company scoping | Issue |\n|---|---|---|\n| `GET /users` (`src/app.js:12`) | ✅ Scoped by `req.user.companyId` from the login token | None |\n| `GET /projects/:id` (`src/app.js:18`) | ❌ `findById(req.params.id)` only | **Cross-company read:** any logged-in user can read any company's project by guessing or listing IDs. |\n| `PATCH /orders/:id/status` (`src/app.js:25`) | ❌ `update(req.params.id, …)` only | **Cross-company write:** any logged-in user can change another company's order status, and that **emails the other company's customer**. |\n| `POST /login` | n/a | None. The token's `companyId` comes from the database, not from the client. |\n\n**Root cause:** both routes look up records by ID alone. Being logged in is treated as being allowed, with no ownership check. The fix is to put the company filter in the database query itself, so other companies' records are never loaded, rather than loading them and checking afterwards (`.ai/checklists/authorization.md`).\n\n**Proposed fix (not applied):**\n- **Projects:** `db.projects.findOne({ where: { id, companyId: req.user.companyId } })`.\n- **Orders:** update only `where: { id, companyId }`. If nothing matches, return 404 and send no event or email.\n\n## Gaps that block testing\n- `src/db`, `src/auth`, `src/events` and `src/mailer` are referenced but **don't exist** in the repo.\n- `bcrypt` and `jsonwebtoken` are imported but not listed in `package.json`.\n- There are **no tests and no `features/` folder**.\n\nSo I can't reproduce either bug or run a failing-first regression test as things stand. Writing tests would mean adding stand-in versions of `db` and `auth`.\n\n## Proposed regression scenarios (draft, for `features/authorization/company-isolation.feature`)\n\n```gherkin\nFeature: Company isolation\n  As a user of a company\n  I want my company's data hidden from and protected against other companies\n  So that no company can read or change another company's resources\n\n  Background:\n    Given company \"Acme\" has project \"Apollo\" and order \"1042\" for customer \"dana@acme.example\"\n    And user \"sam@globex.example\" belongs to company \"Globex\"\n\n  @critical @security @authorization @regression\n  Scenario: A user cannot view another company's project\n    Given \"sam@globex.example\" is signed in\n    When \"sam@globex.example\" requests project \"Apollo\"\n    Then the response reports that the project is not found\n    And no details of project \"Apollo\" are returned\n\n  @critical @security @authorization @regression\n  Scenario: A user cannot change another company's order status\n    Given \"sam@globex.example\" is signed in\n    When \"sam@globex.example\" sets the status of order \"1042\" to \"cancelled\"\n    Then the response reports that the order is not found\n    And order \"1042\" keeps its previous status\n    And \"dana@acme.example\" receives no status email\n\n  @critical @authorization\n  Scenario: A user can view their own company's project\n    Given user \"lee@acme.example\" of company \"Acme\" is signed in\n    When \"lee@acme.example\" requests project \"Apollo\"\n    Then the details of project \"Apollo\" are returned\n```\n\nA matching same-company scenario for order status would also be included.\n\n## Decisions needed\n1. **404 or 403 for another company's resource?** I recommend 404, so nobody can tell that the ID exists in another company.\n2. **Test setup:** may I add stand-in `db` and `auth` modules and use the built-in `node --test` runner, which needs no new dependencies? Or do the real modules exist somewhere else?\n3. **A separate bug I found but am leaving alone:** every order status change emails the customer **twice**. The route calls `notifyStatusChange` directly (`src/app.js:28`), and the `order.statusChanged` listener (`src/notifications/sendOnStatusChange.js:9`) calls it again. Should I record this as its own bug?\n\nOnce you approve the scenarios and answer 1 and 2, I'll record `BUG-001`, write the failing tests, apply the fix and run the tests. I also don't have a file-writing tool in this session, so you'll need to enable one before I can make changes."
+}
