@@ -26,6 +26,8 @@ Operational â€” mitigation first, then the fix follows the bug/release gates (5â
 
 Incident timeline, severity assessment, mitigation record (rollback if used), root-cause analysis, **blameless postmortem** with tracked action items, the regression test that prevents recurrence.
 
+**Tracking (tracked project):** a P0/P1 bug for the cause through intake, postmortem action items as tasks, `RISKS.md` updated, the incident in the weekly report (`../skills/project-management`). On an untracked project the bug is still recorded (`../system/PROJECT_MANAGEMENT_RULES.md`, untracked projects).
+
 ## Validation
 
 Severity correctly assessed and matched to response; mitigation restored service (or rollback executed); root cause identified (not just symptom); a regression test guards recurrence; postmortem is blameless with owned, tracked actions.

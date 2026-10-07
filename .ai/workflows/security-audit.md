@@ -26,6 +26,8 @@ Gate 6 (security & quality review) primarily; feeds Gate 7 if pre-release.
 
 Threat model (if built), security review report (Confirmed vs Potential, severity, location, fix, regression-test path), remediation plan.
 
+**Tracking (tracked project):** each Confirmed finding through bug intake (Critical/High → P0/P1), Potential findings as `TECH-` tasks to verify, new risks in `RISKS.md` (`../system/PROJECT_MANAGEMENT_RULES.md`, recording work).
+
 ## Validation
 
 Relevant surfaces assessed; findings classified with severity and location; no critical/high left unrouted; each fix has a regression test; no secret values in the report; no "secure" claim.

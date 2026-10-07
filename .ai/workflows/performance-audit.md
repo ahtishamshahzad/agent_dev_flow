@@ -26,6 +26,8 @@ Feeds Gate 5/6 quality; a perf fix still passes review and keeps tests green.
 
 Measurement/profile, bottleneck diagnosis, the fix, before/after numbers, a regression guard (alert threshold or test).
 
+**Tracking (tracked project):** a measured regression is a bug through intake; an improvement is a `TECH-` task (`../system/PROJECT_MANAGEMENT_RULES.md`, recording work).
+
 ## Validation
 
 The bottleneck is **measured**, not guessed; the fix targets the dominant contributor; improvement proven under representative load; no correctness/authorization sacrificed for speed; a regression guard is added.

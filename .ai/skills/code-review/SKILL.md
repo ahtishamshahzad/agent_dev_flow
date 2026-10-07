@@ -43,6 +43,7 @@ Evaluate a change for correctness, readability, maintainability, and consistency
 4. Check tests cover the change.
 5. Flag security/perf concerns to the specialist skills.
 6. Report findings (severity, confirmed/suggestion) with `file:line`.
+7. On a tracked project, record them via `project-management`: confirmed defects through bug intake, accepted suggestions as `TECH-` tasks (`../../system/PROJECT_MANAGEMENT_RULES.md`, recording work).
 
 ## Decision Rules
 
@@ -77,7 +78,7 @@ A review report with located, severity-rated findings (confirmed defects vs sugg
 
 ## Related Skills
 
-`security-review`, `performance-review`, `testing-strategy`, `ai-output-review`, `final-quality-audit`, `project-orchestrator`.
+`security-review`, `performance-review`, `testing-strategy`, `ai-output-review`, `final-quality-audit`, `project-orchestrator`, `project-management`.
 
 ## Related Knowledge
 

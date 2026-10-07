@@ -20,11 +20,11 @@ The bug report + reproduction, the affected code path, and the root-cause findin
 
 ## Gates
 
-Gate 5 (regression test exists and passes), Gate 6 (review). Full pipeline gates not re-run for a scoped fix.
+Gate 5 (regression test exists and passes), Gate 6 (review). Full pipeline gates not re-run for a scoped fix — including on an untracked project, where the bug is recorded but not sent through planning (`../system/PROJECT_MANAGEMENT_RULES.md`, untracked projects).
 
 ## Documents Generated
 
-`../work-items/bugs/BUG-<NNN>.md` (root cause, fix plan, resolution), the fix task in the current or next week, a `BUG-LOG.md` row, a development-log entry, the fix, the failing-first regression test, review note.
+`../work-items/bugs/BUG-<NNN>.md` (root cause, fix plan, resolution), a `BUG-LOG.md` row, and — on a tracked project — the fix task in the current or next week plus a development-log entry; the fix, the failing-first regression test, review note.
 
 ## Validation
 

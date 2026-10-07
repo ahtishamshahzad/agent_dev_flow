@@ -95,12 +95,14 @@ Pack skills coordinate with the core skills (e.g. `mobile-performance`/`web-perf
 
 ## Selection guidance (by request type)
 
+On a **tracked** project (`projects/current/CURRENT_STATUS.md` exists), every row below — and any domain-pack skill invoked directly — ends by recording its output through `project-management` (task/bug IDs, week, logs; `../system/PROJECT_MANAGEMENT_RULES.md`, recording work). It is listed explicitly only where it runs first.
+
 | Request type | Typical skills (load only these) |
 |---|---|
 | new project | orchestrator → classification → requirements → application-selection → stack-recommendation → architecture-design → repository-architecture → task-planning → testing-strategy → security-review → git-workflow/github-repository |
 | existing enhancement | orchestrator → existing-project-audit → requirements → (feature/refactor/migration)-planning → task-planning → testing-strategy → review skills |
 | feature | feature-planning → task-planning → testing-strategy → code-review (+ security-review if sensitive) |
-| bug | bug-investigation → testing-strategy → code-review (+ security-review if relevant) |
+| bug | project-management (intake) → bug-investigation → testing-strategy → code-review (+ security-review if relevant) |
 | refactor | refactor-planning → testing-strategy → code-review → performance-review (if perf-driven) |
 | migration | migration-planning → dependency-audit → environment-audit → testing-strategy → release-planning |
 | architecture review | existing-project-audit → architecture-design (assessment) → ai-output-review |

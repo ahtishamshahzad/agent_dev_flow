@@ -151,7 +151,7 @@ Per `system/GIT_WORKFLOW_RULES.md` and `skills/git-workflow`, `github-repository
 
 ## 19. Phase execution
 
-Phases are generated **dynamically** from the actual work (`system/PHASE_GENERATION_RULES.md`), not a fixed template, and tasks get acceptance criteria (`TASK_GENERATION_RULES.md`). To run a phase: read `../AGENTS.md`, `projects/current/` progress, the active phase/tasks, and the relevant skills/references; verify dependencies; run `hooks/before-feature.md`; implement **only the approved phase** in scope; cover the required test cases; run `hooks/after-feature.md`/`after-phase.md`; update `templates/PROGRESS.md`; **stop before the next phase.** Prompt: `prompts/start-phase.md`.
+Phases are generated **dynamically** from the actual work (`system/PHASE_GENERATION_RULES.md`), not a fixed template, and tasks get acceptance criteria (`TASK_GENERATION_RULES.md`). To run a phase: read `../AGENTS.md`, `projects/current/` progress, the active phase/tasks, and the relevant skills/references; verify dependencies; run `hooks/before-feature.md`; implement **only the approved phase** in scope; cover the required test cases; run `hooks/after-feature.md`/`after-phase.md`; update `projects/current/CURRENT_STATUS.md` and the week file (shaped by `templates/PROGRESS.md` and `WEEK_PLAN.md`); **stop before the next phase.** Prompt: `prompts/start-phase.md`.
 
 ## 20. Release workflow
 
@@ -166,7 +166,7 @@ Follow `workflows/release.md` (and `deployment.md`). Confirm Gates 1–6, aggreg
 
 ## 22. Versioning
 
-- `VERSION` — current system version (semver): **1.2.0**.
+- `VERSION` — current system version (semver): **1.2.1**.
 - `CHANGELOG.md` — history of changes to **this system** (not to any application built with it).
 - Follows [Semantic Versioning](https://semver.org/): breaking rule/structure changes → major; additive skills/agents/etc. → minor; fixes/clarifications → patch.
 

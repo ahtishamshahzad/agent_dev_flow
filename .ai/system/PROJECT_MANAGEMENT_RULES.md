@@ -114,6 +114,30 @@ When new work arrives mid-project, classify it first: existing scope · bug · c
 - Anything else → create the task(s), estimate, prioritize, map dependencies, assign phase and week, record it in `logs/CHANGE-LOG.md`, and state the timeline impact.
 - If it changes what was approved at Gate 4 (new capability, displaced commitments, or moved dates), flag it **`SCOPE CHANGE`** and get approval before scheduling it. Never fold it silently into a current task.
 
+## Recording work from every workflow
+
+A project is **tracked** once `CURRENT_STATUS.md` exists in `../projects/current/`. On a tracked project, every workflow — and every skill, including domain-pack skills invoked directly — records its output here. No work happens outside a task ID.
+
+| Work | Records |
+|------|---------|
+| Feature, domain-skill build work | Done under its existing `FEAT-`/`TASK-` ID; status in the week file, a development-log entry |
+| Bug | Bug intake (`../skills/project-management`): `BUG-NNN`, priority, fix task, week, `BUG-LOG.md` row |
+| Code / security / performance / testing review or audit finding | **Confirmed defect** → bug intake (Critical/High security finding → P0/P1). **Suggestion or gap** → a `TECH-` task in `BACKLOG`, scheduled only if accepted. Nothing is fixed off the record. |
+| Refactor | `TECH-` tasks, one per reversible step or group of steps |
+| Migration | `TECH-` tasks per step; the cutover as a `DEPLOY-` task |
+| Release, deployment | A `DEPLOY-` task in the week; the outcome in the development log; the release in that week's report |
+| Incident | A P0/P1 bug for the cause; postmortem action items as tasks; `RISKS.md` updated |
+| New or changed scope | Classified per §Scope changes; `CHANGE-LOG.md`; `SCOPE CHANGE` where it alters Gate 4 |
+
+### Untracked projects
+
+Without `CURRENT_STATUS.md` there are no weeks or roadmap to schedule into, and none are invented. A scoped bug fix still follows `../workflows/bugfix.md` (Gates 5–6) and does **not** need full planning first:
+
+- The bug still gets its `BUG-NNN.md` file and a row in `logs/BUG-LOG.md` (create the log if absent) — the duplicate check works from day one.
+- The fix-task and week steps are skipped; the bug file notes "untracked project".
+- Review findings, refactors, and releases keep their usual work items and reports; nothing else is required.
+- Adopting tracking later (`../skills/project-management`, first run) imports the open bugs and work items into the roadmap.
+
 ## What is true
 
 When records disagree, trust in this order: **code → tests → `CURRENT_STATUS.md` → week files → roadmap → older logs.** A task marked `COMPLETED` whose code is not in the repository is not complete — correct the record, don't repeat the claim.
