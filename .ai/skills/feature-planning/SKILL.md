@@ -45,6 +45,7 @@ Plan a feature: define its scope within the architecture, its design decisions, 
 4. Generate tasks (delegate mechanics to `task-planning`).
 5. Attach tests + security requirements.
 6. Record in `../../work-items/features/`.
+7. On a tracked project, hand to `project-management` to assign IDs, a phase, and a week — and to flag `SCOPE CHANGE` if the feature wasn't in the approved plan.
 
 ## Decision Rules
 
@@ -79,7 +80,7 @@ A recorded feature work item with locked scope, acceptance criteria, tasks, a te
 
 ## Related Skills
 
-`task-planning`, `architecture-design`, `testing-strategy`, `security-review`, `code-review`, `project-orchestrator`.
+`task-planning`, `architecture-design`, `testing-strategy`, `security-review`, `code-review`, `project-orchestrator`, `project-management`.
 
 ## Related Knowledge
 

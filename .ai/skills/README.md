@@ -21,7 +21,7 @@ Most work starts at **`project-orchestrator`**, which then loads the right speci
 ### Intake & Planning
 | Skill | Description |
 |-------|-------------|
-| [`request-classification`](request-classification/SKILL.md) | Classify the request into one of the 12 types; selects workflow + gates. |
+| [`request-classification`](request-classification/SKILL.md) | Classify the request into one of the 13 types; selects workflow + gates. |
 | [`requirements-analysis`](requirements-analysis/SKILL.md) | Extract requirements + success criteria; separate confirmed / assumptions / questions. |
 | [`existing-project-audit`](existing-project-audit/SKILL.md) | Inventory an existing repo (structure, stack, apps, tests, security, state) before changing it. |
 
@@ -41,6 +41,11 @@ Most work starts at **`project-orchestrator`**, which then loads the right speci
 | [`bug-investigation`](bug-investigation/SKILL.md) | Audit → reproduce → root cause → minimal fix → regression test → validate. |
 | [`refactor-planning`](refactor-planning/SKILL.md) | Behavior-preserving, test-backed, small reversible steps. |
 | [`migration-planning`](migration-planning/SKILL.md) | Incremental, reversible state change with rollback + cutover. |
+
+### Project Management
+| Skill | Description |
+|-------|-------------|
+| [`project-management`](project-management/SKILL.md) | After Gate 4: roadmap, weekly plans, task/bug IDs and status, bug intake, scope changes, logs, weekly and meeting reports in `projects/current/`. |
 
 ### Review & Quality
 | Skill | Description |
@@ -104,6 +109,7 @@ Pack skills coordinate with the core skills (e.g. `mobile-performance`/`web-perf
 | testing audit | testing-strategy → existing-project-audit |
 | deployment | release-planning → environment-audit → github-repository |
 | release | release-planning → final-quality-audit → git-workflow |
+| project tracking | project-management (+ bug-investigation for a reported bug) |
 | **mobile project** | mobile-stack-selection → expo/react-native-cli-foundation → mobile-navigation → mobile-design-system → mobile-state-management/server-state → (feature skills as needed) → mobile-unit/component-testing (+ mobile-maestro-e2e for critical flows) → mobile-builds → ios/android-readiness → mobile-release. See [`mobile/README.md`](mobile/README.md). |
 | **web project** | application-selection (public web / marketing / customer app / dashboard — each separately) → dashboard-architecture (if dashboard) → web-stack-selection → nextjs/vite-react-foundation → web-routing → web-design-system → web-state-management/server-state → (feature + dashboard skills as needed) → web-unit/component-testing (+ playwright-e2e for critical journeys) → web-deployment. See [`web/README.md`](web/README.md). |
 | **backend project** | backend-stack-selection → express/nestjs-foundation → backend-api-architecture → rest/graphql-api-design + api-contracts → backend-validation + backend-error-handling → backend-authentication + backend-authorization (+ role-permission/ownership) → rate-limiting/captcha on public flows → (feature skills as needed) → backend-unit/integration-testing → backend-security → backend-deployment. See [`backend/README.md`](backend/README.md). |
@@ -115,7 +121,7 @@ Pack skills coordinate with the core skills (e.g. `mobile-performance`/`web-perf
 ## Dependency guidance (how skills relate)
 
 - **`project-orchestrator`** loads the others **one stage at a time** and unloads them after.
-- **Planning skills** (`feature/bug/refactor/migration-planning`) delegate phase/task mechanics to **`task-planning`**.
+- **Planning skills** (`feature/bug/refactor/migration-planning`) delegate phase/task mechanics to **`task-planning`**; approved tasks are scheduled and tracked by **`project-management`**, which also owns bug intake before `bug-investigation` diagnoses.
 - **Review skills** route depth to specialists: `code-review` → `security-review` / `performance-review`; everything → `ai-output-review`; all reviews aggregate into **`final-quality-audit`**.
 - **Audit skills** (`existing-project-audit`, `dependency-audit`, `environment-audit`) feed selection, migration, and review.
 - **Delivery skills** chain: `git-workflow` → `github-repository` → `release-planning`.

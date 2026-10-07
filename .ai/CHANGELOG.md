@@ -2,6 +2,28 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] — 2026-10-07
+
+Additive: a project-management layer on top of the planning pipeline. No gate, rule, or structure removed; existing templates extended in place.
+
+### Added — project management
+
+- `.ai/system/PROJECT_MANAGEMENT_RULES.md` — the one vocabulary every skill uses for tracking: ID prefixes (`TASK`/`FEAT`/`TECH`/`DEPLOY`/`BUG`/`ADR`/`RISK`, never reused), ten task statuses, bug statuses, P0–P3 priority, XS–XL estimates (XL means split), dependency and weekly-scheduling rules, progress derived from verified completed estimate weight rather than asserted, `SCOPE CHANGE` handling, the code → tests → status → weeks → roadmap → logs order of truth, and append-only history.
+- `skills/project-management` — runs after Gate 4: first-run setup, project/feature scheduling, bug intake (duplicate check → `BUG-NNN` → diagnosis via `bug-investigation` → priority → fix task → week → ledger, before any code change), scope changes, week planning and review, status questions, and weekly/meeting reports in business language.
+- Templates: `ROADMAP.md`, `WEEK_PLAN.md`, `WEEKLY_REPORT.md`, `MEETING_NOTES.md`, `PROJECT_LOGS.md` (development log, bug ledger, scope change log).
+- Request type **project tracking** (status, week planning/review, blockers, reports) — handled by the skill directly; adds no scope and re-runs no gates.
+
+### Changed
+
+- Tracking state lives in `.ai/projects/current/` (`PROJECT.md`, `ROADMAP.md`, `CURRENT_STATUS.md`, `DECISIONS.md`, `RISKS.md`, `phases/`, `weekly/`, `reports/`, `meetings/`, `logs/`); bugs stay work items as `work-items/bugs/BUG-NNN.md`. Not a separate `.AI/` tree: on case-insensitive filesystems it would be the same directory as `.ai/`, and on Linux a second one.
+- `project-orchestrator` hands the approved plan to `project-management`, resumes from `CURRENT_STATUS.md`, and routes bugs, new work, and tracking requests through it. `ORCHESTRATION_WORKFLOW` gains a tracking-setup stage after Gate 4.
+- `request-classification` (13 types), `task-planning`, `feature-planning`, `bug-investigation`, `workflows/bugfix`, `TASK_GENERATION_RULES`, `DOCUMENTATION_RULES`, and the `after-feature`/`after-phase` hooks use the shared IDs, statuses, and logs.
+- `BUG`, `TASK`, `PROGRESS` (now `CURRENT_STATUS.md`), `PROJECT_BRIEF` (now also `PROJECT.md`), and `RISK_REGISTER` templates carry the shared fields. Bug severity is now P0–P3.
+
+### Totals
+
+- 178 skills · 13 agents · 13 hooks · 12 workflows · 31 templates · 19 prompts · 18 checklists.
+
 ## [1.1.0] — 2026-09-08
 
 Additive: new rules, skills, and packaging around the 1.0.0 core. No breaking rule or structure changes.

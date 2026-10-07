@@ -41,6 +41,16 @@
 
 - <Blocking question that must be answered before proceeding>
 
+## Delivery *(when kept as `PROJECT.md` in `../projects/current/`)*
+
+- **Platforms / applications:** <from the approved application selection>
+- **Stack:** <link to the approved stack — don't restate it>
+- **Start date:** <YYYY-MM-DD> · **Target completion:** <date or range, with its assumptions>
+- **Team / responsibilities:** <role → area>
+- **Weekly capacity:** <people × days, or the stated assumption>
+- **Important links:** <repo, environments, designs, boards>
+- **Current phase, week, progress:** see `CURRENT_STATUS.md` — not repeated here.
+
 ## Related
 
 - Requirements: `REQUIREMENTS.md` · Selection: `APPLICATION_SELECTION.md` · Workflow: `../workflows/new-project.md`.

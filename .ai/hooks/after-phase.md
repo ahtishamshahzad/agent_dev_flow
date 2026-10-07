@@ -15,7 +15,7 @@ After all tasks in a phase are complete, before moving to the next phase.
 - [ ] Every task in the phase met its acceptance criteria (or exceptions recorded).
 - [ ] Cross-task integration verified — the phase's pieces work together (integration review if the phase ran parallel streams — `../agents/multi-agent-execution.md`).
 - [ ] Tests for the phase pass (or unrun flagged); no critical/high review/security issue left open.
-- [ ] Docs, indexes, changelog, and `../projects/current/` state updated for the phase.
+- [ ] Docs, indexes, changelog, and `../projects/current/` state updated for the phase: phase status in `ROADMAP.md`, unfinished tasks carried forward or cancelled with a reason, `RISKS.md` reviewed, progress recomputed (`../skills/project-management`).
 - [ ] Stale reports archived (`../skills/documentation`); `../generated/` tidy.
 
 ## Failure Conditions

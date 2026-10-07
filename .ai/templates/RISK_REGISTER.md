@@ -1,14 +1,14 @@
 # Risk Register — <project>
 
-> Fill-in template. Track risks with likelihood, impact, owner, and mitigation. Review each phase.
+> Fill-in template. Lives as `RISKS.md` in `../projects/current/`. Track risks with likelihood, impact, owner, and mitigation. Review at every weekly review and phase end (`../skills/project-management`).
 
 - **Date:** <YYYY-MM-DD> · **Last reviewed:** <YYYY-MM-DD>
 
 ## Risks
 
-| # | Risk | Likelihood (L/M/H) | Impact (L/M/H) | Owner | Mitigation / contingency | Status |
-|---|------|--------------------|----------------|-------|--------------------------|--------|
-| 1 | <> | <> | <> | <> | <> | open / mitigated / accepted / closed |
+| ID | Risk | Likelihood (L/M/H) | Impact (L/M/H) | Severity | Owner | Mitigation / contingency | Status |
+|----|------|--------------------|----------------|----------|-------|--------------------------|--------|
+| RISK-001 | <> | <> | <> | <likelihood × impact> | <> | <> | open / mitigated / accepted / closed |
 
 ## Accepted Risks (with rationale)
 

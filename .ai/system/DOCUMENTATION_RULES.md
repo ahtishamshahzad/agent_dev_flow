@@ -10,6 +10,7 @@ Two trees, two jobs. **`.ai/` holds the work**: rules, plans, decisions, work it
 |---|---|
 | System rules (canonical) | `../system/` |
 | Active project state, decisions, phases | `../projects/current/` |
+| Roadmap, weekly plans, status, logs, reports, meetings | `../projects/current/` (`PROJECT_MANAGEMENT_RULES.md`) |
 | Work items (features/bugs/refactors/audits/migrations) | `../work-items/` |
 | Durable, reusable decisions | `../memory/` |
 | Domain/architecture knowledge for current work | `../knowledge/` |

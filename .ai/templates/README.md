@@ -19,13 +19,22 @@ Reusable **document templates** — fill-in-the-blank, tool-neutral. They give c
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Boundaries, data flow, integrations, file-ownership map. |
 | [`REPOSITORY_STRUCTURE.md`](REPOSITORY_STRUCTURE.md) | Single/monorepo layout, shared code. |
 | [`PHASE_PLAN.md`](PHASE_PLAN.md) | Dynamic phases with exit criteria and execution mode. |
-| [`TASK.md`](TASK.md) | A verifiable task with inputs/outputs/acceptance + scope. |
+| [`TASK.md`](TASK.md) | A verifiable task with ID, status, priority, estimate, acceptance + scope. |
+
+### Project Tracking
+| Template | Purpose |
+|----------|---------|
+| [`ROADMAP.md`](ROADMAP.md) | Phases → epics → task IDs with priority, estimate, week, status. |
+| [`WEEK_PLAN.md`](WEEK_PLAN.md) | One week's committed tasks and bugs, deliverables, blockers, end-of-week review. |
+| [`WEEKLY_REPORT.md`](WEEKLY_REPORT.md) | Stakeholder report in business language; verified work only. |
+| [`MEETING_NOTES.md`](MEETING_NOTES.md) | Agenda from the records; decisions and action items after. |
+| [`PROJECT_LOGS.md`](PROJECT_LOGS.md) | Development log, bug ledger, and scope change log — append-only. |
 
 ### Work Items
 | Template | Purpose |
 |----------|---------|
 | [`FEATURE.md`](FEATURE.md) | Feature within architecture, no creep. |
-| [`BUG.md`](BUG.md) | Reproduce → root cause → minimal fix → regression test. |
+| [`BUG.md`](BUG.md) | `BUG-NNN`: priority, week, fix task; reproduce → root cause → minimal fix → regression test. |
 | [`REFACTOR.md`](REFACTOR.md) | Behavior-preserving, small reversible steps. |
 | [`MIGRATION.md`](MIGRATION.md) | Incremental, reversible, backup + verify + cutover. |
 | [`AUDIT.md`](AUDIT.md) | Read-only findings, Confirmed vs Potential. |
@@ -42,8 +51,8 @@ Reusable **document templates** — fill-in-the-blank, tool-neutral. They give c
 | Template | Purpose |
 |----------|---------|
 | [`DECISION_RECORD.md`](DECISION_RECORD.md) | ADR: one decision, options, consequences. |
-| [`RISK_REGISTER.md`](RISK_REGISTER.md) | Risks with likelihood/impact/owner/mitigation. |
-| [`PROGRESS.md`](PROGRESS.md) | Living stage/gate/ownership record for re-entry. |
+| [`RISK_REGISTER.md`](RISK_REGISTER.md) | Risks with likelihood/impact/severity/owner/mitigation (`RISKS.md`). |
+| [`PROGRESS.md`](PROGRESS.md) | `CURRENT_STATUS.md`: stage, gates, phase, week, progress, blockers — read first on re-entry. |
 | [`PR_DESCRIPTION.md`](PR_DESCRIPTION.md) | What/why, testing, risks, checklist. |
 | [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md) | Evidence-based Gate 7 readiness + approval. |
 | [`INCIDENT_REPORT.md`](INCIDENT_REPORT.md) | Timeline, root cause, blameless postmortem + regression. |

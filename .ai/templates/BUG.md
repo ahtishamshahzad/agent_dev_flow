@@ -1,12 +1,17 @@
-# Bug — <short title>
+# BUG-<NNN> — <short title>
 
-> Fill-in work-item template. Audit → reproduce → root cause → minimal fix → regression test → validate (`../skills/bug-investigation`).
+> Fill-in work-item template, saved as `../work-items/bugs/BUG-<NNN>.md`. Audit → reproduce → root cause → minimal fix → regression test → validate (`../skills/bug-investigation`). Intake, scheduling, and the ledger: `../skills/project-management`. Statuses and priorities: `../system/PROJECT_MANAGEMENT_RULES.md`.
 
-- **Date:** <YYYY-MM-DD> · **Severity:** critical | high | medium | low · **Status:** open | fixed | verified
+- **Status:** OPEN | IN_PROGRESS | FIXED | VERIFIED | CLOSED | DUPLICATE of BUG-<NNN> | WONT_FIX
+- **Priority:** P0 | P1 | P2 | P3 · **Estimate:** XS | S | M | L
+- **Reported:** <YYYY-MM-DD> by <user | client | QA | developer> · **Environment:** development | staging | production
+- **Platform:** <web | iOS | Android | backend | admin>
+- **Fix task:** <TASK-NNN> · **Week:** WEEK-<NN> · **Ledger:** row in `logs/BUG-LOG.md` in `../projects/current/`
 
 ## Summary
 
-<What's wrong, observed vs expected.>
+- **Expected:** <what should happen>
+- **Actual:** <what happens>
 
 ## Reproduction
 
@@ -17,7 +22,11 @@
 
 ## Root Cause
 
-<The actual cause, not the symptom. File:line where relevant.>
+<The actual cause, not the symptom. File:line where relevant. Mark "hypothesis" until confirmed.>
+
+## Affected Areas
+
+- <file / component / API / table / service>
 
 ## Fix
 
@@ -41,6 +50,10 @@ Scenario: <the behavior that was broken, stated correctly>
 ## Validation
 
 - [ ] Root cause addressed · [ ] regression test in CI · [ ] no scope creep · [ ] nearby behavior unchanged
+
+## Resolution
+
+- **Resolved:** <YYYY-MM-DD> · **How:** <one line> · **Verified in:** <environment>
 
 ## Related
 

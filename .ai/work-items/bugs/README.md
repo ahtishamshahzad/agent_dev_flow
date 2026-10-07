@@ -13,14 +13,14 @@ Bug work items: defects to diagnose and fix without regressing behavior.
 
 ## Each bug records
 
-- Title, severity, affected application/area, link to project/phase.
-- Repro steps and root-cause finding.
-- Fix tasks with acceptance criteria; the regression test.
+One file per bug, `BUG-NNN.md`, from `../../templates/BUG.md`:
+
+- ID, title, P0–P3 priority, status, reporter, environment, platform.
+- Repro steps and root-cause finding; affected areas.
+- The fix task ID, the week it is scheduled in, and the regression test.
+
+Before opening a bug, search for an existing one — a duplicate is updated, not re-opened (`../../skills/project-management`, bug intake).
 
 ## Index
 
-_No bugs yet._
-
-| Bug | Severity | Status |
-|-----|----------|--------|
-| _(none yet)_ | — | — |
+The bug ledger is `logs/BUG-LOG.md` in `../../projects/current/` once a project is tracked — one row per bug, kept there rather than here so there is a single index. _No bugs yet._

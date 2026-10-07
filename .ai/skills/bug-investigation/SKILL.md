@@ -7,7 +7,7 @@ description: Use to diagnose and plan the fix for a defect — audit, reproduce,
 
 ## Purpose
 
-Diagnose a defect and plan its fix without regressing behavior: reproduce it, find the true root cause, fix minimally, and pin it with a regression test. Produces a bug work item in `../../work-items/bugs/`.
+Diagnose a defect and plan its fix without regressing behavior: reproduce it, find the true root cause, fix minimally, and pin it with a regression test. Produces a bug work item at `../../work-items/bugs/BUG-<NNN>.md`. Intake (duplicate check, ID, priority, week, ledger) is owned by `project-management`; this skill owns the diagnosis.
 
 ## When to Use
 
@@ -37,12 +37,12 @@ Diagnose a defect and plan its fix without regressing behavior: reproduce it, fi
 
 ## Required Workflow
 
-1. Gather symptoms + environment.
+1. Gather symptoms + environment; confirm the bug has its `BUG-NNN` record and is not a duplicate (`project-management` intake).
 2. Reproduce (record the repro).
 3. Trace to root cause.
 4. Plan the minimal fix + regression test.
 5. Define validation steps.
-6. Record the bug work item (severity, repro, cause, fix, test).
+6. Record the bug work item (P0–P3 priority, repro, cause, fix, test) and hand back to `project-management` to schedule the fix task and update the ledger.
 
 ## Decision Rules
 
@@ -79,7 +79,7 @@ A recorded bug work item with severity, reproduction, confirmed root cause, a mi
 
 ## Related Skills
 
-`existing-project-audit`, `task-planning`, `testing-strategy`, `code-review`, `security-review` (if security-relevant), `project-orchestrator`.
+`existing-project-audit`, `task-planning`, `testing-strategy`, `code-review`, `security-review` (if security-relevant), `project-orchestrator`, `project-management` (intake, scheduling, ledger).
 
 ## Related Knowledge
 

@@ -12,15 +12,15 @@ It is **documentation and governance**, not application code: no dependencies, n
 
 | Layer | Count | Where |
 |-------|-------|-------|
-| **Skills** (reusable capability modules) | **177** | [`.ai/skills/`](.ai/skills/README.md) |
+| **Skills** (reusable capability modules) | **178** | [`.ai/skills/`](.ai/skills/README.md) |
 | **Agents** (roles for multi-agent runs) | 13 | [`.ai/agents/`](.ai/agents/README.md) |
 | **Hooks** (tool-neutral lifecycle checklists) | 13 | [`.ai/hooks/`](.ai/hooks/README.md) |
 | **Workflows** (per request type) | 12 | [`.ai/workflows/`](.ai/workflows/README.md) |
-| **Templates** (fill-in documents) | 26 | [`.ai/templates/`](.ai/templates/README.md) |
+| **Templates** (fill-in documents) | 31 | [`.ai/templates/`](.ai/templates/README.md) |
 | **Prompts** (tool-neutral starters) | 19 | [`.ai/prompts/`](.ai/prompts/README.md) |
 | **Checklists** (verifiable gate/hook checks) | 18 | [`.ai/checklists/`](.ai/checklists/README.md) |
 
-Skills are organized into **8 packs**: core (27), mobile (36), web & dashboard (26), backend (30), database (15), testing (15), devops (16), security (12). Plus system rules, knowledge, memory, and references — all in [`.ai/`](.ai/README.md).
+Skills are organized into **8 packs**: core (28), mobile (36), web & dashboard (26), backend (30), database (15), testing (15), devops (16), security (12). Plus system rules, knowledge, memory, and references — all in [`.ai/`](.ai/README.md).
 
 ## Install
 
@@ -94,8 +94,22 @@ Request → Classify → Requirements → (Audit if repo exists) → Application
 ──── GATE: you approve applications + stack ────
 → Architecture → Dynamic phases → Tasks
 ──── GATE: you approve phases + tasks ────
-→ Implement → Test → Review → Release
+→ Track (roadmap, IDs, weekly plan) → Implement → Test → Review → Release
 ```
+
+### After approval: track it week by week
+
+Once the plan is approved, `project-management` keeps a living record in `.ai/projects/current/`: a roadmap, one plan per week, a unique ID and status for every task and bug, development/bug/scope-change logs, risks, decisions, and reports a client can read.
+
+```
+Fix this bug: <describe it>          → duplicate check, BUG-NNN, root cause, priority, week, bug log — then fix
+Plan next week.                      → carry-forward + P0 bugs + ready tasks, sized to capacity
+Update project status.               → CURRENT_STATUS.md reconciled against the code
+What are the current blockers?
+Prepare weekly report. / Prepare meeting report.   → business language, verified work only
+```
+
+New work that changes the approved plan is flagged **`SCOPE CHANGE`** and comes back to you for approval. Rules: [`.ai/system/PROJECT_MANAGEMENT_RULES.md`](.ai/system/PROJECT_MANAGEMENT_RULES.md).
 
 > **`.ai/` must be present in the project.** Skills reference sibling paths inside it and write your project's state to `.ai/projects/current/`. Claude Code plugins add native skill invocation on top — they do not replace the files.
 
@@ -105,6 +119,7 @@ Request → Classify → Requirements → (Audit if repo exists) → Application
 - **Load only what you need** — the minimum relevant skills, one stage at a time.
 - **Everything is enforced server-side**; client checks are UX. Authorization is distinct from authentication and from abuse prevention.
 - **Multi-agent is optional** and only for genuinely independent work with non-overlapping file ownership — conflicts are prevented by construction, never used just because it's possible.
+- **Records claim only verified work** — the code outranks the status file; progress is derived, never asserted; logs are append-only.
 - **Reviews report Confirmed vs Potential**, never print secrets, and never claim a system is "secure."
 - **`.ai/` is canonical**; editor adapters are thin pointers that never duplicate it.
 

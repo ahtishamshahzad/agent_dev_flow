@@ -8,7 +8,7 @@
 
 ## Skills Required
 
-`../skills/bug-investigation`, `../skills/testing/regression-testing` (+ `../skills/security/security-regression-testing` if security-relevant), `../skills/testing/gherkin-specifications` (the regression scenario), the relevant domain skill for the fix area, `../skills/code-review`.
+`../skills/project-management` (intake: duplicate check, `BUG-NNN`, priority, week, ledger), `../skills/bug-investigation`, `../skills/testing/regression-testing` (+ `../skills/security/security-regression-testing` if security-relevant), `../skills/testing/gherkin-specifications` (the regression scenario), the relevant domain skill for the fix area, `../skills/code-review`.
 
 ## Agents Involved
 
@@ -24,7 +24,7 @@ Gate 5 (regression test exists and passes), Gate 6 (review). Full pipeline gates
 
 ## Documents Generated
 
-Root-cause note, the fix, the failing-first regression test, review note.
+`../work-items/bugs/BUG-<NNN>.md` (root cause, fix plan, resolution), the fix task in the current or next week, a `BUG-LOG.md` row, a development-log entry, the fix, the failing-first regression test, review note.
 
 ## Validation
 

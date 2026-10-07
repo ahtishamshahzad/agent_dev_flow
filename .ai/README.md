@@ -32,7 +32,7 @@ Adapters never duplicate the system — they tell the editor to operate through 
 The system is layered; each layer has one job:
 
 - **`system/`** — the brain: non-negotiable operating rules, the orchestration pipeline, selection rules, and the quality gates.
-- **`skills/`** — 177 reusable capability modules (core + mobile/web/backend/database/testing/devops/security packs), loaded selectively.
+- **`skills/`** — 178 reusable capability modules (core + mobile/web/backend/database/testing/devops/security packs), loaded selectively.
 - **`agents/`** — 13 role definitions for optional multi-agent runs, with explicit file ownership.
 - **`hooks/`** — 13 tool-neutral lifecycle checklists (before/after events).
 - **`workflows/`** — 12 per-request-type flows keyed to classification.
@@ -166,7 +166,7 @@ Follow `workflows/release.md` (and `deployment.md`). Confirm Gates 1–6, aggreg
 
 ## 22. Versioning
 
-- `VERSION` — current system version (semver): **1.1.0**.
+- `VERSION` — current system version (semver): **1.2.0**.
 - `CHANGELOG.md` — history of changes to **this system** (not to any application built with it).
 - Follows [Semantic Versioning](https://semver.org/): breaking rule/structure changes → major; additive skills/agents/etc. → minor; fixes/clarifications → patch.
 

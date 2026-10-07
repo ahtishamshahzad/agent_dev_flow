@@ -1,8 +1,10 @@
-# Task — <task id / title>
+# <TASK|FEAT|TECH|DEPLOY>-<NNN> — <title>
 
-> Fill-in template. A concrete, verifiable unit of work with inputs, outputs, and acceptance criteria (`../system/TASK_GENERATION_RULES.md`).
+> Fill-in template. A concrete, verifiable unit of work with inputs, outputs, and acceptance criteria (`../system/TASK_GENERATION_RULES.md`). IDs, statuses, priorities, estimates: `../system/PROJECT_MANAGEMENT_RULES.md`.
 
-- **Phase:** <#> · **Owner (agent/role):** <> · **Status:** todo | in-progress | done | blocked
+- **Phase:** PHASE-<NN> · **Week:** WEEK-<NN> · **Owner (agent/role):** <>
+- **Status:** BACKLOG | PLANNED | READY | IN_PROGRESS | BLOCKED | IN_REVIEW | TESTING | COMPLETED | CANCELLED | CARRIED_FORWARD
+- **Priority:** P0 | P1 | P2 | P3 · **Estimate:** XS | S | M | L (split XL) · **Depends on:** <IDs> | none · **Bug:** BUG-<NNN> | —
 
 ## Description
 

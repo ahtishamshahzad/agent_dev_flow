@@ -1,6 +1,6 @@
 ---
 name: project-orchestrator
-description: Use as the lead skill for any non-trivial request. It drives the full request→approval pipeline (classify, audit, requirements, applications, stack, architecture, phases, tasks) and coordinates specialist skills. It plans and delegates; it does not implement every domain itself, and it stops before implementation until gates are approved.
+description: Use as the lead skill for any non-trivial request. It drives the full request→approval pipeline (classify, audit, requirements, applications, stack, architecture, phases, tasks) and coordinates specialist skills. It plans and delegates; it does not implement every domain itself, and it stops before implementation until gates are approved. After approval it hands the plan to project-management for weekly tracking.
 ---
 
 # Project Orchestrator
@@ -19,7 +19,7 @@ The orchestrator turns a raw request into an approved plan by running the canoni
 ## Inputs
 
 - The user request (verbatim) and any attached files, links, or repo.
-- Current state in `../../projects/current/` (if a project is active).
+- Current state in `../../projects/current/` (if a project is active) — `CURRENT_STATUS.md` first.
 - The system rules in `../../system/` (canonical).
 
 ## Discovery Questions
@@ -47,6 +47,8 @@ Ask only what blocks a correct plan:
 12. **Add testing and security requirements** (`testing-strategy`, `security-review`).
 13. **Propose Git and GitHub workflow** (`git-workflow`, `github-repository`).
 14. **Stop before implementation** until Gate 4 is approved.
+15. **Hand off to tracking** — on approval, `project-management` assigns IDs and estimates and writes the roadmap and first week (`../../system/PROJECT_MANAGEMENT_RULES.md`).
+16. **Route tracking requests** — status, week planning/review, blockers, reports, and meetings (type *project tracking*) go straight to `project-management`; bugs and mid-project additions go through its intake so they get an ID, a week, and a scope check.
 
 The orchestrator **coordinates specialists**; it must not become the implementation agent for every domain.
 
@@ -66,10 +68,13 @@ Request
  → testing-strategy + security-review requirements
  → git-workflow + github-repository proposal
  ── GATE 4: user approval (phases + tasks) ──
- → STOP. Hand off to specialists for implementation.
+ → project-management: IDs, estimates, ROADMAP, PHASE-NN, WEEK-01, CURRENT_STATUS
+ → STOP. Hand off to specialists for implementation, week by week.
 ```
 
-Record stage and gate status in `../../projects/current/` after each stage.
+Record stage and gate status in `CURRENT_STATUS.md` in `../../projects/current/` after each stage.
+
+**Re-entry:** if `CURRENT_STATUS.md` exists, resume from it — never restart the pipeline. A project already past Gate 4 is in tracking: route the request by type instead of re-planning.
 
 ## Decision Rules
 
@@ -78,6 +83,8 @@ Record stage and gate status in `../../projects/current/` after each stage.
 - If work divides safely and parallelism helps → propose multi-agent (`../../system/MULTI_AGENT_RULES.md`); else single-agent.
 - If a specialist skill covers a stage → delegate; do not reimplement its logic inline.
 - If a gate's inputs are unresolved → stop at the gate; do not "proceed to be helpful."
+- If the request is a bug or new work on a tracked project → `project-management` intake first (duplicate check, ID, priority, week); new scope that changes the approved plan returns here as a `SCOPE CHANGE` for Gate 4.
+- If the request only asks about or updates progress → `project-management`; no gates re-run.
 
 ## Rules
 
@@ -109,6 +116,7 @@ Record stage and gate status in `../../projects/current/` after each stage.
 - [ ] Testing + security requirements attached.
 - [ ] Git/GitHub workflow proposed.
 - [ ] Stopped before implementation pending Gate 4.
+- [ ] After approval: roadmap, IDs, and the first week handed to `project-management`.
 
 ## Definition of Done
 
@@ -116,7 +124,7 @@ A complete, approved plan exists in `../../projects/current/`: classification, r
 
 ## Related Skills
 
-`request-classification`, `existing-project-audit`, `requirements-analysis`, `application-selection`, `stack-recommendation`, `architecture-design`, `repository-architecture`, `task-planning`, `feature-planning`, `bug-investigation`, `refactor-planning`, `migration-planning`, `testing-strategy`, `security-review`, `git-workflow`, `github-repository`, `ai-output-review`.
+`request-classification`, `existing-project-audit`, `requirements-analysis`, `application-selection`, `stack-recommendation`, `architecture-design`, `repository-architecture`, `task-planning`, `project-management`, `feature-planning`, `bug-investigation`, `refactor-planning`, `migration-planning`, `testing-strategy`, `security-review`, `git-workflow`, `github-repository`, `ai-output-review`.
 
 ## Related Knowledge
 
@@ -131,7 +139,7 @@ A complete, approved plan exists in `../../projects/current/`: classification, r
 - **Requires:** the request, `../../system/OPERATING_RULES.md`, `ORCHESTRATION_WORKFLOW.md`, `QUALITY_GATES.md`, and `../../projects/current/`.
 - **Does not require:** application source detail, unrelated references, historical work items, or every other skill's body.
 - **May load:** the specialist skill for the **current** stage only.
-- **Stop when:** the plan is approved (Gate 4) — hand off; do not implement.
+- **Stop when:** the plan is approved (Gate 4) and handed to `project-management` — do not implement.
 
 ## Token Efficiency Guidance
 
