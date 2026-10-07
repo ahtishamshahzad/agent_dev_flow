@@ -16,6 +16,7 @@ Then load **only** the relevant `.ai/skills/` (via the index), the active `.ai/w
 - `.ai/` is canonical; this file stays thin.
 - No application code, dependency install, or stack choice before the user-approval gates in `.ai/system/QUALITY_GATES.md`.
 - Classify the request, then follow the pipeline in `.ai/system/ORCHESTRATION_WORKFLOW.md`.
+- Behavior first: approved Gherkin scenarios before any behavior-changing work (`.ai/system/GHERKIN_RULES.md`).
 - Applications/stack are decisions (`.ai/system/APPLICATION_SELECTION_RULES.md`, `STACK_DECISION_RULES.md`); phases are dynamic (`PHASE_GENERATION_RULES.md`).
 - Multi-agent optional/controlled (`.ai/system/MULTI_AGENT_RULES.md`); hooks tool-neutral (`HOOK_RULES.md`).
 - Security + git rules apply (`.ai/system/SECURITY_RULES.md`, `GIT_WORKFLOW_RULES.md`). Do not create a remote repo or commit/push without explicit approval.

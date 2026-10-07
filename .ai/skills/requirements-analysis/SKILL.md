@@ -40,7 +40,7 @@ Turn a request into a clear requirement baseline: what must be true for success,
 1. Read the classified request + audit findings.
 2. Draft functional + non-functional requirements.
 3. Sort every statement into Confirmed / Assumption / Question.
-4. Define success criteria.
+4. Define success criteria, and write each acceptance criterion **as** a Gherkin scenario or map it one-to-one to one (`../../system/GHERKIN_RULES.md`) — e.g. "valid reset token works · expired token rejected · invalid token rejected" become three scenarios. Requirements and scenarios must never contradict.
 5. Surface blocking questions to the user; proceed on stated assumptions for non-blocking gaps.
 6. Record the baseline in `../../projects/current/`.
 

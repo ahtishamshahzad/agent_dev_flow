@@ -39,8 +39,8 @@ Plan a feature: define its scope within the architecture, its design decisions, 
 
 ## Required Workflow
 
-1. Read requirements + architecture.
-2. Lock scope (in/out) and acceptance criteria.
+1. Read requirements + architecture, and the existing scenarios for the area.
+2. Lock scope (in/out) and acceptance criteria **as Gherkin scenarios** — happy, invalid, error, authorization denial, and the relevant edge cases — approved at Gate 2 before design (`../../system/GHERKIN_RULES.md`). The approved scenarios *are* the scope.
 3. Identify affected apps/modules and contracts.
 4. Generate tasks (delegate mechanics to `task-planning`).
 5. Attach tests + security requirements.

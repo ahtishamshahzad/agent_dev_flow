@@ -108,7 +108,7 @@ Overall progress is **derived, not asserted**: the sum of estimate weights of `C
 
 ## Scope changes
 
-When new work arrives mid-project, classify it first: existing scope · bug · change request · new feature · technical debt · enhancement.
+Behavior not covered by an approved Gherkin scenario is the trigger (`GHERKIN_RULES.md`, scope control). When new work arrives mid-project, classify it first: existing scope · bug · change request · new feature · technical debt · enhancement.
 
 - Existing scope or bug → track normally.
 - Anything else → create the task(s), estimate, prioritize, map dependencies, assign phase and week, record it in `logs/CHANGE-LOG.md`, and state the timeline impact.

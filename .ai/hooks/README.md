@@ -10,7 +10,7 @@ Each hook documents: **trigger**, **required inputs**, **checks**, **failure con
 | Hook | Trigger | Purpose |
 |------|---------|---------|
 | [`before-discovery`](before-discovery.md) | Start of intake | Classifiable request; audit-first if a codebase exists; resume existing state. |
-| [`before-architecture`](before-architecture.md) | Before architecture | Gate 1 met; apps+stack approved (Gate 2); no code yet. |
+| [`before-architecture`](before-architecture.md) | Before architecture | Gate 1 met; behavior scenarios (+ apps/stack) approved (Gate 2); no code yet. |
 | [`before-feature`](before-feature.md) | Before feature build | Gate 4 approved; scoped; disjoint scope + contracts if parallel. |
 | [`before-bugfix`](before-bugfix.md) | Before a bug fix | Reproduced; root cause; minimal scope; failing-first regression test planned. |
 | [`before-refactor`](before-refactor.md) | Before a refactor | Behavior-preserving; test safety net; small reversible steps. |

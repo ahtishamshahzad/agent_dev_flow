@@ -17,7 +17,7 @@ const NPM = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'agentflow-pack-'));
 after(() => fs.rmSync(scratch, { recursive: true, force: true }));
 
-function sh(cmd, args, cwd) {
+function sh(cmd, args, cwd = ROOT) {
   const r = spawnSync(cmd, args, { cwd, encoding: 'utf8' });
   assert.strictEqual(r.status, 0, `${cmd} ${args.join(' ')}\n${r.stderr}`);
   return r.stdout;
@@ -43,6 +43,13 @@ test('the packed tarball installs a working system', () => {
     'AGENTS.md', 'CLAUDE.md', 'USAGE.md', 'QUICK_START.md',
     '.cursor/rules/project.mdc', '.windsurf/rules/project.md', '.github/copilot-instructions.md',
   ]) assert.ok(fs.existsSync(path.join(project, rel)), `missing ${rel} after install from tarball`);
+
+  // The packaged linter works on a project's own feature files.
+  const features = path.join(project, 'features');
+  fs.mkdirSync(features);
+  fs.writeFileSync(path.join(features, 'sign-in.feature'),
+    'Feature: Sign in\n\n  Scenario: Member signs in\n    Given Ana has an account\n    When Ana signs in\n    Then Ana sees her dashboard\n');
+  assert.match(sh(process.execPath, [cli, 'gherkin', 'validate'], project), /0 error\(s\)/);
 
   const files = info.files.map((f) => f.path);
   assert.ok(!files.some((f) => f.startsWith('test/')), 'tests are not shipped');

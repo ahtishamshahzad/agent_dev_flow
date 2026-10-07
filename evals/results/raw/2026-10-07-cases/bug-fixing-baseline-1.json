@@ -1,0 +1,53 @@
+{
+  "id": "bug-fixing-baseline-1",
+  "case": "bug-fixing",
+  "suite": "cases",
+  "arm": "baseline",
+  "run": 1,
+  "agentflowVersion": "1.4.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 21831,
+  "turns": 3,
+  "costUsd": 0.0988552,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 8091,
+    "cache_read_input_tokens": 32916,
+    "output_tokens": 1376,
+    "output_tokens_details": {
+      "thinking_tokens": 127
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 8091,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1208,
+        "cache_read_input_tokens": 13916,
+        "cache_creation_input_tokens": 1259,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1259
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "prompt": "Bug: Customers sometimes get charged twice. It seems to happen when the payment page is slow. Can you fix it? The payment route is in orders.js.",
+  "result": "There's a race condition in the route. It checks the status, then charges, then marks the order paid, and none of that happens in one atomic step:\n\n```js\nconst order = await db.orders.find(req.params.id);\nif (order.status === 'paid') return res.status(409)...   // check\nconst charge = await payments.charge(...);              // slow\nawait db.orders.update(order.id, { status: 'paid', ... }); // mark paid\n```\n\nWhen the payment page is slow, the customer clicks Pay again, the browser retries, or a proxy times out and resends. The second request reads the order while the first charge is still in progress. The status is still not `'paid'`, so the check passes and the customer is charged again. That's why it only happens when things are slow.\n\nI can't edit files in this session, so here is the fix to paste into `orders.js`:\n\n```js\n// orders.js\napp.post('/orders/:id/pay', async (req, res) => {\n  // Atomically claim the order: only one request can move it out of 'pending'.\n  const claimed = await db.orders.updateWhere(\n    { id: req.params.id, status: 'pending' },\n    { status: 'processing' }\n  );\n  if (claimed.count === 0) return res.status(409).send('Already paid or in progress');\n\n  const order = await db.orders.find(req.params.id);\n  try {\n    // Idempotency key: the provider returns the original charge instead of charging twice.\n    const charge = await payments.charge(order.customerId, order.total, {\n      idempotencyKey: `order-${order.id}`,\n    });\n    await db.orders.update(order.id, { status: 'paid', chargeId: charge.id });\n    res.send({ ok: true });\n  } catch (err) {\n    // Release the claim so the customer can retry.\n    await db.orders.update(order.id, { status: 'pending' });\n    throw err;\n  }\n});\n```\n\nThe fix works in two layers:\n1. **An atomic claim in the database.** The status check and the update become one conditional write (`UPDATE orders SET status='processing' WHERE id=? AND status='pending'`). Only one request can win, and any other request gets a 409.\n2. **An idempotency key on the charge.** If the same charge is sent twice anyway (a network retry, or a crash after charging but before saving), the provider returns the original charge instead of creating a new one. Stripe and most other providers support this.\n\nYou'll need to adapt a few things, because the file only shows part of the setup:\n- `db.orders.updateWhere` and its `count` result are placeholders. Use whatever conditional update your database layer has, such as `updateOne` with a filter in Mongo, `UPDATE ... WHERE ... RETURNING` in SQL, or `updateMany` and `count` in Prisma.\n- I've assumed unpaid orders have the status `'pending'`. Use your real value.\n- Check how your `payments.charge` wrapper accepts an idempotency key. In Stripe it's the `idempotencyKey` request option.\n- One edge case: if the server crashes between the charge and the final update, the order stays in `'processing'`. The idempotency key stops a double charge if it's retried, but you may want a cleanup job that checks stuck orders against the provider.\n- On the frontend, disabling the Pay button after the first click helps, but it doesn't replace the server-side fix."
+}

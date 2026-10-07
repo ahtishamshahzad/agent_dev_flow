@@ -6,7 +6,8 @@
 
 - [ ] Applications selected with justification; nothing auto-scaffolded.
 - [ ] Stack recommended **per area** with alternatives; database paired with a data layer (no DB-vs-ORM comparison).
-- [ ] **Gate 2 user approval recorded** for applications + stack.
+- [ ] **Gate 2 user approval recorded** for the behavior (Gherkin scenarios) and, when new or changing, applications + stack.
+- [ ] Every approved scenario's preconditions, failures, and edge cases have a home in the design (`../system/GHERKIN_RULES.md`).
 - [ ] Module/domain boundaries, data flow, and integration points defined.
 - [ ] Cross-cutting concerns addressed: authN/authZ (server-enforced), validation, error handling, config/secrets, observability.
 - [ ] A **domain → file-ownership boundary map** exists (enables disjoint parallel agents).

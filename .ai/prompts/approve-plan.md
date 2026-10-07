@@ -6,7 +6,7 @@
 
 I am reviewing the plan at a **gate** (`.ai/system/QUALITY_GATES.md`).
 
-**Gate:** <2 — applications + stack | 4 — phases + tasks>
+**Gate:** <2 — behavior scenarios (+ applications + stack) | 4 — phases + tasks>
 **Decision:** <approve | approve with changes | reject>
 **Changes / conditions (if any):** <>
 

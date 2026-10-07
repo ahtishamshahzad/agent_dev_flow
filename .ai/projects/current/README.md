@@ -36,7 +36,7 @@ Bugs themselves are work items — `BUG-NNN.md` in `../../work-items/bugs/`, ind
 | Gate | Status | Approved by / date | Notes |
 |------|--------|--------------------|-------|
 | 1. Requirements | ☐ pending | — | — |
-| 2. Application & stack (user approval) | ☐ pending | — | — |
+| 2. Behavior + application & stack (user approval) | ☐ pending | — | — |
 | 3. Architecture | ☐ pending | — | — |
 | 4. Implementation readiness (user approval) | ☐ pending | — | — |
 | 5. Testing | ☐ pending | — | — |

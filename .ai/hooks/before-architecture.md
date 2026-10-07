@@ -15,12 +15,13 @@ Before architecture design starts — i.e. after requirements and after the appl
 
 - [ ] Gate 1 satisfied: requirements clear, unknowns resolved or explicitly assumed, repo audited if one exists.
 - [ ] Applications selected with justification; stack recommended per area; database paired with a data layer (not compared to an ORM).
-- [ ] **Gate 2 user approval recorded** in `../projects/current/` — applications + stack approved.
+- [ ] The behavior change is specified as Gherkin scenarios — success, failure, relevant edge cases — or recorded as having no observable change (`../system/GHERKIN_RULES.md`).
+- [ ] **Gate 2 user approval recorded** in `../projects/current/` — the scenarios, plus applications + stack when new or changing.
 - [ ] No application code has been written yet (no code before the gates).
 
 ## Failure Conditions
 
-- Architecture being started without recorded Gate 2 approval.
+- Architecture being started without recorded Gate 2 approval, or before the behavior is specified.
 - Stack decisions incoherent (e.g. database vs ORM comparison) or unjustified.
 - Application code already written before approval.
 

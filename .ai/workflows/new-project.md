@@ -9,6 +9,7 @@
 ## Skills Required (loaded per stage, not all at once)
 
 - Intake: `../skills/request-classification`, `../skills/requirements-analysis`.
+- Behavior: `../skills/testing/gherkin-specifications` — the feature scenarios, written before architecture (`../system/GHERKIN_RULES.md`).
 - Selection/architecture: `../skills/application-selection`, `../skills/stack-recommendation`, `../skills/architecture-design`, `../skills/repository-architecture` (+ domain selection skills as areas demand).
 - Planning: `../skills/task-planning`.
 - Build: the relevant domain packs (`../skills/<pack>/` — backend, database, mobile, web, testing, devops, security) — **only the areas selected**.
@@ -24,14 +25,14 @@ Requirements, selection/stack decisions, architecture + file-ownership boundarie
 
 ## Gates
 
-All seven. **Gate 2** (apps+stack) and **Gate 4** (phases+tasks) require explicit user approval — no code before both.
+All seven. **Gate 2** (behavior scenarios + apps + stack) and **Gate 4** (phases + tasks) require explicit user approval — no code before both.
 
 ## Documents Generated
 
 `docs/` is created with the applications (one folder per app, indexed) — `../skills/application-documentation`.
 
 
-Requirements doc, application+stack decision, architecture doc, repository layout, phases+tasks, test plan, review + security reports, release-readiness go/no-go — in `../projects/current/` and `../generated/`.
+Requirements doc, approved `features/<area>/*.feature` scenarios, application+stack decision, architecture doc, repository layout, phases+tasks, test plan, review + security reports, release-readiness go/no-go — in `../projects/current/` and `../generated/`.
 
 **Tracking:** after Gate 4, `../skills/project-management` turns the approved plan into `ROADMAP.md`, `PHASE-NN`, `WEEK-01`, and `CURRENT_STATUS.md`; from then on every task, bug, and release is recorded per `../system/PROJECT_MANAGEMENT_RULES.md` (recording work).
 
@@ -46,6 +47,7 @@ Between stages via each agent's Handoff Format; final handoff is the release-rea
 ## Stop Condition
 
 - **Stop** at Gate 2 and Gate 4 until the user approves.
+- **Stop** before architecture if the behavior has no scenarios, or before release if any `@critical` scenario lacks a passing test.
 - **Stop** if any gate fails — report with evidence, fix or return to the user; do not advance.
 - **Complete** when the approved scope is built, validated, and released under explicit approval (or handed off ready to release).
 

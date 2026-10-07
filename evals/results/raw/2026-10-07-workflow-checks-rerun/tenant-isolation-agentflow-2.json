@@ -1,0 +1,64 @@
+{
+  "id": "tenant-isolation-agentflow-2",
+  "case": "tenant-isolation",
+  "suite": "workflow-checks",
+  "arm": "agentflow",
+  "run": 2,
+  "agentflowVersion": "1.4.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 46459,
+  "turns": 16,
+  "costUsd": 0.35691760000000006,
+  "usage": {
+    "input_tokens": 12,
+    "cache_creation_input_tokens": 30542,
+    "cache_read_input_tokens": 140268,
+    "output_tokens": 4224,
+    "output_tokens_details": {
+      "thinking_tokens": 934
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 30542,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2153,
+        "cache_read_input_tokens": 35772,
+        "cache_creation_input_tokens": 1854,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1854
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "README.md",
+    "USAGE.md",
+    "package.json",
+    "src/app.js",
+    "src/notifications/sendOnStatusChange.js",
+    "src/services/userService.js"
+  ],
+  "prompt": "Prevent users from accessing another company's resources.",
+  "result": "I've audited the codebase and haven't changed any files. The project rules don't allow code changes until you approve the behavior (Gate 2), so here's what I found, the scenarios I propose, and the questions I need answered first.\n\n## Classification\n**Bug (security: missing tenant authorization).** Some routes check that the user is logged in but never check which company the record belongs to. That needs to go through bug intake as a BUG-NNN, and it needs regression scenarios that fail on the current code.\n\n## What the code does now\n| Route | Company check | Problem |\n|---|---|---|\n| `GET /users` (`src/app.js:12`) | ✅ Filters by `req.user.companyId`, which comes from the login token | None |\n| `GET /projects/:id` (`src/app.js:18`) | ❌ Looks up by ID only | **Cross-company read:** anyone logged in can read any company's project by guessing or listing IDs |\n| `PATCH /orders/:id/status` (`src/app.js:25`) | ❌ Updates by ID only | **Cross-company write:** anyone logged in can change another company's order, and that company's customer gets an email about it |\n\nOther findings, which I'd treat as separate follow-up work rather than part of this change:\n1. **Customers get two emails per status change.** `app.js:27` emits `order.statusChanged`, and the listener at `sendOnStatusChange.js:9` sends an email. Then `app.js:28` calls `notifyStatusChange` and sends another.\n2. **The status value isn't checked.** `req.body.status` is written to the order as-is.\n3. **The project can't run or be tested yet.** `./db`, `./auth`, `./events` and `./mailer` don't exist. `bcrypt` and `jsonwebtoken` are imported but not listed in `package.json`. There are no tests. Until that's resolved, I can't write the required failing regression tests or show that a fix works.\n\n## Proposed behavior (draft, not yet saved to the project)\n```gherkin\nFeature: Company data isolation\n  As a member of a company\n  I want my company's records hidden from and protected against other companies\n  So that no company can read or change another company's data\n\n  Background:\n    Given the company \"Acme Ltd\" has a project \"Website Redesign\" and an order \"A-1001\" with status \"pending\"\n    And the user \"dana@globex.com\" is signed in as a member of the company \"Globex Inc\"\n\n  @critical @security @authorization @regression\n  Scenario: A user cannot view another company's project\n    When \"dana@globex.com\" requests the project \"Website Redesign\"\n    Then the request is refused as not found\n    And no project details are returned\n\n  @critical @security @authorization @regression\n  Scenario: A user cannot change the status of another company's order\n    When \"dana@globex.com\" sets the status of order \"A-1001\" to \"shipped\"\n    Then the request is refused as not found\n    And order \"A-1001\" still has status \"pending\"\n\n  @critical @security @authorization @regression\n  Scenario: No customer email is sent for a refused cross-company status change\n    When \"dana@globex.com\" sets the status of order \"A-1001\" to \"shipped\"\n    Then no status email is sent to the customer of order \"A-1001\"\n\n  @authorization\n  Scenario: A user can view their own company's project\n    Given the user \"sam@acme.com\" is signed in as a member of the company \"Acme Ltd\"\n    When \"sam@acme.com\" requests the project \"Website Redesign\"\n    Then the project \"Website Redesign\" is returned\n\n  @authorization\n  Scenario: A user can change the status of their own company's order\n    Given the user \"sam@acme.com\" is signed in as a member of the company \"Acme Ltd\"\n    When \"sam@acme.com\" sets the status of order \"A-1001\" to \"shipped\"\n    Then order \"A-1001\" has status \"shipped\"\n\n  @critical @security @authorization\n  Scenario: A user lists only their own company's users\n    Given the company \"Acme Ltd\" has the user \"sam@acme.com\"\n    When \"dana@globex.com\" lists users\n    Then \"sam@acme.com\" is not in the list\n```\n\n**How I'd fix it:** add the company filter to the database query itself, using the company ID from the login token. That way another company's rows are never loaded in the first place, rather than being loaded and then checked. Any company ID sent in the request body or URL would be ignored.\n\n## Decisions needed from you\n1. **Refusal response:** a 404, which hides whether the record exists (my recommendation, and what the scenarios above assume), or a 403?\n2. **Missing modules:** do `db`, `auth`, `events` and `mailer` live somewhere else, or should a minimal tested data layer be part of this work? If it should, that's a scope and stack decision I'd need you to approve.\n3. **Duplicate email and status validation:** should I log these as separate bugs, or leave them alone for now?\n\nOnce you approve the scenarios and answer these, I'll record the bug and decision in `.ai/projects/current/` and `.ai/work-items/bugs/`, then move to tasks."
+}

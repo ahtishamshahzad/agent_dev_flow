@@ -9,6 +9,7 @@
 ## Skills Required (per stage)
 
 - Audit: `../skills/existing-project-audit` (+ `../skills/backend/existing-backend-audit`, `../skills/dependency-audit`, `../skills/environment-audit` as relevant).
+- Behavior: `../skills/testing/gherkin-specifications` — find the existing scenarios for the area first, then update or add them (`../system/GHERKIN_RULES.md`).
 - Analysis/planning: `../skills/requirements-analysis`, `../skills/feature-planning` or `refactor-planning`/`migration-planning`, `../skills/task-planning`.
 - Build/deliver: the relevant domain packs + `../skills/testing-strategy`, review skills — only what the change touches.
 
@@ -22,7 +23,7 @@ The audit findings, the existing architecture, the enhancement's scope, and the 
 
 ## Gates
 
-Gate 1 (requirements + audit), Gate 3 if architecture shifts, Gate 4 (tasks) if non-trivial, Gates 5–7 for delivery. Gate 2 only if the change adds applications/stack.
+Gate 1 (requirements + audit), **Gate 2 for any behavior change** (the scenarios; plus applications/stack only if the change adds them), Gate 3 if architecture shifts, Gate 4 (tasks) if non-trivial, Gates 5–7 for delivery.
 
 ## Documents Generated
 
@@ -41,7 +42,7 @@ Audit → plan → implement → test → review → release, each via Handoff F
 ## Stop Condition
 
 - **Stop** if editing is attempted before the audit — audit first (`../hooks/before-discovery.md`).
-- **Stop** if the change needs new apps/stack without Gate 2 approval.
+- **Stop** if behavior would change without approved scenarios, or new apps/stack are needed without Gate 2 approval.
 - **Complete** when the enhancement meets acceptance criteria, breaks nothing (regression green), is reviewed, and delivered.
 
 ## Related

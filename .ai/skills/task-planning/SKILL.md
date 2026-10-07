@@ -41,7 +41,7 @@ Generate the implementation plan: dependency-ordered dynamic phases and concrete
 
 1. Read architecture + apps + stack + requirements.
 2. Derive phases (dependency-ordered, right-sized).
-3. For each phase, generate tasks with acceptance criteria.
+3. For each phase, generate tasks whose acceptance criteria are the approved scenarios — each task names the scenarios (file + title) it delivers. Behavior with no scenario goes back for specification, not into a task.
 4. Mark parallelizable tasks (input to `../../system/MULTI_AGENT_RULES.md`).
 5. Attach testing/security requirements per phase.
 6. Present for Gate 4; record on approval and hand to `project-management` to schedule into weeks.

@@ -14,6 +14,7 @@ Then load **only** the relevant `.ai/skills/` (via its index), the active `.ai/w
 - `.ai/` is canonical; keep this adapter thin.
 - **Plan before code:** no application code, dependency install, or stack choice before the two user-approval gates (`.ai/system/QUALITY_GATES.md`).
 - **Classify every request**, then follow `.ai/system/ORCHESTRATION_WORKFLOW.md`.
+- **Behavior first:** approved Gherkin scenarios before any behavior-changing work (`.ai/system/GHERKIN_RULES.md`).
 - **Applications and stack are decisions, not defaults** (`.ai/system/APPLICATION_SELECTION_RULES.md`, `STACK_DECISION_RULES.md`). Public web app ≠ admin dashboard. Never compare a database against an ORM — pair them.
 - **Phases are dynamic** (`.ai/system/PHASE_GENERATION_RULES.md`).
 - **Multi-agent optional/controlled** (`.ai/system/MULTI_AGENT_RULES.md`); **hooks tool-neutral** (`HOOK_RULES.md`).

@@ -22,6 +22,8 @@
 
 Gherkin scenarios — one behavior each, observable `Then` (`../system/GHERKIN_RULES.md`). The scenario is the criterion.
 
+- **Delivers:** `features/<area>/<behavior>.feature` — "<scenario title>", "<scenario title>" (approved at Gate 2). A task with behavior but no approved scenario is not ready.
+
 ```gherkin
 Scenario: <single behavior this task delivers>
   Given <context>

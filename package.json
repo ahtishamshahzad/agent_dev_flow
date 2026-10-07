@@ -1,13 +1,13 @@
 {
   "name": "agentflow",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "AgentFlow — installer for the AI Engineering System, a tool-neutral operating system for planning, building, and tracking software with AI agents. Installs a canonical .ai/ directory plus thin editor adapters (Claude Code, Codex, Cursor, Windsurf, Copilot).",
   "bin": {
     "agentflow": "bin/cli.js"
   },
   "scripts": {
     "validate": "node scripts/validate.js",
-    "test": "node --test test/cli.test.js test/pack.test.js"
+    "test": "node --test test/cli.test.js test/gherkin.test.js test/pack.test.js"
   },
   "type": "commonjs",
   "engines": {
@@ -15,6 +15,7 @@
   },
   "files": [
     "bin/",
+    "lib/",
     ".ai/",
     "AGENTS.md",
     "CLAUDE.md",

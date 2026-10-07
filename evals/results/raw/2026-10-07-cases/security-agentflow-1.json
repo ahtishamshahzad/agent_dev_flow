@@ -1,0 +1,53 @@
+{
+  "id": "security-agentflow-1",
+  "case": "security",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.4.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 22427,
+  "turns": 3,
+  "costUsd": 0.12820540000000002,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 10156,
+    "cache_read_input_tokens": 36267,
+    "output_tokens": 1984,
+    "output_tokens_details": {
+      "thinking_tokens": 125
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 10156,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1678,
+        "cache_read_input_tokens": 16045,
+        "cache_creation_input_tokens": 1195,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1195
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "prompt": "Please review this PR before we merge.\n\n```diff\n+// routes/invoices.js\n+router.get('/invoices/:id', requireLogin, async (req, res) => {\n+  const invoice = await Invoice.findById(req.params.id);\n+  res.json(invoice);\n+});\n+\n+router.post('/invoices/:id/notes', requireLogin, async (req, res) => {\n+  await db.query(`UPDATE invoices SET notes = '${req.body.notes}' WHERE id = ${req.params.id}`);\n+  res.sendStatus(204);\n+});\n+\n+// config.js\n+module.exports = { stripeKey: 'sk_live_51Hx9Qe-placeholder-8f2c' };\n```",
+  "result": "**Verdict: don't merge.** The diff has three serious security problems: one Critical and two High.\n\nI reviewed only the pasted diff. I couldn't see `requireLogin`, the `Invoice` model, the `db` client, or any tests, so anything that depends on them is marked as potential.\n\n---\n\n### 1. Critical: live Stripe secret key hardcoded in source (confirmed)\n**`config.js`**: `stripeKey` is a string literal with the `sk_live_` prefix, which is a production Stripe secret key. I've left the value out here.\n\n- Anyone who can read the repo (forks, CI logs, backups) gets full API access to your Stripe account: charges, refunds, payouts and customer data.\n- **Rotate the key in the Stripe dashboard now.** Do this even though it's only in a PR, because the branch has already been pushed. Removing it in a later commit doesn't help, since it stays in git history.\n- Fix:\n  ```js\n  const stripeKey = process.env.STRIPE_SECRET_KEY;\n  if (!stripeKey) throw new Error('STRIPE_SECRET_KEY is not set');\n  module.exports = { stripeKey };\n  ```\n  Also add `STRIPE_SECRET_KEY=` to `.env.example`, check that `.env` is git-ignored, and consider removing the key from history (`git filter-repo`) and adding a secret scanner (gitleaks or similar) to pre-commit and CI.\n\n### 2. High (could be Critical depending on the DB driver): SQL injection\n**`POST /invoices/:id/notes`** puts `req.body.notes` and `req.params.id` straight into the SQL string.\n\n- Example: `notes = \"x', notes = (SELECT ...) WHERE '1'='1\"` or `id = \"1 OR 1=1\"` lets someone rewrite every invoice's notes or pull data out through them. If the driver allows multiple statements in one query, an attacker could run any SQL they like (`; DROP TABLE ...`).\n- Ordinary input also breaks it: any note containing an apostrophe (`\"client's request\"`) causes a SQL error.\n- Fix: use a parameterized query (placeholder style depends on the driver):\n  ```js\n  await db.query('UPDATE invoices SET notes = $1 WHERE id = $2 AND owner_id = $3',\n    [req.body.notes, req.params.id, req.user.id]);\n  ```\n\n### 3. High: IDOR (missing ownership check) on both routes\n`requireLogin` only checks that the user is logged in, not that the invoice is theirs.\n\n- **GET**: any logged-in user can read any invoice by trying IDs (`/invoices/1`, `/invoices/2`, …). That exposes other customers' billing data.\n- **POST notes**: any logged-in user can overwrite notes on any invoice.\n- Fix: limit the lookup to the current user or tenant and return 404 when it doesn't match:\n  ```js\n  const invoice = await Invoice.findOne({ _id: req.params.id, ownerId: req.user.id });\n  if (!invoice) return res.sendStatus(404);\n  ```\n  If admins need wider access, check the role on the server side.\n\n### 4. Medium: no input validation or error handling\n- `req.params.id` isn't validated. If `findById` is Mongoose, a malformed ID throws a `CastError`. In Express 4 an async route that throws an uncaught error leaves the request hanging or, depending on the setup, can leak stack traces. Validate the ID format and wrap the handler in try/catch (or use `express-async-errors`, or move to Express 5).\n- `req.body.notes` isn't checked for type or length. Add a schema check (zod or joi): it must be a string with a sensible maximum length.\n- **Potential (I can't see where notes are rendered):** if notes are ever shown as HTML, this is stored XSS. Escape the notes when they're displayed.\n\n### 5. Low\n- GET returns `200` with body `null` for an ID that doesn't exist. It should return `404`.\n- `res.json(invoice)` sends the whole database record. Consider a whitelist of fields so internal fields don't leak.\n- The POST returns `204` even when no row was updated. Check the affected-row count and return `404` when it's zero.\n\n---\n\n### Before merging\n1. Rotate the Stripe key and move it to an environment variable. This needs a human to do it in Stripe.\n2. Parameterize the query.\n3. Add ownership checks to both routes.\n4. Add validation and error handling.\n5. Add tests: user A can't read or update user B's invoice, a note containing `'` saves correctly, an injection payload is stored as plain text, and a bad or unknown ID returns 404.\n\nI haven't run any scanners or tests; those are unverified until run (e.g. `gitleaks detect`, `npm audit`, the test suite). This code touches invoices and payments, so a second person should also review it before it ships."
+}

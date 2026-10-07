@@ -16,7 +16,8 @@ Before implementing a bug fix (bug workflow — `../workflows/bugfix.md`).
 - [ ] The bug is **reproduced** (or a concrete reproduction plan exists) — no fixing by guessing (`../skills/bug-investigation`).
 - [ ] Root cause is identified, not just the symptom.
 - [ ] The fix scope is **minimal** and targeted (no opportunistic refactors bundled in).
-- [ ] A **failing-first regression test** at the lowest capturing level is planned (`../skills/testing/regression-testing`).
+- [ ] Expected behavior is stated: the existing scenario that covers it, or a new **regression scenario** that fails on the current code (`../system/GHERKIN_RULES.md`).
+- [ ] A **failing-first regression test** at the lowest capturing level implements that scenario (`../skills/testing/regression-testing`).
 - [ ] If security-relevant, the security-regression path is noted (`../skills/security/security-regression-testing`).
 
 ## Failure Conditions

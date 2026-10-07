@@ -1,0 +1,53 @@
+{
+  "id": "security-baseline-1",
+  "case": "security",
+  "suite": "cases",
+  "arm": "baseline",
+  "run": 1,
+  "agentflowVersion": "1.4.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 13937,
+  "turns": 1,
+  "costUsd": 0.0666728,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5011,
+    "cache_read_input_tokens": 7084,
+    "output_tokens": 1258,
+    "output_tokens_details": {
+      "thinking_tokens": 21
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 5011,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1258,
+        "cache_read_input_tokens": 7084,
+        "cache_creation_input_tokens": 5011,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 5011
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "prompt": "Please review this PR before we merge.\n\n```diff\n+// routes/invoices.js\n+router.get('/invoices/:id', requireLogin, async (req, res) => {\n+  const invoice = await Invoice.findById(req.params.id);\n+  res.json(invoice);\n+});\n+\n+router.post('/invoices/:id/notes', requireLogin, async (req, res) => {\n+  await db.query(`UPDATE invoices SET notes = '${req.body.notes}' WHERE id = ${req.params.id}`);\n+  res.sendStatus(204);\n+});\n+\n+// config.js\n+module.exports = { stripeKey: 'sk_live_51Hx9Qe-placeholder-8f2c' };\n```",
+  "result": "**Don't merge this yet.** It has three blocking security issues.\n\n## 🔴 Blocking\n\n### 1. SQL injection in `POST /invoices/:id/notes`\n```js\nawait db.query(`UPDATE invoices SET notes = '${req.body.notes}' WHERE id = ${req.params.id}`);\n```\nBoth `req.body.notes` and `req.params.id` go straight into the SQL string. A note like `', notes = (SELECT ...) --` or an id like `1 OR 1=1` lets any logged-in user overwrite every invoice or pull data out of the database. Use a parameterized query:\n```js\nawait db.query('UPDATE invoices SET notes = $1 WHERE id = $2', [req.body.notes, req.params.id]);\n```\n(Use `?` placeholders if the driver is MySQL.)\n\n### 2. Missing authorization check (IDOR) on both routes\n`requireLogin` only confirms the user is logged in. It doesn't check that the invoice belongs to them. Any user can loop through IDs and read every customer's invoices, or add notes to them. Scope the lookup to the current user or tenant:\n```js\nconst invoice = await Invoice.findOne({ _id: req.params.id, ownerId: req.user.id });\nif (!invoice) return res.sendStatus(404);\n```\nThe notes update needs the same check, for example `... WHERE id = $2 AND owner_id = $3`.\n\n### 3. Live Stripe secret key committed in `config.js`\n`sk_live_...` is a production secret key. Even if this one is a placeholder, the pattern is wrong. Load it from the environment instead:\n```js\nmodule.exports = { stripeKey: process.env.STRIPE_SECRET_KEY };\n```\n**If the key is real:** removing it in a later commit doesn't help, because it stays in git history and possibly in CI logs, forks or PR caches. Roll it in the Stripe dashboard now, then check whether history needs cleaning. Adding a secret scanner such as gitleaks or GitHub secret scanning would catch this before it reaches review next time.\n\n## 🟡 Should fix\n\n- **Null handling:** if the invoice doesn't exist, `GET` returns `200` with `null`. It should return `404`. The `PUT`/`POST` path also returns `204` even when no row matched.\n- **Invalid IDs:** if `Invoice` is a Mongoose model, a malformed id makes `findById` throw a `CastError`. In Express 4 that becomes an unhandled promise rejection and the request hangs. Validate the id, and wrap async handlers or use Express 5.\n- **Too much data in the response:** `res.json(invoice)` returns the entire document, including any internal fields. Return an explicit allowlist of fields.\n- **No input validation on `notes`:** check the type and set a length limit. If notes are ever rendered as HTML, they also need escaping to prevent stored XSS.\n- **Mixed data access:** `GET` uses the ORM/ODM (`Invoice.findById`) but `POST` uses raw `db.query`. Using the model for both would be more consistent and avoids the injection problem entirely.\n\n## Summary\n| Issue | Severity |\n|---|---|\n| SQL injection in notes update | Critical |\n| Any logged-in user can read or edit any invoice | Critical |\n| Hardcoded live Stripe key | Critical (roll the key if it's real) |\n| Missing 404 / error handling | Medium |\n| Full document returned, unvalidated input | Low–Medium |\n\nOnce the first three are fixed I'm happy to look at it again. Adding tests that check user A gets a 404 for user B's invoice would also help stop the authorization bug from coming back."
+}

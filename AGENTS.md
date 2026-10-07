@@ -20,6 +20,7 @@ Do not load everything. Follow `.ai/system/CONTEXT_MANAGEMENT_RULES.md` and `.ai
 
 - **`.ai/` is canonical.** Editor files are thin adapters that link here.
 - **Plan before code.** No application code, dependency install, or stack choice before the two user-approval gates (`.ai/system/QUALITY_GATES.md`).
+- **Behavior first.** Before any behavior-changing work, find and update — or write — its Gherkin scenarios and get them approved (`.ai/system/GHERKIN_RULES.md`). No observable change → no new Gherkin.
 - **Classify every request** first (`.ai/system/ORCHESTRATION_WORKFLOW.md`).
 - **Applications and stack are decisions, not defaults** (`.ai/system/APPLICATION_SELECTION_RULES.md`, `STACK_DECISION_RULES.md`).
 - **Phases are dynamic** (`.ai/system/PHASE_GENERATION_RULES.md`).

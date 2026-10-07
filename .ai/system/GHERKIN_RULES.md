@@ -4,7 +4,43 @@ Every behavior this system specifies — acceptance criteria, test cases, requir
 
 Scenarios are **living documentation and specification by example**: readable by non-automation stakeholders, deterministic enough for an agent to follow, automation-ready without leaking implementation detail. Reference grammar: Cucumber-compatible Gherkin (<https://cucumber.io/docs/gherkin/reference/>).
 
-**Scope of "must".** Writing scenarios in this format is required whenever behavior is specified (Gate 4 acceptance criteria, Gate 5 required cases). Adopting a Cucumber-family runner is a **stack decision** (`STACK_DECISION_RULES.md`) — not assumed, not installed unasked. When the project has no such runner, the scenarios are still written, in the work item, and the chosen test framework implements them one test per scenario (`../skills/testing/gherkin-specifications/SKILL.md`).
+## Mandatory policy
+
+> **Every behavior-changing engineering task has an approved Gherkin specification before implementation begins.**
+
+Gherkin is the **behavioral contract** that connects requirements → architecture → tasks → implementation → tests → regression → release. It is not a testing format the team may choose to use.
+
+**Required for** any change to observable behavior: new or changed features · bug and regression fixes · API contracts (requests, responses, errors, pagination, idempotency) · UI and mobile flows, including offline/online · business rules, validation, and error handling · authentication, authorization, roles, and tenant isolation · payments and subscriptions · notifications, integrations, webhooks, queues, and background jobs · data workflows · configuration that changes runtime behavior · externally observable performance limits · AI and agent features · admin functionality · release-critical changes.
+
+**Not required for** changes with no observable effect: formatting · comments · documentation-only changes · renames and internal restructuring · dependency patches with no behavior change · refactors whose zero behavior change is proven by the existing tests (`../skills/refactor-planning`).
+
+**When unsure, specify.** If it is not clear whether behavior changes, write or update the scenarios. A rename that changes an API field name *is* a behavior change.
+
+**Gherkin states what the system must do; automated tests are the evidence that it does.** A scenario proves nothing until a test implements it and passes. Writing Gherkin does not execute anything, and a passing test suite with no scenario behind a behavior means that behavior was never agreed.
+
+Adopting a Cucumber-family **runner** is a stack decision (`STACK_DECISION_RULES.md`) — not assumed, not installed unasked. Without one, the scenarios are still written and each maps to one named test in the chosen framework (`../skills/testing/gherkin-specifications/SKILL.md`).
+
+## Where it sits in the lifecycle
+
+| Stage | What happens to the scenarios |
+|---|---|
+| Requirements (`ORCHESTRATION_WORKFLOW.md`) | Acceptance criteria are written **as** scenarios, or mapped one-to-one to them. Requirements and scenarios never contradict |
+| **Behavior specification** | Before architecture: what changes, for whom, success and failure, edge cases, and what must stay unchanged — written as scenarios |
+| **Gate 2** (`QUALITY_GATES.md`) | The user approves the behavior — before any design or code |
+| Architecture | Designed to satisfy the scenarios: an offline scenario demands local persistence, sync, idempotency, and conflict handling |
+| Tasks — Gate 4 | Each task names the scenarios it delivers |
+| Implementation | Against the approved scenarios only. Behavior they don't cover is a scope question (below), not a coding decision |
+| Testing — Gate 5 | Each scenario maps to a named test; the test passes |
+| Review — Gate 6 | Security behavior is specified as scenarios — which state the expectation; tests and review provide the evidence |
+| Release — Gate 7 | Every `@critical` scenario is verified by a passing test |
+
+**Bugs:** reproduce → find the existing scenarios → state expected vs actual → write the regression scenario (it fails on the current code) → root cause → fix → the scenario's test passes → it stays permanently. A bug fix needs the user's approval of the scenario only when the expected behavior is disputed or changes what users experience.
+
+## Scope control and change detection
+
+- **Behavior not covered by an approved scenario is not built silently.** Stop and classify it: necessary implementation detail · missing acceptance criterion · bug · scope change. Anything beyond implementation detail updates the scenarios and goes back for approval (`PROJECT_MANAGEMENT_RULES.md` §Scope changes).
+- **Update the scenarios when observable behavior changes:** a response shape, a business rule, an error, a permission, a user-visible flow. **Don't** when only the implementation changes (a query rewritten, a module split) — scenarios describe behavior, not implementation.
+- **Multi-agent work** (`MULTI_AGENT_RULES.md`): the approved scenarios are the shared contract every agent builds against. An agent that finds the behavior must change stops, proposes the scenario change, and waits for approval — it never reinterprets the behavior on its own.
 
 ## Guiding principles
 
@@ -161,10 +197,25 @@ Feature: <behavior area>
 - [ ] Blank line between scenarios; no blank lines between steps; 2-space indentation.
 - [ ] Under ~10 steps; tables fit one screen.
 
+## Tags
+
+Tags are `@kebab-case`. Use the ones that describe the behavior; none are required on every scenario.
+
+| Kind | Tags |
+|---|---|
+| Release | `@critical` — release-blocking: Gate 7 needs its test passing |
+| Origin | `@regression` (kept from a fixed bug) · `@bugfix` · `@bug-NNN` (traceability to the bug record) |
+| Area | `@api` `@web` `@mobile` `@backend` `@integration` `@offline` `@ai` |
+| Concern | `@security` `@authentication` `@authorization` `@payment` `@subscription` `@performance` |
+
 ## Where scenarios live
 
-- **Planning** — acceptance criteria in `../templates/FEATURE.md`, `../templates/TASK.md`, `../templates/BUG.md`, approved at Gate 4 (`QUALITY_GATES.md`).
-- **Test plan** — the scenario set per critical behavior in `../templates/TEST_PLAN.md`, checked at Gate 5.
-- **Project** — `*.feature` files in the application repository when a Cucumber-family runner is part of the approved stack.
+Scenarios are permanent — they outlive the work item that created them, which is what makes regression coverage last.
+
+- **Home** — `features/<area>/<behavior>.feature` at the application repository root (one area per folder: `features/authentication/`, `features/billing/`, …), whether or not a Cucumber-family runner is used. An established repo's existing feature folder wins.
+- **Planning** — `../templates/FEATURE.md`, `../templates/TASK.md`, and `../templates/BUG.md` list the scenarios they deliver **by file and title**, rather than copying them; new scenarios are drafted there and moved into `features/` when approved.
+- **Test plan** — `../templates/TEST_PLAN.md` maps each critical scenario to its test, checked at Gate 5.
+- **Check them** — `agentflow gherkin validate` (or `npx github:ahtishamshahzad/agent_dev_flow gherkin validate`) lints `features/` against this contract; add it to CI. It checks structure, not whether the behavior is right.
+- **Examples** — `examples/gherkin/` in the AgentFlow repository.
 
 Applying the contract in a project — writing the scenarios, mapping them to tests, keeping them from rotting — is `../skills/testing/gherkin-specifications/SKILL.md`.

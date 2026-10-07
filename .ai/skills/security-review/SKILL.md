@@ -43,7 +43,7 @@ Report findings with **severity** and **Confirmed vs Potential**.
 ## Required Workflow
 
 1. Scope to the change/surface + data sensitivity.
-2. Walk the relevant security areas.
+2. Walk the relevant security areas. Check that security behavior is specified as scenarios — cross-tenant and cross-user denial, expired or invalid tokens, role escalation refused (`../../system/GHERKIN_RULES.md`) — and that each has a passing test. A scenario states the expectation; only tests and review are evidence. Never conclude "secure".
 3. Run available tools where possible; quote or mark "unverified until run."
 4. Record findings (severity, Confirmed/Potential, `file:line`, redacted).
 5. List secrets to rotate; recommend human review for money/PII at scale.

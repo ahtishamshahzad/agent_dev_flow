@@ -261,6 +261,12 @@ for (const rel of bundled) {
   if (!covered(rel)) fail(`package.json "files" does not ship installer source: ${rel}`);
 }
 if (!covered('bin/cli.js')) fail('package.json "files" does not ship bin/cli.js');
+// Modules the CLI loads at runtime must ship too.
+for (const [, dir, file] of cli.matchAll(/require\(path\.join\(PKG_ROOT, '([^']+)', '([^']+)'\)\)/g)) {
+  const rel = `${dir}/${file}`;
+  if (!fs.existsSync(path.join(ROOT, rel))) fail(`bin/cli.js loads ${rel}, which does not exist`);
+  if (!covered(rel)) fail(`package.json "files" does not ship ${rel}, which bin/cli.js loads`);
+}
 
 // ---- 6b. Node support claimed = Node support tested ------------------------
 const engine = /(\d+)/.exec((parsed['package.json'] && parsed['package.json'].engines || {}).node || '');
@@ -377,13 +383,57 @@ for (const ex of examples) {
 }
 const evRoot = path.join(ROOT, 'evals');
 const evalReadme = read('evals/README.md');
-const cases = fs.readdirSync(evRoot).filter((d) => d !== 'results' && fs.statSync(path.join(evRoot, d)).isDirectory());
+const NOT_CASES = new Set(['results', 'fixtures', 'workflow-checks']);
+const cases = fs.readdirSync(evRoot).filter((d) => !NOT_CASES.has(d) && fs.statSync(path.join(evRoot, d)).isDirectory());
 if (cases.length < 1) fail('evals/: no cases');
 for (const c of cases) {
-  for (const f of ['input.md', 'expected-properties.md', 'evaluation.md']) {
+  for (const f of ['input.md', 'prompt.md', 'expected-properties.md', 'evaluation.md']) {
     if (!fs.existsSync(path.join(evRoot, c, f))) fail(`evals/${c}/: missing ${f}`);
   }
   if (!evalReadme.includes(`(${c}/)`)) fail(`evals/README.md: case "${c}" is not listed`);
+}
+const wcRoot = path.join(evRoot, 'workflow-checks');
+const wcReadme = read('evals/workflow-checks/README.md');
+for (const c of fs.readdirSync(wcRoot).filter((d) => fs.statSync(path.join(wcRoot, d)).isDirectory())) {
+  for (const f of ['prompt.md', 'expected-properties.md']) {
+    if (!fs.existsSync(path.join(wcRoot, c, f))) fail(`evals/workflow-checks/${c}/: missing ${f}`);
+  }
+  if (!wcReadme.includes(`(${c}/)`)) fail(`evals/workflow-checks/README.md: check "${c}" is not listed`);
+}
+
+// ---- 11. Gherkin: the contract is enforced, mandatory, and wired in ---------
+// Every .feature file in the repo (outside tests) must pass the same linter
+// that `agentflow gherkin validate` runs in adopting projects.
+const { lint: lintGherkin } = require('../lib/gherkin-lint');
+const featureFiles = ['examples', '.ai'].flatMap((d) =>
+  [...walk(path.join(ROOT, d))].filter((p) => p.endsWith('.feature')));
+if (featureFiles.length < 6) fail(`only ${featureFiles.length} .feature examples found — examples/gherkin/ emptied?`);
+for (const p of featureFiles) {
+  for (const e of lintGherkin(fs.readFileSync(p, 'utf8'), p).filter((x) => x.level === 'error')) {
+    fail(`${path.relative(ROOT, p)}:${e.line}: ${e.message}`);
+  }
+}
+// The policy must exist and be referenced where work is planned and gated.
+const rules = read('.ai/system/GHERKIN_RULES.md');
+if (!/^## Mandatory policy/m.test(rules)) fail('GHERKIN_RULES.md: "## Mandatory policy" section missing');
+for (const rel of [
+  '.ai/system/ORCHESTRATION_WORKFLOW.md', '.ai/system/QUALITY_GATES.md', '.ai/system/OPERATING_RULES.md',
+  '.ai/skills/project-orchestrator/SKILL.md', '.ai/skills/requirements-analysis/SKILL.md',
+  '.ai/skills/architecture-design/SKILL.md', '.ai/skills/bug-investigation/SKILL.md',
+  '.ai/workflows/new-project.md', '.ai/workflows/new-feature.md', '.ai/workflows/bugfix.md',
+  'AGENTS.md', 'CLAUDE.md', '.cursor/rules/project.mdc', '.windsurf/rules/project.md', '.github/copilot-instructions.md',
+]) {
+  if (!read(rel).includes('GHERKIN_RULES.md')) fail(`${rel}: does not point to GHERKIN_RULES.md`);
+}
+// Gherkin must never be described as optional for behavior work. (Choosing a
+// Cucumber-family *runner* is a stack decision — that sentence is allowed.)
+const OPTIONAL = /\b(gherkin|scenarios?|bdd)\b[^.\n]{0,40}\b(optional|if you like|may (?:be )?(?:use|skip)|can skip)\b|\b(optional|may use)\b[^.\n]{0,25}\b(gherkin|bdd)\b/i;
+for (const p of [...walk(path.join(ROOT, '.ai'))].filter((x) => x.endsWith('.md')).concat(publicDocs)) {
+  read(path.relative(ROOT, p)).split('\n').forEach((l, i) => {
+    if (OPTIONAL.test(l) && !/runner|Background/i.test(l)) {
+      fail(`${path.relative(ROOT, p)}:${i + 1}: describes Gherkin as optional — it is mandatory for behavior changes`);
+    }
+  });
 }
 
 // ---- Report ---------------------------------------------------------------

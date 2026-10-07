@@ -34,7 +34,9 @@
 
 ## Acceptance Criteria
 
-Written as Gherkin scenarios — one behavior each, observable outcomes (`../system/GHERKIN_RULES.md`, `../skills/testing/gherkin-specifications`). These scenarios *are* the criteria; do not restate them in prose.
+Written as Gherkin scenarios — one behavior each, observable outcomes (`../system/GHERKIN_RULES.md`, `../skills/testing/gherkin-specifications`). These scenarios *are* the criteria; do not restate them in prose. Drafted here, **approved at Gate 2 before design**, then saved to `features/<area>/<behavior>.feature` — after which this section lists them by file and title instead of copying them.
+
+- **Feature file:** `features/<area>/<behavior>.feature` · **Approved:** <date, by> · **Release-blocking (`@critical`):** <titles>
 
 ```gherkin
 Feature: <behavior area>

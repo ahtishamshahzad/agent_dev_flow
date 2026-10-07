@@ -2,6 +2,36 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.4.0] — 2026-10-07
+
+Gherkin becomes the mandatory behavioral contract across the lifecycle — specified before design, approved at Gate 2, verified at Gates 5 and 7, kept as regression coverage. Additive; the gates are the same seven, and there are still two approval stops.
+
+### Changed — behavior first
+
+- `GHERKIN_RULES.md` gains a **mandatory policy**: every behavior-changing task has approved scenarios before implementation; exceptions only for changes with no observable effect (formatting, renames, proven zero-change refactors); **when unsure, specify**. It states plainly that Gherkin says what the system must do and tests are the evidence — a scenario proves nothing until its test passes.
+- New **behavior specification** stage after requirements and audit, before application selection and architecture (`ORCHESTRATION_WORKFLOW`, `OPERATING_RULES` §2, `project-orchestrator`).
+- **Gate 2 is now "behavior + applications + stack"** and fires for every behavior change — a feature on an existing app approves its scenarios there even with no app or stack change. Gate 4 tasks name the scenarios they deliver; Gate 5 needs every scenario's test passing and a regression scenario per fixed bug; Gate 7 needs every `@critical` scenario verified.
+- Scenarios now have a **permanent home**, `features/<area>/<behavior>.feature`, whether or not a Cucumber runner is used — work items reference them instead of holding the only copy, so regression coverage outlives the bug.
+- **Scope control by scenario**: behavior no approved scenario covers stops for classification; parallel agents share the approved scenarios as their behavioral contract and stop to propose changes rather than reinterpret.
+- **Debugging flow** in `workflows/bugfix.md`: find existing scenarios → expected vs actual → regression scenario that fails today → root cause → fix → it passes → stays, tagged `@regression @bug-NNN`.
+- Wired through requirements (acceptance criteria are or map to scenarios), architecture (designed from scenarios), feature/task/bug planning, security review (security behavior as scenarios, never a "secure" verdict), release planning, refactor planning, the new-project/existing-project/new-feature workflows, the before-architecture/before-bugfix/before-release hooks, prompts, templates, and all five editor adapters (one line each — the policy stays in `.ai/`).
+- `gherkin-specifications` skill: the behavior-change decision, find-existing-first, an edge-case list, tags, and guidance for API, UI/mobile, security, integrations, and AI features (probabilistic — verified by repeated runs, never claimed deterministic).
+- README: a behavior-driven development section; the diagram now shows the behavior stage, and its gate labels match the system's (Gate 2, Gate 4 — they read "Gate 1/2" in 1.3.0).
+
+### Added
+
+- `agentflow gherkin validate [path ...]` — zero-dependency linter (`lib/gherkin-lint.js`) for the contract's MUST rules: one titled Feature per file, named and unique scenarios, strict Given → When → Then, no repeated phase or `Or`, no blank lines between steps, 2-space indentation, Background rules, Scenario Outline Examples and placeholders, `@kebab-case` tags and file names. SHOULD rules are warnings. It checks structure, not whether the behavior is right.
+- `examples/gherkin/` — seven specifications: a feature, a bug regression, an API with a `Scenario Outline`, password reset, mobile offline sync, a subscription upgrade, and an AI assistant.
+- `skills/backend/payments-subscriptions` — checkout, subscriptions, seats, proration, dunning, and entitlements driven by verified, idempotent provider events.
+- Tag standard (`@critical` is release-blocking) and change-detection rules.
+- `evals/run.js` — runs eval cases against Claude Code headless, both arms, in fresh temp projects with user settings excluded and read-only tools, saving every transcript with turns, tokens, cost, and time. Each case gains a `prompt.md` and optional per-arm setup; `evals/workflow-checks/` adds five lifecycle checks (new feature, bug, API change, security change, pure refactor) against a small fixture API with planted gaps.
+- The first recorded runs: the five workflow checks and a six-case pilot (one run per arm) — transcripts in `evals/results/raw/`, scored in `evals/results/`. A pilot, not a benchmark.
+- Validator: lints every `.feature` in the repo; requires the mandatory policy and its reference from the workflow, gates, key skills, workflows, and all adapters; **fails on any wording that makes the specification non-mandatory**; checks the CLI's runtime modules ship. 29 new tests for the linter and command; the tarball test runs `gherkin validate` from the packed package.
+
+### Totals
+
+- 179 skills · 13 agents · 13 hooks · 12 workflows · 31 templates · 19 prompts · 18 checklists.
+
 ## [1.3.0] — 2026-10-07
 
 Tooling, tests, and CI for the installer and the repository. No rule or skill removed.
