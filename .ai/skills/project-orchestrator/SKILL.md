@@ -39,7 +39,7 @@ Ask only what blocks a correct plan:
 4. **Separate confirmed facts, assumptions, and questions** — keep these three lists explicit.
 4a. **Specify the behavior change in Gherkin** (delegate to `testing/gherkin-specifications`; contract `../../system/GHERKIN_RULES.md`). Does this change observable behavior? Yes or unsure → find existing scenarios, update or add them. No → record why and skip.
 5. **Determine required applications** (delegate to `application-selection`).
-6. **Recommend stack and alternatives** (delegate to `stack-recommendation`).
+6. **Recommend stack and alternatives** (delegate to `stack-recommendation`), with the version baseline from `technology-governance` — new project: latest stable, verified, compatible; existing project: the installed stack unless an upgrade trigger applies (`../../system/TECHNOLOGY_GOVERNANCE_RULES.md`).
 7. **Wait for approval** — Gate 2 (`../../system/QUALITY_GATES.md`): the scenarios, plus apps and stack when they change. It fires for every behavior change.
 8. **Design architecture** from the approved scenarios (delegate to `architecture-design`, `repository-architecture`).
 9. **Select only relevant skills** (`../../system/SKILL_SELECTION_RULES.md`).
@@ -62,7 +62,7 @@ Request
  → requirements-analysis  → record confirmed / assumptions / questions
  → gherkin-specifications → the behavior change as scenarios (skip only if no observable change)
  → application-selection
- → stack-recommendation
+ → stack-recommendation + technology-governance (versions, docs, keep-or-change)
  ── GATE 2: user approval (behavior + applications + stack) ──
  → architecture-design + repository-architecture
  → select relevant skills

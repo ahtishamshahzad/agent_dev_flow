@@ -51,6 +51,7 @@ Diagnose a defect and plan its fix without regressing behavior: reproduce it, fi
 - Fix the cause; don't paper over the symptom.
 - Every bug gets a regression test (`../../system/TESTING_SELECTION_RULES.md`).
 - If the "bug" is actually intended behavior, surface it — don't silently change behavior.
+- Fix with the existing technology. An upgrade belongs in a bug fix only when the dependency itself is the root cause (`../../system/TECHNOLOGY_GOVERNANCE_RULES.md` §3).
 
 ## Rules
 

@@ -59,7 +59,12 @@ function prepare(c, arm, suite) {
     const r = spawnSync(process.execPath, [path.join(ROOT, 'bin', 'cli.js'), 'init', project, '--editor', 'claude'], { encoding: 'utf8' });
     if (r.status !== 0) throw new Error(`init failed: ${r.stderr}`);
   }
-  if (suite === 'workflow-checks') copyDir(path.join(EVALS, 'fixtures', 'node-api'), project);
+  if (suite === 'workflow-checks') {
+    // A check may name its fixture in a `fixture` file ("none" = empty project).
+    const named = path.join(c.dir, 'fixture');
+    const fixture = fs.existsSync(named) ? fs.readFileSync(named, 'utf8').trim() : 'node-api';
+    if (fixture !== 'none') copyDir(path.join(EVALS, 'fixtures', fixture), project);
+  }
   copyDir(path.join(c.dir, 'setup'), project);
   copyDir(path.join(c.dir, `setup-${arm}`), project);
   return project;

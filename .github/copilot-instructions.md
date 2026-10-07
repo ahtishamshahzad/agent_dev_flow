@@ -11,6 +11,7 @@ When assisting in this repository, follow the AI Engineering System defined in `
 - **Plan before code:** no application code, dependency install, or stack choice before the user-approval gates (`.ai/system/QUALITY_GATES.md`).
 - **Classify the request**, then follow `.ai/system/ORCHESTRATION_WORKFLOW.md`.
 - **Behavior first:** approved Gherkin scenarios before any behavior-changing work (`.ai/system/GHERKIN_RULES.md`).
+- **Technology in context:** new projects use latest stable, verified versions; existing projects keep what works (`.ai/system/TECHNOLOGY_GOVERNANCE_RULES.md`).
 - **Applications and stack are decisions, not defaults** (`.ai/system/APPLICATION_SELECTION_RULES.md`, `STACK_DECISION_RULES.md`). Public web app ≠ admin dashboard. Pair databases with data layers (e.g. PostgreSQL + Prisma); never compare a database against an ORM.
 - **Phases are dynamic** (`.ai/system/PHASE_GENERATION_RULES.md`).
 - **Multi-agent optional/controlled** (`.ai/system/MULTI_AGENT_RULES.md`); **hooks tool-neutral** (`HOOK_RULES.md`).

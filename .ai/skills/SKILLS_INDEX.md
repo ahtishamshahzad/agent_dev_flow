@@ -11,7 +11,8 @@ On a tracked project, whatever you run is recorded by [`project-management`](pro
 | Start a project, or plan anything non-trivial | [`project-orchestrator`](project-orchestrator/SKILL.md) |
 | Work in an existing codebase | [`existing-project-audit`](existing-project-audit/SKILL.md) → [`project-orchestrator`](project-orchestrator/SKILL.md) |
 | Understand the requirements | [`requirements-analysis`](requirements-analysis/SKILL.md) |
-| Decide which apps and which stack | [`application-selection`](application-selection/SKILL.md) → [`stack-recommendation`](stack-recommendation/SKILL.md) |
+| Decide which apps and which stack | [`application-selection`](application-selection/SKILL.md) → [`stack-recommendation`](stack-recommendation/SKILL.md) → [`technology-governance`](technology-governance/SKILL.md) (versions) |
+| Pick versions, check official docs, decide whether to upgrade, handle a deprecation or EOL | [`technology-governance`](technology-governance/SKILL.md) (+ [`migration-planning`](migration-planning/SKILL.md) when an upgrade is justified) |
 | Design the architecture or repo layout | [`architecture-design`](architecture-design/SKILL.md), [`repository-architecture`](repository-architecture/SKILL.md) |
 | Break work into phases and tasks | [`task-planning`](task-planning/SKILL.md) |
 | Plan a feature | [`gherkin-specifications`](testing/gherkin-specifications/SKILL.md) (behavior first) → [`feature-planning`](feature-planning/SKILL.md) |

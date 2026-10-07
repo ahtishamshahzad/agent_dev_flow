@@ -32,6 +32,7 @@ Most work starts at **`project-orchestrator`**, which then loads the right speci
 |-------|-------------|
 | [`application-selection`](application-selection/SKILL.md) | Decide which applications the project needs; nothing auto-scaffolded. |
 | [`stack-recommendation`](stack-recommendation/SKILL.md) | Recommend a stack per area with alternatives; pair DB+data-layer correctly. Requires approval. |
+| [`technology-governance`](technology-governance/SKILL.md) | Which version and docs, and whether to change: latest stable + verified for new projects; keep what works in existing ones, upgrade only with a reason. |
 | [`architecture-design`](architecture-design/SKILL.md) | Define boundaries, data flow, integrations, cross-cutting concerns. |
 | [`repository-architecture`](repository-architecture/SKILL.md) | Define the on-disk repo layout (single-app vs monorepo, shared code). |
 

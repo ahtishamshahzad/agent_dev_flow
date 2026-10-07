@@ -1,0 +1,59 @@
+{
+  "id": "new-project-versions-agentflow-1",
+  "case": "new-project-versions",
+  "suite": "workflow-checks",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.5.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 27007,
+  "turns": 6,
+  "costUsd": 0.1692118,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 13964,
+    "cache_read_input_tokens": 38179,
+    "output_tokens": 2492,
+    "output_tokens_details": {
+      "thinking_tokens": 804
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 13964,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1733,
+        "cache_read_input_tokens": 17783,
+        "cache_creation_input_tokens": 3265,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 3265
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "USAGE.md"
+  ],
+  "prompt": "Start a new project: a Next.js web app with a PostgreSQL database through Prisma, and Playwright for end-to-end tests. Tell me the exact versions you'd use for everything, including Node.js.",
+  "result": "I can't give you verified exact versions in this session, so I haven't started the project yet.\n\nThis repo's rules (`.ai/system/TECHNOLOGY_GOVERNANCE_RULES.md` §2) say a new project uses the latest *stable* versions, checked against the package registry and official docs rather than memory. I have no shell or web access here, so I can't check anything. My training data ends in June 2026 and today is 7 Oct 2026, so exact patch numbers from memory would likely be stale. Nothing gets installed or scaffolded until you approve the stack (Gate 2).\n\n## Proposed baseline (unverified — from memory, check before use)\n\n| Area | Line I'd expect to use | Notes |\n|---|---|---|\n| Node.js | **24.x LTS** | Node 26 is probably \"Current\", not LTS. It should become LTS around late October 2026. Pick 24 now, or wait for 26 if you start later this month. |\n| Next.js | **16.x** (App Router) | Check the Node version it requires (`engines`). |\n| React / React DOM | **19.x**, whatever version Next 16 lists as a peer dependency | Let Next.js decide this one. |\n| TypeScript | latest stable **5.x / 6.x** | TypeScript 7 (the Go-based compiler) may be out. Only use it if Next.js officially supports it. |\n| Prisma (`prisma`, `@prisma/client`) | **7.x** | Prisma 7 changes how you set it up: driver adapters (`@prisma/adapter-pg`), `prisma.config.ts`, ESM-first. Follow the v7 docs. |\n| PostgreSQL | **18.x**, or **19.x** if it's out and your host supports it | Check what your managed host offers. That often decides it. |\n| Playwright (`@playwright/test`) | latest **1.x** | Install browsers with `npx playwright install --with-deps`. |\n\n## Commands to get the exact versions\n\n```sh\n# Node LTS status: https://nodejs.org/en/about/previous-releases\nnpm view next dist-tags\nnpm view next@latest engines peerDependencies\nnpm view react dist-tags\nnpm view typescript dist-tags\nnpm view prisma dist-tags\nnpm view @prisma/client@latest engines\nnpm view @prisma/adapter-pg dist-tags\nnpm view @playwright/test dist-tags\n# PostgreSQL supported versions: https://www.postgresql.org/support/versioning/\n```\n\nIf you run these and paste the output, or give me shell/web access, I'll check that the versions work together (Node → Next → React → Prisma → Playwright). Then I'll give you a pinned table with a version-matched docs link for each item.\n\n## Questions before the stack can be approved\n1. **What the app does:** who uses it and the main flows. I need this to write the Gherkin scenarios that Gate 2 also requires.\n2. **Where it runs:** for example Vercel with managed Postgres (Neon, Supabase, RDS), or self-hosted. This decides the PostgreSQL version and the Prisma driver adapter.\n3. **Package manager:** npm, pnpm or bun.\n4. **Other areas:** do you need authentication, styling, or unit tests (Vitest or Jest) chosen now?"
+}

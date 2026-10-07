@@ -54,7 +54,7 @@ Per-type workflows are described in `../workflows/README.md`.
 Extract goals, constraints, users, non-functional requirements, and success criteria. Identify unknowns.
 
 ### 3. Existing repository audit *(conditional)*
-If a codebase exists, audit structure, stack, applications present, tests, security posture, and state **before** proposing changes. Record findings; do not edit yet.
+If a codebase exists, audit structure, stack, applications present, tests, security posture, and state **before** proposing changes. Record the **technology baseline** — installed versions from lock files and runtime config — which the work must then respect (`TECHNOLOGY_GOVERNANCE_RULES.md` §3). Record findings; do not edit yet.
 
 ### 4. Missing questions
 Ask only the questions that **block** a correct plan. If enough is known, proceed with documented best-practice assumptions and list them.
@@ -66,7 +66,7 @@ Does the request change observable behavior? If not (formatting, renames, proven
 Independently evaluate which applications the project needs (`APPLICATION_SELECTION_RULES.md`). Do not scaffold everything by default.
 
 ### 6. Stack recommendation
-Recommend a stack per area with justification (`STACK_DECISION_RULES.md`). Pair databases with data layers correctly; never compare a database against an ORM.
+Recommend a stack per area with justification (`STACK_DECISION_RULES.md`). Pair databases with data layers correctly; never compare a database against an ORM. Then govern the versions (`TECHNOLOGY_GOVERNANCE_RULES.md`, `../skills/technology-governance`): **new project** → latest stable, verified against official version-matched documentation (not memory), compatible across the chain; **existing project** → the installed stack, changed only for a concrete trigger (security, end of life, a required feature, compatibility). Never "always the latest".
 
 ### 🚦 GATE — User approval (behavior + applications + stack)
 Present the scenarios, plus applications and stack when they are new or changing, plus assumptions. **Wait for approval.** Record the decision in `../projects/current/`. This gate fires for **every behavior change** — a feature on an existing app approves its scenarios here even when no application or stack changes.

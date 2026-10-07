@@ -50,6 +50,7 @@ Plan a feature: define its scope within the architecture, its design decisions, 
 ## Decision Rules
 
 - Match existing conventions rather than introducing new patterns without cause.
+- Build on the existing technology when it can deliver the feature correctly; a new framework, library, or upgrade needs a recorded trigger (`../../system/TECHNOLOGY_GOVERNANCE_RULES.md`).
 - Security-sensitive features get integration/E2E tests, not just units.
 - New work discovered mid-plan → propose a separate work item, don't absorb it.
 

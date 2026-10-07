@@ -1,0 +1,64 @@
+{
+  "id": "keep-existing-stack-agentflow-1",
+  "case": "keep-existing-stack",
+  "suite": "workflow-checks",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.5.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 60034,
+  "turns": 21,
+  "costUsd": 0.41580280000000003,
+  "usage": {
+    "input_tokens": 14,
+    "cache_creation_input_tokens": 32717,
+    "cache_read_input_tokens": 161554,
+    "output_tokens": 6085,
+    "output_tokens_details": {
+      "thinking_tokens": 1980
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 32717,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 3568,
+        "cache_read_input_tokens": 36875,
+        "cache_creation_input_tokens": 2926,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2926
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "README.md",
+    "USAGE.md",
+    "package.json",
+    "src/app.js",
+    "src/notifications/sendOnStatusChange.js",
+    "src/services/userService.js"
+  ],
+  "prompt": "Add an endpoint so a user can delete one of their company's projects.",
+  "result": "I haven't written any code yet. The project's rules (`CLAUDE.md` → `.ai/system/QUALITY_GATES.md`) require your approval of the feature's behavior before any behavior-changing code. Below are what I found in the existing code, the behavior I'm proposing, and the questions I need answered.\n\n## Classification\n**Existing project enhancement / feature:** a new API endpoint in the existing Express service. No new apps and no stack change.\n\n## Audit of the existing code (read only, nothing edited)\n- **Stack:** Express `^4.19.2`, CommonJS, tests via `node --test`. There's no lockfile, so the installed versions can't be confirmed. I'll keep this stack as it is.\n- **Can't run as shipped:** `src/app.js` requires `./db`, `./auth`, `./events` and `./mailer`, and none of those files exist. `bcrypt` and `jsonwebtoken` are used in `src/services/userService.js` but aren't listed in `package.json`.\n- **No tests and no `features/` folder.** No scenarios exist for projects yet.\n- **Login token:** it already carries `companyId` (`userService.js:16`), so company scope can come from the session. There are no roles.\n- **Security gap that matters here:** `GET /projects/:id` (`src/app.js:18`) doesn't check company, so any logged-in user can read any company's project. The new endpoint must not copy that pattern. I'd log it as a separate bug rather than fix it quietly as part of this work.\n- **Other issues noticed (out of scope, separate bugs):**\n  - `PATCH /orders/:id/status` also has no company check and doesn't validate the status value.\n  - It emails the customer twice: once directly (`app.js:28`) and again through the event listener (`sendOnStatusChange.js:9`).\n\n## Proposed behavior (draft for `features/projects/delete-project.feature`)\n```gherkin\nFeature: Delete a company project\n  As a user of a company\n  I want to delete one of my company's projects\n  So that projects we no longer need are removed\n\n  @critical\n  Scenario: A user deletes a project owned by their company\n    Given \"Priya\" belongs to the company \"Acme\"\n    And \"Acme\" owns the project \"Website Redesign\"\n    When \"Priya\" deletes the project \"Website Redesign\"\n    Then the deletion is confirmed with no content\n    And the project \"Website Redesign\" can no longer be retrieved\n\n  @critical @security @authorization\n  Scenario: A user cannot delete a project owned by another company\n    Given \"Priya\" belongs to the company \"Acme\"\n    And \"Globex\" owns the project \"Q3 Launch\"\n    When \"Priya\" tries to delete the project \"Q3 Launch\"\n    Then the project is reported as not found\n    And the project \"Q3 Launch\" still exists\n\n  @security @authentication\n  Scenario: A caller who is not signed in cannot delete a project\n    Given \"Acme\" owns the project \"Website Redesign\"\n    When a caller who is not signed in tries to delete the project \"Website Redesign\"\n    Then the request is refused as unauthenticated\n    And the project \"Website Redesign\" still exists\n\n  Scenario: Deleting a project that does not exist is reported as not found\n    Given \"Priya\" belongs to the company \"Acme\"\n    When \"Priya\" tries to delete a project that does not exist\n    Then the project is reported as not found\n\n  Scenario: Deleting a project a second time is reported as not found\n    Given \"Priya\" has already deleted the project \"Website Redesign\"\n    When \"Priya\" deletes the project \"Website Redesign\" again\n    Then the project is reported as not found\n\n  Scenario: Deleting one project leaves the company's other projects unchanged\n    Given \"Acme\" owns the projects \"Website Redesign\" and \"Mobile App\"\n    When \"Priya\" deletes the project \"Website Redesign\"\n    Then the project \"Mobile App\" can still be retrieved\n\n  Scenario: A storage failure does not expose internal details\n    Given the project store is unavailable\n    When \"Priya\" tries to delete the project \"Website Redesign\"\n    Then the request fails with a generic server error\n    And the response contains no internal error details\n```\n\nHow these map to HTTP:\n- **Endpoint:** `DELETE /projects/:id` behind `requireLogin`.\n- **Responses:**\n  - `204` on success.\n  - `404` both when the project doesn't exist and when it belongs to another company, so other companies' project IDs aren't revealed.\n  - `401` when not signed in.\n  - Generic `500` on failure.\n- **Company check:** the company filter goes inside the delete query itself, using `req.user.companyId` from the session. It never comes from the request.\n\n## Questions that block the plan\n1. **Hard delete or soft delete?** I'm assuming a hard delete. If the project has related records (orders, tasks), should those be deleted too, or should the delete be blocked?\n2. **Who may delete?** I'm assuming any signed-in member of the owning company, since there are no roles yet. Do you need it limited to admins or owners?\n3. **Missing modules:** can you provide `src/db.js` and `src/auth.js`, or tell me which data layer they use? `findAll({ where, order })` looks like Sequelize. I need to know the real delete method and what `requireLogin` sets on `req.user` before I can implement and test this.\n4. **Tests:** I'd use the built-in `node:test` runner with no new dependencies, so nothing new to approve. OK?\n\nOnce you approve the scenarios (or send changes) and answer these, I'll present a short task list for the second approval gate, then implement it with one named test per scenario."
+}

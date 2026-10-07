@@ -45,6 +45,7 @@ Plan a refactor that improves structure or quality **without changing external b
 ## Decision Rules
 
 - Behavior-preserving by definition — any behavior change reclassifies as a feature.
+- Restructuring is not replacing: keep the technology unless the refactor's stated goal is that change (`../../system/TECHNOLOGY_GOVERNANCE_RULES.md` §3).
 - Add tests before refactoring under-covered risky code.
 - Prefer many small steps over a big-bang rewrite.
 - If risk is high and value low, recommend deferring.
