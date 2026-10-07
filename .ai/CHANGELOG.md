@@ -2,7 +2,7 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.4.0] — unreleased
+## [1.4.0] — 2026-10-07
 
 Gherkin becomes the mandatory behavioral contract across the lifecycle — specified before design, approved at Gate 2, verified at Gates 5 and 7, kept as regression coverage. Additive; the gates are the same seven, and there are still two approval stops.
 
