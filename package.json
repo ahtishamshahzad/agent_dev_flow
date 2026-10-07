@@ -1,16 +1,17 @@
 {
   "name": "agentflow",
-  "version": "1.2.1",
-  "description": "Tool-neutral operating system for planning and building software with AI agents. Installs a canonical .ai/ directory plus thin editor adapters (Claude Code, Cursor, Windsurf, Copilot, Codex).",
+  "version": "1.3.0",
+  "description": "AgentFlow — installer for the AI Engineering System, a tool-neutral operating system for planning, building, and tracking software with AI agents. Installs a canonical .ai/ directory plus thin editor adapters (Claude Code, Codex, Cursor, Windsurf, Copilot).",
   "bin": {
     "agentflow": "bin/cli.js"
   },
   "scripts": {
-    "validate": "node scripts/validate.js"
+    "validate": "node scripts/validate.js",
+    "test": "node --test test/cli.test.js test/pack.test.js"
   },
   "type": "commonjs",
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "files": [
     "bin/",
@@ -43,5 +44,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ahtishamshahzad/agent_dev_flow.git"
+  },
+  "homepage": "https://github.com/ahtishamshahzad/agent_dev_flow#readme",
+  "bugs": {
+    "url": "https://github.com/ahtishamshahzad/agent_dev_flow/issues"
   }
 }

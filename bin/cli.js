@@ -14,7 +14,9 @@
  * Options:
  *   --editor <list>   Comma-separated: claude, cursor, windsurf, copilot, codex, all
  *                     (default: all). "codex" is covered by AGENTS.md, always copied.
- *   --force           Overwrite files that already exist.
+ *   --force           Overwrite system files that already exist. Project-owned
+ *                     folders (.ai/projects, work-items, references, knowledge,
+ *                     memory) are never overwritten — only missing files are added.
  *   --dry-run         Print what would be copied; write nothing.
  *   -v, --version     Show version.
  *   -h, --help        Show help.
@@ -40,11 +42,28 @@ const ADAPTERS = {
 
 const ALWAYS = ['.ai', 'AGENTS.md', 'USAGE.md', 'QUICK_START.md'];
 
+// Project-owned: the adopting project writes its own state here. --force updates
+// the system around them but never overwrites a file inside; missing files are
+// still added. (USAGE.md: "Put project-specific content in …")
+const PROTECTED = [
+  '.ai/projects',
+  '.ai/work-items',
+  '.ai/references',
+  '.ai/knowledge',
+  '.ai/memory',
+];
+
+function isProtected(rel) {
+  const p = rel.split(path.sep).join('/');
+  return PROTECTED.some((dir) => p === dir || p.startsWith(dir + '/'));
+}
+
 const COLORS = process.stdout.isTTY
   ? { dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', bold: '\x1b[1m', reset: '\x1b[0m' }
   : { dim: '', green: '', yellow: '', red: '', bold: '', reset: '' };
 
 function log(msg) { process.stdout.write(msg + '\n'); }
+function fail(msg) { process.stderr.write(c('red', msg) + '\n'); }
 function c(color, msg) { return COLORS[color] + msg + COLORS.reset; }
 
 function printHelp() {
@@ -62,7 +81,9 @@ ${c('bold', 'Arguments')}
 ${c('bold', 'Options')}
   --editor <list>     Comma-separated editors to set up. Default: ${c('bold', 'all')}
                       Values: claude, cursor, windsurf, copilot, codex, all
-  --force             Overwrite existing files
+  --force             Overwrite existing system files (project data in
+                      .ai/projects, work-items, references, knowledge,
+                      memory is never overwritten)
   --dry-run           Show what would be copied without writing
   -v, --version       Show version
   -h, --help          Show this help
@@ -84,13 +105,13 @@ function parseArgs(argv) {
     else if (a === '--dry-run') opts.dryRun = true;
     else if (a === '--editor' || a.startsWith('--editor=')) {
       const v = a === '--editor' ? argv[++i] : a.slice('--editor='.length);
-      if (!v || v.startsWith('-')) { log(c('red', 'Missing value for --editor')); process.exit(1); }
+      if (!v || v.startsWith('-')) { fail('Missing value for --editor'); process.exit(1); }
       opts.editors = v.toLowerCase();
     }
     else if (a === 'init') opts.cmd = 'init';
     else if (!a.startsWith('-') && opts.cmd === null) opts.cmd = a; // tolerate bare command
     else if (!a.startsWith('-')) opts.dir = a;
-    else { log(c('red', `Unknown option: ${a}`)); process.exit(1); }
+    else { fail(`Unknown option: ${a}`); process.exit(1); }
   }
   return opts;
 }
@@ -101,8 +122,8 @@ function resolveEditors(editorsArg) {
   const requested = editorsArg.split(',').map((s) => s.trim()).filter(Boolean);
   const invalid = requested.filter((e) => !all.includes(e) && e !== 'all');
   if (invalid.length) {
-    log(c('red', `Unknown editor(s): ${invalid.join(', ')}`));
-    log(c('dim', `Valid: ${all.join(', ')}, all`));
+    fail(`Unknown editor(s): ${invalid.join(', ')}`);
+    process.stderr.write(`Valid: ${all.join(', ')}, all\n`);
     process.exit(1);
   }
   if (requested.includes('all')) return all;
@@ -119,6 +140,10 @@ function copyRecursive(src, dest, opts, results) {
     return;
   }
   const exists = fs.existsSync(dest);
+  if (exists && opts.force && isProtected(path.relative(PKG_ROOT, src))) {
+    results.kept.push(dest);
+    return;
+  }
   if (exists && !opts.force) {
     results.skipped.push(dest);
     return;
@@ -142,7 +167,7 @@ function main() {
     process.exit(opts.help ? 0 : 1);
   }
   if (opts.cmd !== 'init') {
-    log(c('red', `Unknown command: ${opts.cmd}`));
+    fail(`Unknown command: ${opts.cmd}`);
     printHelp();
     process.exit(1);
   }
@@ -160,8 +185,8 @@ function main() {
     if (!fs.existsSync(path.join(PKG_ROOT, rel))) missing.push(rel);
   }
   if (missing.length) {
-    log(c('red', 'Installer is missing bundled files: ' + missing.join(', ')));
-    log(c('dim', 'This is a packaging error — please report it.'));
+    fail('Installer is missing bundled files: ' + missing.join(', '));
+    process.stderr.write('This is a packaging error — please report it.\n');
     process.exit(1);
   }
 
@@ -172,7 +197,7 @@ function main() {
   if (opts.dryRun) log(c('yellow', '  dry run: no files will be written'));
   log('');
 
-  const results = { copied: [], overwritten: [], skipped: [] };
+  const results = { copied: [], overwritten: [], skipped: [], kept: [] };
   for (const rel of sources) {
     copyRecursive(path.join(PKG_ROOT, rel), path.join(targetDir, rel), opts, results);
   }
@@ -180,6 +205,9 @@ function main() {
   const rel = (p) => path.relative(targetDir, p) || '.';
   if (results.copied.length) log(c('green', `  copied      ${results.copied.length} file(s)`));
   if (results.overwritten.length) log(c('yellow', `  overwritten ${results.overwritten.length} file(s)`));
+  if (results.kept.length) {
+    log(c('dim', `  kept        ${results.kept.length} project file(s) — project data is never overwritten`));
+  }
   if (results.skipped.length) {
     log(c('dim', `  skipped     ${results.skipped.length} existing file(s) — use --force to overwrite`));
     for (const p of results.skipped.slice(0, 8)) log(c('dim', `    · ${rel(p)}`));
@@ -210,6 +238,6 @@ function main() {
 try {
   main();
 } catch (err) {
-  log(c('red', 'Install failed: ' + (err && err.message ? err.message : String(err))));
+  fail('Install failed: ' + (err && err.message ? err.message : String(err)));
   process.exit(1);
 }

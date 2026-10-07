@@ -2,6 +2,29 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] — unreleased
+
+Tooling, tests, and CI for the installer and the repository. No rule or skill removed.
+
+### Changed
+
+- `agentflow init --force` no longer overwrites project data: files inside `.ai/projects/`, `work-items/`, `references/`, `knowledge/`, and `memory/` are kept (missing ones are still added). Previously an update with `--force` replaced the project's own state and indexes.
+- Installer errors go to stderr; exit codes unchanged.
+- Node support is now `>=18` (Node 16 is end-of-life and was never tested). CI runs on Node 18, 20, and 22.
+
+### Added
+
+- `npm test` — zero-dependency `node:test` suites: every CLI option and editor, invalid input and exit codes, existing files, `--force` protection, nested and space-containing paths, a missing bundled file, early-closed pipes, and an install from the **packed tarball** (`npm pack` → unpack → `init`).
+- Validator: the installer's file list is read from `bin/cli.js` and must be shipped by `package.json` `files`; the CI Node matrix must start at `engines.node`; the per-pack context-cost figures in `USAGE.md` and `plugins/README.md` are recomputed from the skill descriptions.
+
+### Fixed
+
+- Context-cost figures were stale since 1.2.0 (core ~1.7k → ~2.0k, all packs ~11.6k → ~12.1k tokens).
+
+### Totals
+
+- 178 skills · 13 agents · 13 hooks · 12 workflows · 31 templates · 19 prompts · 18 checklists.
+
 ## [1.2.1] — 2026-10-07
 
 Fix: project management reaches every workflow, and a bug on an untracked project has a path.

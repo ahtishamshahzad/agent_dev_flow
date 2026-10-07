@@ -24,7 +24,7 @@ npx github:ahtishamshahzad/agent_dev_flow init                       # all adapt
 npx github:ahtishamshahzad/agent_dev_flow init --editor claude,cursor # only what you use
 ```
 
-Existing files are never overwritten unless you pass `--force`. Preview with `--dry-run`.
+Existing files are never overwritten unless you pass `--force` — and even then your project data (`.ai/projects/`, `work-items/`, `references/`, `knowledge/`, `memory/`) is kept. Preview with `--dry-run`. Requires Node 18+.
 
 ---
 
@@ -54,7 +54,7 @@ Optional native plugins — adds namespaced, auto-discovered skills:
 
 Then invoke directly: `/ai-core:project-orchestrator`, `/ai-backend:backend-authorization`, `/ai-security:threat-modeling`.
 
-**Install only the packs a project needs.** Every installed pack keeps its skill descriptions in context on every turn — roughly: core ~1.7k, mobile ~2.1k, web ~2.0k, backend ~1.9k, devops ~1.2k, database ~1.0k, testing ~1.0k, security ~0.9k tokens. All eight is ~11.6k tokens of permanent overhead; two or three packs is the sweet spot and matches the system's own "load only what you need" rule.
+**Install only the packs a project needs.** Every installed pack keeps its skill descriptions in context on every turn — roughly: core ~2.0k, mobile ~2.1k, web ~2.0k, backend ~1.9k, devops ~1.2k, database ~1.0k, testing ~1.1k, security ~0.9k tokens. All eight is ~12.1k tokens of permanent overhead; two or three packs is the sweet spot and matches the system's own "load only what you need" rule.
 
 ### Cursor
 
@@ -229,7 +229,7 @@ More starters: [`.ai/prompts/`](.ai/prompts/README.md).
 
 - **Commit `.ai/` with your project.** It is documentation; it belongs in version control.
 - **Put project-specific content in `.ai/projects/current/`, `.ai/work-items/`, `.ai/references/`, `.ai/knowledge/`** — not in `.ai/system/` or `.ai/skills/`. That keeps upstream updates mergeable.
-- **Update** by re-running the installer with `--force`, then re-checking anything you customised. Version and history: [`.ai/VERSION`](.ai/VERSION), [`.ai/CHANGELOG.md`](.ai/CHANGELOG.md).
+- **Update** by re-running the installer with `--force`: system files are refreshed, project data is kept. Re-check any system file you customised (`CLAUDE.md`, rules, skills). Version and history: [`.ai/VERSION`](.ai/VERSION), [`.ai/CHANGELOG.md`](.ai/CHANGELOG.md).
 
 ## Troubleshooting
 

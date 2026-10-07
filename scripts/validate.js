@@ -238,14 +238,74 @@ else if (quoted[1] !== version) {
 }
 
 // ---- 6. Installer bundle completeness -------------------------------------
-const bundled = [
-  '.ai', 'AGENTS.md', 'CLAUDE.md', 'USAGE.md', 'QUICK_START.md',
-  '.cursor/rules/project.mdc',
-  '.windsurf/rules/project.md',
-  '.github/copilot-instructions.md',
-];
+// The list comes from the installer itself (ALWAYS + ADAPTERS), so adding a
+// file there cannot silently skip this check. Each must exist on disk AND be
+// covered by package.json "files" — otherwise `npx` installs fail even though
+// running from a git checkout works.
+const cli = read('bin/cli.js');
+const block = (name) => {
+  const m = cli.match(new RegExp(`const ${name} = ([\\[{][\\s\\S]*?[\\]}]);`));
+  return m ? [...m[1].matchAll(/'([^']+)'/g)].map((x) => x[1]) : [];
+};
+const bundled = [...block('ALWAYS'), ...block('ADAPTERS')];
+if (block('ALWAYS').length < 2 || block('ADAPTERS').length < 4) {
+  fail('bin/cli.js: could not read ALWAYS/ADAPTERS — update the check in validate.js');
+}
+const shipped = (parsed['package.json'] && parsed['package.json'].files) || [];
+const covered = (rel) => shipped.some((f) => {
+  const s = f.replace(/\/$/, '');
+  return rel === s || rel.startsWith(s + '/');
+});
 for (const rel of bundled) {
   if (!fs.existsSync(path.join(ROOT, rel))) fail(`installer source missing: ${rel}`);
+  if (!covered(rel)) fail(`package.json "files" does not ship installer source: ${rel}`);
+}
+if (!covered('bin/cli.js')) fail('package.json "files" does not ship bin/cli.js');
+
+// ---- 6b. Node support claimed = Node support tested ------------------------
+const engine = /(\d+)/.exec((parsed['package.json'] && parsed['package.json'].engines || {}).node || '');
+const matrix = /node:\s*\[([^\]]+)\]/.exec(read('.github/workflows/validate.yml'));
+if (!engine) fail('package.json: engines.node missing');
+else if (!matrix) fail('.github/workflows/validate.yml: no node matrix — engines.node is untested');
+else {
+  const lowest = Math.min(...matrix[1].split(',').map(Number));
+  if (lowest !== Number(engine[1])) {
+    fail(`CI tests Node ${lowest}+ but package.json claims >=${engine[1]} — test what you claim`);
+  }
+}
+
+// ---- 6c. Context-cost estimates in the docs --------------------------------
+// Every installed pack keeps its skill names + descriptions in context on every
+// turn. Docs quote that cost per pack; recompute it (chars/4, rounded to 0.1k)
+// so the figures cannot drift as skills are added.
+const descTokens = {};
+for (const p of skillFiles) {
+  const fm = fs.readFileSync(p, 'utf8').match(/^description:\s*(.*)$/m);
+  const parts = path.relative(skillsRoot, p).split(path.sep);
+  const pack = parts.length > 2 ? parts[0] : 'core';
+  descTokens[pack] = (descTokens[pack] || 0) + ((fm ? fm[1] : '') + parts[parts.length - 2]).length / 4;
+}
+const k = (n) => Math.round(n / 100) / 10;
+const totalK = k(Object.values(descTokens).reduce((a, b) => a + b, 0));
+for (const rel of ['USAGE.md', 'plugins/README.md']) {
+  const text = read(rel);
+  const line = text.split('\n').find((l) => /installed pack keeps/.test(l));
+  if (!line) { fail(`${rel}: per-pack context cost no longer stated — update the check or restore it`); continue; }
+  const quoted = [...line.split('All eight')[0].matchAll(/\b([a-z]+) ~(\d+\.\d)k/g)];
+  if (quoted.length !== Object.keys(descTokens).length) {
+    fail(`${rel}: quotes context cost for ${quoted.length} packs, there are ${Object.keys(descTokens).length}`);
+  }
+  for (const [, pack, n] of quoted) {
+    if (!(pack in descTokens)) fail(`${rel}: context cost for unknown pack "${pack}"`);
+    else if (Math.abs(Number(n) - k(descTokens[pack])) > 0.15) {
+      fail(`${rel}: claims ${pack} ~${n}k tokens, measured ~${k(descTokens[pack])}k`);
+    }
+  }
+  const total = /All eight[^0-9]*(\d+\.\d)k/.exec(line);
+  if (!total) fail(`${rel}: all-packs context cost no longer stated`);
+  else if (Math.abs(Number(total[1]) - totalK) > 0.3) {
+    fail(`${rel}: claims all packs ~${total[1]}k tokens, measured ~${totalK}k`);
+  }
 }
 
 // ---- 7. Relative references inside .ai/ resolve ---------------------------
