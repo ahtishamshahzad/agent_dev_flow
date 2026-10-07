@@ -325,6 +325,67 @@ for (const p of docs) {
   }
 }
 
+// ---- 7b. Links in the public docs resolve ---------------------------------
+// README, guides, plugins, examples, and evals link with plain relative paths
+// ("(.ai/README.md)"), so every non-URL Markdown link is checked here.
+const publicDocs = [
+  ...fs.readdirSync(ROOT).filter((f) => f.endsWith('.md')).map((f) => path.join(ROOT, f)),
+  path.join(ROOT, 'plugins/README.md'),
+  ...['examples', 'evals'].flatMap((d) =>
+    fs.existsSync(path.join(ROOT, d)) ? [...walk(path.join(ROOT, d))].filter((p) => p.endsWith('.md')) : []),
+];
+const LINK = /\]\(((?!https?:|mailto:|#)[^)\s]+)\)/g;
+for (const p of publicDocs) {
+  for (const m of fs.readFileSync(p, 'utf8').matchAll(LINK)) {
+    const link = m[1].split('#')[0];
+    if (!link || /[<>*|]/.test(link)) continue;
+    if (!fs.existsSync(path.resolve(path.dirname(p), link))) {
+      fail(`${path.relative(ROOT, p)}: link does not resolve — ${link}`);
+    }
+  }
+}
+
+// ---- 8. Intent index ------------------------------------------------------
+// Every entry is a link to a SKILL.md (resolution is checked in 7). Here: the
+// index still links skills at all, and covers every pack.
+const intent = read('.ai/skills/SKILLS_INDEX.md');
+const linked = [...intent.matchAll(/\]\(([a-z0-9/-]+)\/SKILL\.md\)/g)].map((m) => m[1]);
+if (linked.length < 20) fail(`.ai/skills/SKILLS_INDEX.md: only ${linked.length} skill links — index emptied?`);
+for (const pack of Object.keys(packs)) {
+  const inPack = pack === 'core' ? linked.some((l) => !l.includes('/')) : linked.some((l) => l.startsWith(pack + '/'));
+  if (!inPack) fail(`.ai/skills/SKILLS_INDEX.md: no entry for the ${pack} pack`);
+}
+
+// ---- 9. Version quoted in the root README ----------------------------------
+const readmeVersion = read('README.md').match(/Version \*\*(\d+\.\d+\.\d+)\*\*/);
+if (!readmeVersion) fail('README.md: no longer quotes the version');
+else if (readmeVersion[1] !== version) fail(`README.md: quotes version ${readmeVersion[1]}, .ai/VERSION is ${version}`);
+
+// ---- 10. Examples and evaluations keep their honesty labels ----------------
+// An example artifact without a status line reads as if it were real output;
+// an eval case without its properties cannot be scored.
+const exRoot = path.join(ROOT, 'examples');
+const examples = fs.readdirSync(exRoot).filter((d) => fs.statSync(path.join(exRoot, d)).isDirectory());
+if (!examples.length) fail('examples/: no examples');
+for (const ex of examples) {
+  for (const f of fs.readdirSync(path.join(exRoot, ex)).filter((x) => x.endsWith('.md'))) {
+    const head = fs.readFileSync(path.join(exRoot, ex, f), 'utf8').split('\n').slice(0, 4).join('\n');
+    if (!/\*\*Status: (PROPOSED|APPROVED \(simulated\)|GENERATED|VERIFIED|IMPLEMENTED)[.*\s]/.test(head)) {
+      fail(`examples/${ex}/${f}: missing a status label (PROPOSED, GENERATED, VERIFIED, …) in its first lines`);
+    }
+  }
+}
+const evRoot = path.join(ROOT, 'evals');
+const evalReadme = read('evals/README.md');
+const cases = fs.readdirSync(evRoot).filter((d) => d !== 'results' && fs.statSync(path.join(evRoot, d)).isDirectory());
+if (cases.length < 1) fail('evals/: no cases');
+for (const c of cases) {
+  for (const f of ['input.md', 'expected-properties.md', 'evaluation.md']) {
+    if (!fs.existsSync(path.join(evRoot, c, f))) fail(`evals/${c}/: missing ${f}`);
+  }
+  if (!evalReadme.includes(`(${c}/)`)) fail(`evals/README.md: case "${c}" is not listed`);
+}
+
 // ---- Report ---------------------------------------------------------------
 if (failures.length) {
   console.error(`FAIL — ${failures.length} problem(s):`);

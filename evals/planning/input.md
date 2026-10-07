@@ -1,0 +1,5 @@
+# Input — planning
+
+Give the agent exactly this, in an empty repository:
+
+> I want to build a booking app for small gyms. Members book classes on their phones, trainers see their class lists, and gym owners manage the schedule and see attendance. We'll sell it to several gyms. Members pay a monthly membership through the app. Please get started.

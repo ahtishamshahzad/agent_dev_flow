@@ -2,7 +2,7 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.3.0] — unreleased
+## [1.3.0] — 2026-10-07
 
 Tooling, tests, and CI for the installer and the repository. No rule or skill removed.
 
@@ -17,9 +17,23 @@ Tooling, tests, and CI for the installer and the repository. No rule or skill re
 - `npm test` — zero-dependency `node:test` suites: every CLI option and editor, invalid input and exit codes, existing files, `--force` protection, nested and space-containing paths, a missing bundled file, early-closed pipes, and an install from the **packed tarball** (`npm pack` → unpack → `init`).
 - Validator: the installer's file list is read from `bin/cli.js` and must be shipped by `package.json` `files`; the CI Node matrix must start at `engines.node`; the per-pack context-cost figures in `USAGE.md` and `plugins/README.md` are recomputed from the skill descriptions.
 
+- `skills/SKILLS_INDEX.md` — find a skill by intent ("I want to add login"); every entry is a link, so a wrong name fails validation. Payments/subscriptions is listed honestly as having no dedicated skill.
+- `CONTRIBUTING.md` and five issue templates (bug, feature, new skill, adapter, evaluation).
+- `examples/multi-tenant-saas/` — one fictional SaaS planned through every stage, request to release checklist, including week-1 tracking with a caught scope change. Every file carries a status label (PROPOSED / APPROVED (simulated)); nothing claims to be implemented. Not shipped by the installer.
+- `evals/` — effectiveness evaluation, distinct from validation: method (baseline vs AgentFlow, ≥3 runs per arm, blind scoring), a scoresheet, and six cases with planted traps — planning, architecture, bug-fixing, security, testing, scope control. No results recorded; none invented.
+- Validator: every relative link in the root guides, `plugins/README.md`, `examples/`, and `evals/` must resolve; every example file must carry a status label; every eval case must have its three files and be listed.
+- README: what AgentFlow is in the first screen, a Mermaid diagram of the pipeline (gates, single vs parallel agents, tracking, scope change), which agents get native integration versus an adapter file, and context cost.
+- Validator: the intent index must cover every pack; the README's quoted version must match.
+
+### Changed — token cost
+
+- `project-management` is split into a short body plus one file per mode (`modes/`), loaded only for the request at hand: a tracking request costs ~1.6–1.9k tokens instead of ~5.9k. Its description is shorter, so the core pack costs ~1.9k per turn.
+- Adapters (`AGENTS.md`, `CLAUDE.md`, Cursor, Windsurf, Copilot) no longer read the 4k-token `.ai/README.md` map on every session start; it is opened when needed. They read `CURRENT_STATUS.md` first when it exists.
+
 ### Fixed
 
-- Context-cost figures were stale since 1.2.0 (core ~1.7k → ~2.0k, all packs ~11.6k → ~12.1k tokens).
+- Context-cost figures were stale since 1.2.0; now recomputed and checked (all packs ~12.0k tokens).
+- The root README still quoted version 1.0.0.
 
 ### Totals
 

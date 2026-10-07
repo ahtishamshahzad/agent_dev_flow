@@ -2,6 +2,8 @@
 
 Skills are focused, reusable instruction modules for specific kinds of work. Agents discover them **through this index**, then load only the relevant ones (`../system/SKILL_SELECTION_RULES.md`). **Do not load all skills** — see the rule at the bottom.
 
+**Know what you want to do but not which skill?** → [`SKILLS_INDEX.md`](SKILLS_INDEX.md) ("I want to…").
+
 ## How selection works
 
 1. Match the active task / request-type against the index below.

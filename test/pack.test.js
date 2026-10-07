@@ -47,4 +47,5 @@ test('the packed tarball installs a working system', () => {
   const files = info.files.map((f) => f.path);
   assert.ok(!files.some((f) => f.startsWith('test/')), 'tests are not shipped');
   assert.ok(!files.some((f) => f.startsWith('plugins/')), 'plugins are distributed by the marketplace, not npm');
+  assert.ok(!files.some((f) => f.startsWith('examples/') || f.startsWith('evals/')), 'examples and evals stay in the repo');
 });

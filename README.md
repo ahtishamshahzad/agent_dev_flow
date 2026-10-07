@@ -1,10 +1,60 @@
-# AI Engineering System
+# AgentFlow — AI Engineering System
 
-**A reusable, tool-neutral operating system for planning and building software with AI agents.** It defines *how* work is classified, planned, approved, implemented, tested, reviewed, and released — without prescribing any application type or technology stack. The stack and applications are chosen per project, with user approval.
+[![validate](https://github.com/ahtishamshahzad/agent_dev_flow/actions/workflows/validate.yml/badge.svg)](https://github.com/ahtishamshahzad/agent_dev_flow/actions/workflows/validate.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-It is **documentation and governance**, not application code: no dependencies, no committed stack. It works with **Claude Code, OpenAI Codex, Cursor, Windsurf, GitHub Copilot, Antigravity**, or any agent that can read files.
+**An operating system for AI-assisted software engineering.** It makes a coding agent work like a disciplined engineering team: classify the request, understand it, plan it, get your approval, then build, test, review, secure, release — and track it week by week. It is not a prompt collection: it is rules, gates, 178 skills, and a project record your agent reads and writes inside your repo.
 
-> Version **1.0.0** · MIT · The full guide lives in [`.ai/README.md`](.ai/README.md).
+```bash
+npx github:ahtishamshahzad/agent_dev_flow init      # adds .ai/ + your editor's adapter to a project
+```
+
+Then, in your agent: *"Use the project-orchestrator skill. This is a new project: <what you want>. Do not implement code."* It stops twice for your approval before writing any code.
+
+> Version **1.3.0** · MIT · Node 18+ for the installer · Full guide: [`.ai/README.md`](.ai/README.md)
+
+**Names:** *AgentFlow* is the product and the `agentflow` installer. The *AI Engineering System* is what it installs — the canonical `.ai/` directory. `agent_dev_flow` is this repository.
+
+### How a request flows
+
+```mermaid
+flowchart TD
+    R(["Your request"]) --> C["Classify the request"]
+    C --> Q["Requirements: confirmed, assumptions, questions"]
+    Q --> A{"Existing code?"}
+    A -- yes --> AU["Audit the repository"] --> S
+    A -- no --> S["Select applications"]
+    S --> ST["Recommend stack, with alternatives"]
+    ST --> G1{{"GATE 1: you approve apps + stack"}}
+    G1 --> AR["Architecture"]
+    AR --> P["Dynamic phases, then tasks with acceptance criteria"]
+    P --> G2{{"GATE 2: you approve phases + tasks"}}
+    G2 --> T["Track: roadmap, IDs, weekly plan"]
+    T --> M{"Independent parts?"}
+    M -- "no (default)" --> SA["Single agent"]
+    M -- yes --> PA["Contracts, file ownership, parallel agents, sync, integration review"]
+    SA --> TE["Test"]
+    PA --> TE
+    TE --> CR["Code review"] --> SR["Security review"] --> RL{{"Release: needs your approval"}}
+    T -. "new request mid-build" .-> SC{"Changes approved scope?"}
+    SC -- "yes: SCOPE CHANGE" --> G2
+```
+
+### Works with
+
+| Agent | How it reads the system | Native integration |
+|---|---|---|
+| **Claude Code** | `CLAUDE.md` → `.ai/` | Yes — optional plugins make every skill a `/ai-core:…` command |
+| **OpenAI Codex** | `AGENTS.md` → `.ai/` | Reads `AGENTS.md` natively; no plugin |
+| **Cursor** | `.cursor/rules/project.mdc` → `.ai/` | Rules file only |
+| **Windsurf** | `.windsurf/rules/project.md` → `.ai/` | Rules file only |
+| **GitHub Copilot** | `.github/copilot-instructions.md` → `.ai/` | Instructions file only |
+| **Antigravity, any file-reading agent** | `AGENTS.md` → `.ai/` | Generic — point the agent at `AGENTS.md` |
+
+Every adapter is a thin pointer; the rules exist once, in `.ai/`.
+
+### Context cost
+
+Skills load one at a time, only when needed. What stays in context every turn is the list of installed skill descriptions: about 2k tokens per pack (≈12k for all eight) — install the packs a project needs, not all of them. A session's start-up reads (`AGENTS.md`, operating rules, workflow, project status) are a few thousand tokens; the full `.ai/README.md` map is opened only when needed.
 
 ---
 
@@ -21,6 +71,8 @@ It is **documentation and governance**, not application code: no dependencies, n
 | **Checklists** (verifiable gate/hook checks) | 18 | [`.ai/checklists/`](.ai/checklists/README.md) |
 
 Skills are organized into **8 packs**: core (28), mobile (36), web & dashboard (26), backend (30), database (15), testing (15), devops (16), security (12). Plus system rules, knowledge, memory, and references — all in [`.ai/`](.ai/README.md).
+
+**Find a skill by what you want to do:** [`.ai/skills/SKILLS_INDEX.md`](.ai/skills/SKILLS_INDEX.md) — "I want to add login", "…design the database", "…set up CI".
 
 ## Install
 
@@ -120,7 +172,7 @@ New work that changes the approved plan is flagged **`SCOPE CHANGE`** and comes 
 - **Everything is enforced server-side**; client checks are UX. Authorization is distinct from authentication and from abuse prevention.
 - **Multi-agent is optional** and only for genuinely independent work with non-overlapping file ownership — conflicts are prevented by construction, never used just because it's possible.
 - **Records claim only verified work** — the code outranks the status file; progress is derived, never asserted; logs are append-only.
-- **Reviews report Confirmed vs Potential**, never print secrets, and never claim a system is "secure."
+- **Reviews report Confirmed vs Potential**, never print secrets, and never claim a system is "secure." AgentFlow gives you threat modeling, security review workflows, checklists, and security-testing guidance — whether the application is secure depends on what is actually built and verified.
 - **`.ai/` is canonical**; editor adapters are thin pointers that never duplicate it.
 
 ## Documentation
@@ -131,6 +183,23 @@ New work that changes the approved plan is flagged **`SCOPE CHANGE`** and comes 
 - [`INSTALLATION.md`](INSTALLATION.md) — install options and per-editor setup.
 - [`plugins/README.md`](plugins/README.md) — Claude Code plugin details.
 - [`.ai/CHANGELOG.md`](.ai/CHANGELOG.md) — version history.
+
+## See it on a real-sized project
+
+[`examples/multi-tenant-saas/`](examples/multi-tenant-saas/README.md) walks one fictional SaaS — mobile + web + API + PostgreSQL, tenancy, roles, subscriptions, photo uploads, offline — through every stage: request, requirements, application and stack decisions, architecture, phases and Gherkin tasks, testing strategy, threat model, week-1 tracking with a caught scope change, and the release checklist. Every file is labelled **PROPOSED**: it shows what the system produces, not a product that exists.
+
+## Does it actually help? — evaluation
+
+Validation proves the repo is consistent; it doesn't prove AgentFlow makes an agent better. [`evals/`](evals/README.md) defines how to measure that: six cases (planning, architecture, bug-fixing, security, testing, scope control), each with a planted trap and pass/fail properties, run against a baseline agent and the same agent with AgentFlow. **No results have been recorded yet** — the method and cases are ready to run.
+
+## Develop and contribute
+
+```bash
+node scripts/validate.js   # repository consistency: counts, versions, links, bundle, token figures
+npm test                   # installer tests, including an install from the packed tarball
+```
+
+CI runs both on Node 18, 20, and 22. How to add a skill, a plugin, or a check, and what a PR needs: [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Scope
 
