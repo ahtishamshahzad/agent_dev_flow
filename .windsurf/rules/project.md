@@ -4,12 +4,11 @@
 
 When working in this repository, follow the AI Engineering System. Read, in order:
 1. `AGENTS.md`
-2. `.ai/README.md`
-3. `.ai/system/OPERATING_RULES.md`
-4. `.ai/system/ORCHESTRATION_WORKFLOW.md`
-5. `.ai/projects/current/`
+2. `.ai/system/OPERATING_RULES.md`
+3. `.ai/system/ORCHESTRATION_WORKFLOW.md`
+4. `.ai/projects/current/` — `CURRENT_STATUS.md` first, if it exists
 
-Then load **only** the relevant `.ai/skills/` (via its index), the active `.ai/work-items/` entry, and the relevant `.ai/references/<topic>/`. Do not load everything — see `.ai/system/CONTEXT_MANAGEMENT_RULES.md` and `TOKEN_OPTIMIZATION_RULES.md`.
+Then load **only** the relevant `.ai/skills/` (via its index), the active `.ai/work-items/` entry, and the relevant `.ai/references/<topic>/`. Do not load everything — see `.ai/system/CONTEXT_MANAGEMENT_RULES.md` and `TOKEN_OPTIMIZATION_RULES.md`. `.ai/README.md` is the full map; open it only when needed.
 
 ## Non-negotiables (full text in `.ai/`)
 - `.ai/` is canonical; keep this adapter thin.

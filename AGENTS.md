@@ -6,16 +6,15 @@ Any AI coding agent — **Claude Code, OpenAI Codex, Cursor, Windsurf, GitHub Co
 
 ## Start here (read in order)
 
-1. **`.ai/README.md`** — the map of the system.
-2. **`.ai/system/OPERATING_RULES.md`** — the non-negotiable operating rules.
-3. **`.ai/system/ORCHESTRATION_WORKFLOW.md`** — the request→release pipeline and gates.
-4. **`.ai/projects/current/`** — the active project's state, decisions, and gate status.
-5. Then load **only what the active task needs**:
+1. **`.ai/system/OPERATING_RULES.md`** — the non-negotiable operating rules.
+2. **`.ai/system/ORCHESTRATION_WORKFLOW.md`** — the request→release pipeline and gates.
+3. **`.ai/projects/current/`** — the active project's state: **`CURRENT_STATUS.md` first** if it exists.
+4. Then load **only what the active task needs**:
    - relevant **`.ai/skills/`** (via the index — not all of them)
    - the relevant **`.ai/work-items/`** entry
    - the relevant **`.ai/references/<topic>/`** folder
 
-Do not load everything. Follow `.ai/system/CONTEXT_MANAGEMENT_RULES.md` and `.ai/system/TOKEN_OPTIMIZATION_RULES.md`.
+Do not load everything. Follow `.ai/system/CONTEXT_MANAGEMENT_RULES.md` and `.ai/system/TOKEN_OPTIMIZATION_RULES.md`. **`.ai/README.md`** is the full map of the system — open it when you need to find something, not on every session.
 
 ## Non-negotiables (summary — full text in `.ai/`)
 

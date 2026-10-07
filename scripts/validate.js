@@ -325,6 +325,22 @@ for (const p of docs) {
   }
 }
 
+// ---- 8. Intent index ------------------------------------------------------
+// Every entry is a link to a SKILL.md (resolution is checked in 7). Here: the
+// index still links skills at all, and covers every pack.
+const intent = read('.ai/skills/SKILLS_INDEX.md');
+const linked = [...intent.matchAll(/\]\(([a-z0-9/-]+)\/SKILL\.md\)/g)].map((m) => m[1]);
+if (linked.length < 20) fail(`.ai/skills/SKILLS_INDEX.md: only ${linked.length} skill links — index emptied?`);
+for (const pack of Object.keys(packs)) {
+  const inPack = pack === 'core' ? linked.some((l) => !l.includes('/')) : linked.some((l) => l.startsWith(pack + '/'));
+  if (!inPack) fail(`.ai/skills/SKILLS_INDEX.md: no entry for the ${pack} pack`);
+}
+
+// ---- 9. Version quoted in the root README ----------------------------------
+const readmeVersion = read('README.md').match(/Version \*\*(\d+\.\d+\.\d+)\*\*/);
+if (!readmeVersion) fail('README.md: no longer quotes the version');
+else if (readmeVersion[1] !== version) fail(`README.md: quotes version ${readmeVersion[1]}, .ai/VERSION is ${version}`);
+
 // ---- Report ---------------------------------------------------------------
 if (failures.length) {
   console.error(`FAIL — ${failures.length} problem(s):`);

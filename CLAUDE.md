@@ -6,12 +6,11 @@ Claude Code: operate through the AI Engineering System.
 
 ## Read, in order
 1. `AGENTS.md` (general entry point)
-2. `.ai/README.md`
-3. `.ai/system/OPERATING_RULES.md`
-4. `.ai/system/ORCHESTRATION_WORKFLOW.md`
-5. `.ai/projects/current/`
+2. `.ai/system/OPERATING_RULES.md`
+3. `.ai/system/ORCHESTRATION_WORKFLOW.md`
+4. `.ai/projects/current/` — `CURRENT_STATUS.md` first, if it exists
 
-Then load **only** the relevant `.ai/skills/` (via the index), the active `.ai/work-items/` entry, and the relevant `.ai/references/<topic>/`. Follow `.ai/system/CONTEXT_MANAGEMENT_RULES.md` and `TOKEN_OPTIMIZATION_RULES.md` — do not load everything.
+Then load **only** the relevant `.ai/skills/` (via the index), the active `.ai/work-items/` entry, and the relevant `.ai/references/<topic>/`. Follow `.ai/system/CONTEXT_MANAGEMENT_RULES.md` and `TOKEN_OPTIMIZATION_RULES.md` — do not load everything. `.ai/README.md` is the full map; open it only when you need to find something.
 
 ## Must-follow (details in `.ai/`)
 - `.ai/` is canonical; this file stays thin.
