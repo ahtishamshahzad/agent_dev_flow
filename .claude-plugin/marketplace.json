@@ -1,7 +1,7 @@
 {
   "name": "agent_dev_flow",
-  "description": "The AI Engineering System — 177 reusable skills for planning and building software with AI agents, packaged as installable Claude Code plugins (one per skill pack). The canonical system lives in .ai/; these plugins expose its skills natively.",
-  "version": "1.1.0",
+  "description": "The AI Engineering System — 178 reusable skills for planning and building software with AI agents, packaged as installable Claude Code plugins (one per skill pack). The canonical system lives in .ai/; these plugins expose its skills natively.",
+  "version": "1.2.0",
   "owner": {
     "name": "ahtishamshahzad"
   },
@@ -9,7 +9,7 @@
     {
       "name": "ai-core",
       "source": "./plugins/ai-core",
-      "description": "Core orchestration, planning, selection, review, testing, delivery, documentation, and audit skills (27). Start here with project-orchestrator.",
+      "description": "Core orchestration, planning, project management, selection, review, testing, delivery, documentation, and audit skills (28). Start here with project-orchestrator.",
       "category": "engineering",
       "keywords": ["orchestration", "planning", "architecture", "review"]
     },

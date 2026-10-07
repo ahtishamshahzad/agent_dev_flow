@@ -2,7 +2,7 @@
   "name": "ai-core",
   "displayName": "AI Engineering System — Core",
   "description": "Core orchestration, planning, selection, review, testing, delivery, and audit skills for the AI Engineering System. Start with project-orchestrator; it drives the request→approval→release pipeline and coordinates specialists.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": { "name": "ahtishamshahzad" },
   "homepage": "https://github.com/ahtishamshahzad/agent_dev_flow",
   "repository": "https://github.com/ahtishamshahzad/agent_dev_flow",

@@ -18,7 +18,8 @@ Request
   → Dynamic phase generation
   → Task generation
   ─────────────── GATE: User approval (phases + tasks) ───────────────
-  → Implementation
+  → Project tracking setup           (roadmap, IDs, weekly plan)
+  → Implementation                   (week by week, tracked)
   → Testing
   → Review
   → Release
@@ -44,6 +45,7 @@ Classify the request as exactly one primary type (see list below). Note secondar
 - testing audit
 - deployment
 - release
+- project tracking — status, week planning/review, blockers, weekly or meeting report (no new scope; handled by `../skills/project-management`, no gates re-run)
 
 Per-type workflows are described in `../workflows/README.md`.
 
@@ -80,8 +82,11 @@ Break each phase into concrete, verifiable tasks with inputs, outputs, and accep
 ### 🚦 GATE — User approval (phases + tasks)
 Present phases + tasks. **Wait for approval.** Only now may implementation begin.
 
+### 10a. Project tracking setup
+Hand the approved phases and tasks to `../skills/project-management`: assign IDs, estimates, and dependencies; write the roadmap and the first week's plan (`PROJECT_MANAGEMENT_RULES.md`). This schedules approved work — it approves nothing new.
+
 ### 11. Implementation
-Execute approved tasks. Apply hooks (`HOOK_RULES.md`), stay in scope, keep the record current.
+Execute approved tasks, week by week. Bugs found or reported along the way go through bug intake (ID, priority, week, ledger) before any fix; new scope is classified and, if it changes the approved plan, flagged `SCOPE CHANGE` for approval. Log each significant session and keep the week and status current. Apply hooks (`HOOK_RULES.md`), stay in scope, keep the record current.
 
 ### 12. Testing
 Apply the testing strategy chosen in `TESTING_SELECTION_RULES.md`. Run what the environment allows; mark unrun checks explicitly.
@@ -94,7 +99,7 @@ Validate release readiness (`QUALITY_GATES.md` gate 7), follow `GIT_WORKFLOW_RUL
 
 ## Orchestrator responsibilities
 
-- Maintain the current stage and gate status in `../projects/current/`.
+- Maintain the current stage and gate status in `CURRENT_STATUS.md` in `../projects/current/`.
 - Enforce gates; refuse to advance on failure.
 - Decide single-agent vs multi-agent (`MULTI_AGENT_RULES.md`).
 - Keep context minimal and layered (`CONTEXT_MANAGEMENT_RULES.md`).
@@ -102,4 +107,4 @@ Validate release readiness (`QUALITY_GATES.md` gate 7), follow `GIT_WORKFLOW_RUL
 
 ## Re-entry
 
-Work resumes from the last recorded stage/gate in `../projects/current/`. Do not restart the pipeline from scratch if state exists.
+Work resumes from the last recorded stage/gate in `CURRENT_STATUS.md` in `../projects/current/` — read it first; it points to the current phase, week, and open work. Do not restart the pipeline from scratch if state exists.

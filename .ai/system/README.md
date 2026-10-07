@@ -19,6 +19,7 @@ These files are the **brain** of the AI Engineering System. They are canonical a
 | Which skills to load for a task | `SKILL_SELECTION_RULES.md` |
 | How to generate phases dynamically | `PHASE_GENERATION_RULES.md` |
 | How to break phases into tasks | `TASK_GENERATION_RULES.md` |
+| Tracking: IDs, statuses, priorities, estimates, weeks, bugs, logs, reports | `PROJECT_MANAGEMENT_RULES.md` |
 | Layered context loading | `CONTEXT_MANAGEMENT_RULES.md` |
 | Token/economy discipline | `TOKEN_OPTIMIZATION_RULES.md` |
 | When (and when not) to use multiple agents | `MULTI_AGENT_RULES.md` |

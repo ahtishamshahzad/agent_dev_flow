@@ -194,7 +194,10 @@ The audit runs **before** any edit — that stop condition is enforced by the wo
 | You want to… | Say | Lands in |
 |--------------|-----|----------|
 | Plan a feature | "Use `feature-planning`." | `.ai/work-items/features/` |
-| Fix a bug | "Use `bug-investigation`. Reproduce and find root cause first." | `.ai/work-items/bugs/` |
+| Fix a bug | "Use `project-management`. Fix this bug: …" — it opens `BUG-NNN`, runs `bug-investigation` for the root cause, schedules the fix, then fixes | `.ai/work-items/bugs/` + `logs/BUG-LOG.md` |
+| Plan the week | "Use `project-management`. Plan next week." | `.ai/projects/current/weekly/` |
+| Check status | "What should I work on this week?" · "What are the current blockers?" · "Update project status." | `.ai/projects/current/CURRENT_STATUS.md` |
+| Report | "Prepare weekly report." · "Prepare meeting report." | `.ai/projects/current/reports/` · `meetings/` |
 | Refactor | "Use `refactor-planning`." | `.ai/work-items/refactors/` |
 | Migrate something | "Use `migration-planning`." | `.ai/work-items/migrations/` |
 | Review a change | "Use `code-review`." | review report |
@@ -210,12 +213,12 @@ More starters: [`.ai/prompts/`](.ai/prompts/README.md).
 | Path | Holds |
 |------|-------|
 | `.ai/system/` | Non-negotiable rules — gates, orchestration, security, git, context budget |
-| `.ai/skills/` | 177 capability modules, indexed in [`.ai/skills/README.md`](.ai/skills/README.md) |
+| `.ai/skills/` | 178 capability modules, indexed in [`.ai/skills/README.md`](.ai/skills/README.md) |
 | `.ai/workflows/` | One per request type (new project, existing project, bugfix, release, …) |
 | `.ai/agents/` | 13 roles for multi-agent runs |
 | `.ai/hooks/` · `.ai/checklists/` | Tool-neutral lifecycle gates and verifiable checks |
 | `.ai/templates/` | Fill-in documents |
-| `.ai/projects/current/` | **Your project's state** — classification, decisions, gate status, phases |
+| `.ai/projects/current/` | **Your project's state** — classification, decisions, gate status, phases, roadmap, weekly plans, logs, reports |
 | `.ai/work-items/` | Features, bugs, refactors, migrations, audits |
 | `.ai/references/` | Your project's reference material, by topic — starts empty |
 | `.ai/knowledge/` · `.ai/memory/` | Project domain knowledge; retrospectives and lessons |

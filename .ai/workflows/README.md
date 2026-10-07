@@ -23,6 +23,8 @@ Each workflow documents: **request classification**, **skills required**, **agen
 
 \* conditional (only if architecture changes / it ships as a release).
 
+**Project tracking** (status, week planning/review, blockers, weekly or meeting reports) has no workflow file: it adds no scope and re-runs no gates, so it is handled directly by [`../skills/project-management`](../skills/project-management/SKILL.md) under [`../system/PROJECT_MANAGEMENT_RULES.md`](../system/PROJECT_MANAGEMENT_RULES.md).
+
 ## Execution modes
 
 Every workflow names its agents and picks an execution mode per [`../agents/multi-agent-execution.md`](../agents/multi-agent-execution.md): default **single-agent**; **sequential specialists** for role separation without parallelism; **parallel specialists** only for genuinely independent, disjoint-file streams with contracts defined first, a synchronization point, and a final integration review. **Not multi-agent just because it's possible.**

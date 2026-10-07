@@ -39,9 +39,19 @@ Do not implement until approved.
 ## Bug
 
 ```
-Use bug-investigation.
-Create `.ai/work-items/bugs/BUG_<NAME>.md`.
-Reproduce and identify root cause before changing code.
+Use project-management. Fix this bug: <describe it>.
+Check for an existing bug first; otherwise create `.ai/work-items/bugs/BUG-NNN.md`.
+Reproduce and identify root cause (bug-investigation) before changing code.
+Assign priority and a week, add it to the bug log, then fix, test, and log.
+```
+
+## Week and status
+
+```
+Use project-management.
+Plan next week. | Update project status. | What are the current blockers?
+Prepare weekly report. | Prepare meeting report.
+Verify against the code; claim only completed, tested work.
 ```
 
 ## Start phase

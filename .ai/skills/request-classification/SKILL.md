@@ -28,7 +28,7 @@ Assign each incoming request a primary type (and any secondary types) so the cor
 
 ## Responsibilities
 
-- Select exactly **one primary type** from: new project · existing project enhancement · feature · bug · refactor · migration · architecture review · code review · security audit · testing audit · deployment · release.
+- Select exactly **one primary type** from: new project · existing project enhancement · feature · bug · refactor · migration · architecture review · code review · security audit · testing audit · deployment · release · project tracking.
 - Note **secondary types** if the request legitimately spans more than one.
 - Map the type to its workflow variant (`../../workflows/README.md`) and gates.
 - Record the classification and rationale.
@@ -36,7 +36,7 @@ Assign each incoming request a primary type (and any secondary types) so the cor
 ## Required Workflow
 
 1. Read the request and any obvious context.
-2. Match intent against the 12 types.
+2. Match intent against the 13 types.
 3. Choose the primary type; list secondaries.
 4. State the selected workflow/gates that follow.
 5. Hand back to `project-orchestrator`.
@@ -46,6 +46,7 @@ Assign each incoming request a primary type (and any secondary types) so the cor
 - Prefer the type that captures the **primary outcome**, not the loudest detail.
 - "Add X" → feature; "X is broken" → bug; "improve structure, same behavior" → refactor; "move to Y" → migration; "is this OK?" → a review/audit type.
 - Assessment-only requests (no code intended) → architecture review / code review / security audit / testing audit.
+- "Where are we / what's next / plan the week / prepare the report" → project tracking (`project-management`; no new scope, no gates re-run). If it smuggles in new work, classify that work separately.
 - If genuinely ambiguous between two, ask one disambiguating question.
 
 ## Rules

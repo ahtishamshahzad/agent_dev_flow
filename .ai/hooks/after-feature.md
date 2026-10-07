@@ -16,7 +16,7 @@ After a feature/task's implementation completes, before it is considered done.
 - [ ] Required cases covered and passing (happy, invalid input, error, **authorization denial**, regression).
 - [ ] Product docs written for the units this feature adds — `docs/<app>/…` plus the parent index row (`../skills/application-documentation`).
 - [ ] Project state/notes updated for the change (`../agents/documentation-engineer.md`).
-- [ ] Work item / `../projects/current/` state updated (stage, what's done, what's next).
+- [ ] Work item / `../projects/current/` state updated (stage, what's done, what's next): task status in the week file, a `logs/DEVELOPMENT-LOG.md` entry with the tests actually run, and `CURRENT_STATUS.md` (`../skills/project-management`).
 - [ ] If multi-agent: this slice's output is ready for the synchronization point and integration review.
 
 ## Failure Conditions

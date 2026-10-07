@@ -1,8 +1,9 @@
-# Progress — <project>
+# Current Status — <project>
 
-> Fill-in living record of where the work stands. Keep current so work can resume from the last recorded stage (`../system/ORCHESTRATION_WORKFLOW.md` re-entry). Normally lives in `../projects/current/`.
+> Fill-in living record of where the work stands. Lives as `CURRENT_STATUS.md` in `../projects/current/` — the first file read on re-entry (`../system/ORCHESTRATION_WORKFLOW.md`). Reconcile with the code before updating (`../system/PROJECT_MANAGEMENT_RULES.md` — what is true).
 
 - **Updated:** <YYYY-MM-DD> · **Current stage:** <pipeline stage> · **Execution mode:** single | sequential | parallel
+- **Phase:** PHASE-<NN> — <name> · **Week:** WEEK-<NN> · **Overall progress:** <NN>% (<method>)
 
 ## Gate Status
 
@@ -14,7 +15,7 @@
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| <> | todo / in-progress / done | <> |
+| PHASE-<NN> | PLANNED / IN_PROGRESS / COMPLETED | <> |
 
 ## In Flight (who owns what — no overlaps)
 
@@ -22,13 +23,17 @@
 |---------------|---------------|--------|
 | <> | <disjoint> | <> |
 
-## Next
+## Work
 
-- <The immediate next action / gate awaiting approval>
+- **In progress:** <IDs>
+- **Blocked:** <ID — blocker — who can unblock>
+- **Recently completed (verified):** <IDs>
+- **Active bugs:** <BUG IDs with priority>
+- **Critical risks:** <RISK IDs>
 
-## Blockers
+## Next Priorities
 
-- <Anything stopping progress, and who can unblock>
+1. <The immediate next action / gate awaiting approval>
 
 ## Related
 

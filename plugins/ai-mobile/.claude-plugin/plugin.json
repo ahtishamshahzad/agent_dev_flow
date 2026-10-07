@@ -2,7 +2,7 @@
   "name": "ai-mobile",
   "displayName": "AI Engineering System — Mobile",
   "description": "React Native / Expo mobile skills: runtime selection, foundations, navigation, design system, state, API, auth/authorization, native capabilities, accessibility, performance, testing, builds, and store readiness.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": { "name": "ahtishamshahzad" },
   "homepage": "https://github.com/ahtishamshahzad/agent_dev_flow",
   "repository": "https://github.com/ahtishamshahzad/agent_dev_flow",

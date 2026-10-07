@@ -4,6 +4,7 @@ Break each generated phase into concrete, verifiable **tasks**. Tasks are the un
 
 ## A good task has
 
+- **ID** — `TASK-`/`FEAT-`/`TECH-`/`DEPLOY-NNN`, unique and never reused (`PROJECT_MANAGEMENT_RULES.md`).
 - **Title** — imperative, specific ("Add ownership check to document GET route").
 - **Context** — the minimal background and links (not duplicated content).
 - **Inputs** — files, decisions, or prior tasks it depends on.
@@ -11,16 +12,18 @@ Break each generated phase into concrete, verifiable **tasks**. Tasks are the un
 - **Acceptance criteria** — how "done" is verified, written as **Gherkin scenarios** (`GHERKIN_RULES.md`): one behavior each, with observable outcomes. The scenario *is* the criterion — do not write it twice in two dialects.
 - **Required skills** — the loaded skill(s) for this task (`SKILL_SELECTION_RULES.md`).
 - **Risk / behavior impact** — low/medium/high; note if it changes product behavior.
+- **Priority, estimate, status** — P0–P3, XS–XL, and one of the ten statuses (`PROJECT_MANAGEMENT_RULES.md`). No other values.
 
 ## Sizing
 
 - Prefer tasks completable and reviewable in one focused pass.
 - Split a task when it spans multiple concerns, files with different owners, or both implementation and large test work.
 - Do not create tasks so granular that coordination cost exceeds the work.
+- A task estimated XL is split before it is scheduled.
 
 ## Ordering & dependencies
 
-- Order tasks by dependency within a phase.
+- Order tasks by dependency within a phase; record each as `Depends on:` task IDs.
 - Mark tasks that can run in parallel (candidates for multi-agent, per `MULTI_AGENT_RULES.md`).
 - Flag tasks that touch the same files — these must **not** run in parallel across agents.
 
@@ -30,7 +33,7 @@ Every task names how it will be checked: a command to run, a test to pass, a man
 
 ## Recording
 
-- Tasks live under the relevant `../work-items/` entry (feature/bug/refactor/audit/migration) and are referenced from the phase in `../projects/current/`.
+- Tasks live under the relevant `../work-items/` entry (feature/bug/refactor/audit/migration) and are referenced from the phase, the roadmap, and the week they are scheduled in (`../projects/current/`).
 - Keep task notes **concise** (`TOKEN_OPTIMIZATION_RULES.md`): status, decisions, links — not narration.
 - Update status as work progresses; don't leave stale "in progress" tasks.
 

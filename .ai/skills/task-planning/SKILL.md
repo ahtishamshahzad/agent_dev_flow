@@ -31,7 +31,7 @@ Generate the implementation plan: dependency-ordered dynamic phases and concrete
 ## Responsibilities
 
 - **Generate phases dynamically** from applications, dependencies, architecture, security, testing, deployment, and existing state.
-- Break each phase into **tasks**: title, context, inputs, outputs, acceptance criteria, required skills, risk.
+- Break each phase into **tasks**: ID, title, context, inputs, outputs, acceptance criteria, required skills, risk, priority, estimate, dependencies — vocabulary from `../../system/PROJECT_MANAGEMENT_RULES.md`.
 - Write each task's acceptance criteria as **Gherkin scenarios** (`../../system/GHERKIN_RULES.md`, `testing/gherkin-specifications`) — one behavior per scenario, observable outcomes. The scenario is the criterion; it is not restated in prose.
 - Order tasks by dependency; mark **parallel-safe** vs **same-file** tasks.
 - Attach an **exit gate** to each phase.
@@ -44,7 +44,7 @@ Generate the implementation plan: dependency-ordered dynamic phases and concrete
 3. For each phase, generate tasks with acceptance criteria.
 4. Mark parallelizable tasks (input to `../../system/MULTI_AGENT_RULES.md`).
 5. Attach testing/security requirements per phase.
-6. Present for Gate 4; record on approval.
+6. Present for Gate 4; record on approval and hand to `project-management` to schedule into weeks.
 
 ## Decision Rules
 
@@ -83,7 +83,7 @@ Approved dynamic phases and tasks (with acceptance criteria, dependencies, and g
 
 ## Related Skills
 
-`architecture-design`, `feature-planning`, `bug-investigation`, `refactor-planning`, `migration-planning`, `testing-strategy`, `security-review`, `project-orchestrator`.
+`architecture-design`, `feature-planning`, `bug-investigation`, `refactor-planning`, `migration-planning`, `testing-strategy`, `security-review`, `project-orchestrator`, `project-management` (schedules the approved tasks).
 
 ## Related Knowledge
 
