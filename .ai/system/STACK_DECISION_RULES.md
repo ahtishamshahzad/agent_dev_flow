@@ -4,6 +4,8 @@ Recommend a technology stack **per area**, with justification, only after applic
 
 > **This system does not pre-select a stack.** The options below are the decision space to evaluate, not defaults.
 
+**Versions and change** are governed separately (`TECHNOLOGY_GOVERNANCE_RULES.md`): a new project takes the latest *stable* release of what is chosen here, verified and compatible; an existing project keeps its installed stack unless an upgrade trigger applies. In an existing project, the existing technology is the first option for every area it already covers.
+
 ## Golden rule: pair correctly, don't mis-compare
 
 - A **database** is storage. A **data layer / ORM** is how code talks to it. They are chosen **together**, not compared against each other.
@@ -59,4 +61,4 @@ Keep recommendations proportional — a small feature does not need a full stack
 
 ## Output of this stage
 
-For the approval gate, produce a **stack recommendation table**: area → recommendation → justification → alternatives considered. Record the approved stack in `../projects/current/`. Do **not** install dependencies at this stage — installation happens during implementation, after approval.
+For the approval gate, produce a **stack recommendation table**: area → recommendation → justification → alternatives considered — plus the **version baseline** (version, how it was verified, version-matched docs) from `TECHNOLOGY_GOVERNANCE_RULES.md`. Record the approved stack in `../projects/current/`. Do **not** install dependencies at this stage — installation happens during implementation, after approval.

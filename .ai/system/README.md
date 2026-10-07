@@ -16,6 +16,7 @@ These files are the **brain** of the AI Engineering System. They are canonical a
 | End-to-end workflow | `ORCHESTRATION_WORKFLOW.md` |
 | What applications a project needs | `APPLICATION_SELECTION_RULES.md` |
 | Which stack to recommend (per area) | `STACK_DECISION_RULES.md` |
+| Which versions and docs; when existing technology may change | `TECHNOLOGY_GOVERNANCE_RULES.md` |
 | Which skills to load for a task | `SKILL_SELECTION_RULES.md` |
 | How to generate phases dynamically | `PHASE_GENERATION_RULES.md` |
 | How to break phases into tasks | `TASK_GENERATION_RULES.md` |

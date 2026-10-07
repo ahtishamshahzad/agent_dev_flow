@@ -15,10 +15,19 @@
 | Mobile | <Expo / RN CLI> | <> | <> | <> |
 | Hosting / deploy | <> | <> | <> | <> |
 
+## Version Baseline
+
+Each recommended technology at its **latest stable** version (current LTS for runtimes), verified against the registry or official release page — not memory — with the official docs for that version and a compatibility check across the chain. Full form: `TECHNOLOGY_DECISION.md` (`../system/TECHNOLOGY_GOVERNANCE_RULES.md`). For an existing project, list the **installed** versions instead and keep them unless an upgrade trigger applies.
+
+| Area | Version | Verified how · when | Official docs (this version) |
+|------|---------|---------------------|------------------------------|
+| <> | <> | <> | <> |
+
 ## Pairing Check
 
 - [ ] Database and data layer are a coherent pair (e.g. relational DB → Prisma/Drizzle; MongoDB → Mongoose/native).
 - [ ] No database-vs-ORM comparison made.
+- [ ] Versions are stable releases, verified (or labelled "unverified"), and compatible with each other.
 
 ## Trade-offs / Risks
 

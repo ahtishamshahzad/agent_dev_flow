@@ -38,7 +38,7 @@ Plan a safe, incremental migration from a current state to a target state, keepi
 
 ## Required Workflow
 
-1. Audit current + target state; list breaking changes.
+1. Confirm the migration is justified — for a technology or version change, by a trigger in `../../system/TECHNOLOGY_GOVERNANCE_RULES.md` §4, recorded in `../../templates/TECHNOLOGY_DECISION.md`. Audit current + target state; list breaking changes from the **official migration guide for the target version**, and protect the behavior it could affect with regression scenarios.
 2. Design a compatibility strategy (dual-run/adapters where possible).
 3. Break into incremental, reversible steps.
 4. Define verification per step + rollback.

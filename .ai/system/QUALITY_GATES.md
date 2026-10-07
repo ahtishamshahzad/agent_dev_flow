@@ -5,11 +5,11 @@ Gates are **mandatory checkpoints**. A phase cannot move forward when its requir
 ## The seven gates
 
 ### Gate 1 — Requirements
-**Passes when:** the request is classified, requirements and success criteria are clear, unknowns are either resolved or explicitly assumed, and (if a repo exists) it has been audited.
+**Passes when:** the request is classified, requirements and success criteria are clear, unknowns are either resolved or explicitly assumed, and (if a repo exists) it has been audited — including its technology baseline of installed versions (`TECHNOLOGY_GOVERNANCE_RULES.md`).
 **Blocks:** application selection until requirements are understood.
 
 ### Gate 2 — Behavior, application & stack approval
-**Passes when:** the behavior change is specified as Gherkin scenarios covering success, failure, and the relevant edge cases (`GHERKIN_RULES.md`) — or recorded as having no observable behavior change — and, when they are new or changing, applications are selected with justification (`APPLICATION_SELECTION_RULES.md`) and the stack is recommended per area (`STACK_DECISION_RULES.md`), **and the user approves**.
+**Passes when:** the behavior change is specified as Gherkin scenarios covering success, failure, and the relevant edge cases (`GHERKIN_RULES.md`) — or recorded as having no observable behavior change — and, when they are new or changing, applications are selected with justification (`APPLICATION_SELECTION_RULES.md`) and the stack is recommended per area (`STACK_DECISION_RULES.md`) with a version baseline — latest stable, verified against official documentation, compatible (`TECHNOLOGY_GOVERNANCE_RULES.md`) — **and the user approves**. Any upgrade or replacement of an existing project's technology names its trigger.
 **Fires:** for every behavior change, including a feature on an existing app with no application or stack change.
 **Blocks:** architecture and any implementation. *(This is a user-approval gate.)*
 

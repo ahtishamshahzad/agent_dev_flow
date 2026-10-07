@@ -436,6 +436,46 @@ for (const p of [...walk(path.join(ROOT, '.ai'))].filter((x) => x.endsWith('.md'
   });
 }
 
+// ---- 12. Technology governance: present, wired, never "always the latest" --
+const tg = read('.ai/system/TECHNOLOGY_GOVERNANCE_RULES.md');
+for (const [section, re] of [
+  ['new-project rules', /^## 2\. New projects/m],
+  ['existing-project rules', /^## 3\. Existing projects/m],
+  ['upgrade policy', /^## 4\. When an upgrade/m],
+  ['official-documentation policy', /official documentation/i],
+  ['verify-not-memory rule', /not (?:taken )?from model memory|never taken from model memory/i],
+]) {
+  if (!re.test(tg)) fail(`TECHNOLOGY_GOVERNANCE_RULES.md: ${section} missing`);
+}
+for (const rel of [
+  '.ai/skills/technology-governance/SKILL.md', '.ai/templates/TECHNOLOGY_DECISION.md',
+  'examples/technology-governance/new-project.md', 'examples/technology-governance/existing-project.md',
+  'examples/technology-governance/upgrade-required.md',
+]) {
+  if (!fs.existsSync(path.join(ROOT, rel))) fail(`technology governance: ${rel} missing`);
+}
+for (const rel of [
+  '.ai/system/ORCHESTRATION_WORKFLOW.md', '.ai/system/QUALITY_GATES.md', '.ai/system/OPERATING_RULES.md',
+  '.ai/system/STACK_DECISION_RULES.md', '.ai/skills/stack-recommendation/SKILL.md',
+  '.ai/skills/existing-project-audit/SKILL.md', '.ai/workflows/new-project.md', '.ai/workflows/existing-project.md',
+  'AGENTS.md', 'CLAUDE.md', '.cursor/rules/project.mdc', '.windsurf/rules/project.md', '.github/copilot-instructions.md',
+]) {
+  if (!read(rel).includes('TECHNOLOGY_GOVERNANCE_RULES.md')) fail(`${rel}: does not point to TECHNOLOGY_GOVERNANCE_RULES.md`);
+}
+// Absolute version rules contradict the policy. Lines that quote them in order
+// to reject them (wrapped in quotes, or with "never"/"not" before them) pass;
+// Docker's "never `latest` tag" is about pinning, not choosing versions.
+const ABSOLUTE = /\b(always|must)\s+(use|pick|choose|install|adopt|upgrade to)\s+(the\s+)?(latest|newest|most recent)\b|\balways\s+upgrade\b|\bnever\s+upgrade\b|\bnever\s+change\s+(the\s+)?dependencies\b|\bmust\s+always\s+be\s+upgraded\b/i;
+for (const p of [...walk(path.join(ROOT, '.ai'))].filter((x) => x.endsWith('.md')).concat(publicDocs)) {
+  read(path.relative(ROOT, p)).split('\n').forEach((l, i) => {
+    const m = ABSOLUTE.exec(l);
+    if (!m) return;
+    const before = l.slice(0, m.index);
+    const quoted = /["“'`]\s*$/.test(before) || /\b(never|not|don'?t|no)\b[^.]{0,12}$/i.test(before);
+    if (!quoted) fail(`${path.relative(ROOT, p)}:${i + 1}: absolute version rule "${m[0]}" — use the new/existing project policy`);
+  });
+}
+
 // ---- Report ---------------------------------------------------------------
 if (failures.length) {
   console.error(`FAIL — ${failures.length} problem(s):`);

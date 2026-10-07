@@ -10,7 +10,7 @@
 
 - Intake: `../skills/request-classification`, `../skills/requirements-analysis`.
 - Behavior: `../skills/testing/gherkin-specifications` — the feature scenarios, written before architecture (`../system/GHERKIN_RULES.md`).
-- Selection/architecture: `../skills/application-selection`, `../skills/stack-recommendation`, `../skills/architecture-design`, `../skills/repository-architecture` (+ domain selection skills as areas demand).
+- Selection/architecture: `../skills/application-selection`, `../skills/stack-recommendation` + `../skills/technology-governance` (latest **stable** versions, verified against official version-matched docs, compatible — `../system/TECHNOLOGY_GOVERNANCE_RULES.md`), `../skills/architecture-design`, `../skills/repository-architecture` (+ domain selection skills as areas demand).
 - Planning: `../skills/task-planning`.
 - Build: the relevant domain packs (`../skills/<pack>/` — backend, database, mobile, web, testing, devops, security) — **only the areas selected**.
 - Delivery: `../skills/testing-strategy`, `../skills/security-review`, `../skills/release-planning`, `../skills/git-workflow`, `../skills/github-repository`.

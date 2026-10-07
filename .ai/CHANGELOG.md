@@ -2,6 +2,27 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.5.0] — unreleased
+
+Technology governance: context-aware version and documentation decisions instead of "always the latest". Additive.
+
+### Added
+
+- `.ai/system/TECHNOLOGY_GOVERNANCE_RULES.md` — decide **new vs existing** first. **New projects:** latest *stable* (no alpha/beta/RC/canary; current LTS for runtimes), verified against registries and official release pages at decision time — **not model memory** — with version-matched official documentation and a compatibility check across the chain; anything unverifiable is labelled. **Existing projects:** the installed stack (from lock files) is a constraint; a newer version existing is not a reason to upgrade; drift is reported as *available* vs *recommended*. Upgrades need a trigger — a vulnerability (escalated through bug intake; security outranks stability), end of life, a required feature, a compatibility requirement, deprecation, a measured problem — plus breaking changes, migration work, regression scenarios, urgency, and scope. Bug fixes and refactors keep the technology unless it is the cause or the goal. Framework-specific official guidance wins over general rules.
+- `skills/technology-governance` (core) and `templates/TECHNOLOGY_DECISION.md` (new-project baseline, or an existing project's add/upgrade/replace decision); the stack-recommendation template gains a version baseline.
+- `examples/technology-governance/` — new project, existing project keeping a supported version, and an upgrade justified by end of life and a vulnerability.
+- A documentation-lookup entry in `mcp/RECOMMENDED_SERVERS.md` (disabled by default), with the registry CLI as the manual fallback.
+- Two workflow checks — keeping an existing stack, and versions for a new project with no web access — run and scored in `evals/results/`.
+
+### Changed
+
+- Wired through the workflow (audit records the technology baseline; the stack stage governs versions), Gate 1 (baseline recorded) and Gate 2 (version baseline verified; upgrades name their trigger), operating rules (§4 and "verified, not remembered" in §8), stack rules, the orchestrator, stack recommendation, existing-project audit, dependency audit (available vs recommended), migration planning, bug investigation, refactor and feature planning, both project workflows and prompts, all five adapters (one line each), the intent index, and the README.
+- Validator: requires the rules' sections, skill, template, and examples, and their references from the workflow, gates, key skills, and adapters; **fails on absolute version rules** ("always use the latest", "always/never upgrade") unless quoted to reject them.
+
+### Totals
+
+- 180 skills · 13 agents · 13 hooks · 12 workflows · 32 templates · 19 prompts · 18 checklists.
+
 ## [1.4.0] — 2026-10-07
 
 Gherkin becomes the mandatory behavioral contract across the lifecycle — specified before design, approved at Gate 2, verified at Gates 5 and 7, kept as regression coverage. Additive; the gates are the same seven, and there are still two approval stops.

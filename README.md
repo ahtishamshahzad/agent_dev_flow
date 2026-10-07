@@ -10,7 +10,7 @@ npx github:ahtishamshahzad/agent_dev_flow init      # adds .ai/ + your editor's 
 
 Then, in your agent: *"Use the project-orchestrator skill. This is a new project: <what you want>. Do not implement code."* It stops twice for your approval before writing any code.
 
-> Version **1.4.0** · MIT · Node 18+ for the installer · Full guide: [`.ai/README.md`](.ai/README.md)
+> Version **1.5.0** · MIT · Node 18+ for the installer · Full guide: [`.ai/README.md`](.ai/README.md)
 
 **Names:** *AgentFlow* is the product and the `agentflow` installer. The *AI Engineering System* is what it installs — the canonical `.ai/` directory. `agent_dev_flow` is this repository.
 
@@ -58,6 +58,17 @@ Requirement → Gherkin scenarios (approved) → Architecture → Tasks → Impl
 
 `npx github:ahtishamshahzad/agent_dev_flow gherkin validate` lints a project's `features/` against the contract. Policy: [`.ai/system/GHERKIN_RULES.md`](.ai/system/GHERKIN_RULES.md) · Examples: [`examples/gherkin/`](examples/gherkin/README.md).
 
+### Technology in context — not "always the latest"
+
+| | New project | Existing project |
+|---|---|---|
+| Rule | Latest **stable**, appropriate technology — no alpha, beta, or release candidates; current LTS for runtimes | **Keep what works.** A newer version existing is not a reason to upgrade |
+| Versions come from | The registry and official release pages, checked at decision time — **not the model's memory**; anything unverifiable is labelled | The lock files, recorded in the audit |
+| Documentation | Official docs for the selected version | Official docs for the **installed** version |
+| Change when | — | A vulnerability (escalated at once), end of life, a required feature, a compatibility requirement, a deprecation — recorded with its trigger, migration plan, and regression scenarios |
+
+Bug fixes and refactors keep the technology unless it is the cause or the goal. Rules: [`.ai/system/TECHNOLOGY_GOVERNANCE_RULES.md`](.ai/system/TECHNOLOGY_GOVERNANCE_RULES.md) · Examples: [`examples/technology-governance/`](examples/technology-governance/README.md).
+
 ### Works with
 
 | Agent | How it reads the system | Native integration |
@@ -81,15 +92,15 @@ Skills load one at a time, only when needed. What stays in context every turn is
 
 | Layer | Count | Where |
 |-------|-------|-------|
-| **Skills** (reusable capability modules) | **179** | [`.ai/skills/`](.ai/skills/README.md) |
+| **Skills** (reusable capability modules) | **180** | [`.ai/skills/`](.ai/skills/README.md) |
 | **Agents** (roles for multi-agent runs) | 13 | [`.ai/agents/`](.ai/agents/README.md) |
 | **Hooks** (tool-neutral lifecycle checklists) | 13 | [`.ai/hooks/`](.ai/hooks/README.md) |
 | **Workflows** (per request type) | 12 | [`.ai/workflows/`](.ai/workflows/README.md) |
-| **Templates** (fill-in documents) | 31 | [`.ai/templates/`](.ai/templates/README.md) |
+| **Templates** (fill-in documents) | 32 | [`.ai/templates/`](.ai/templates/README.md) |
 | **Prompts** (tool-neutral starters) | 19 | [`.ai/prompts/`](.ai/prompts/README.md) |
 | **Checklists** (verifiable gate/hook checks) | 18 | [`.ai/checklists/`](.ai/checklists/README.md) |
 
-Skills are organized into **8 packs**: core (28), mobile (36), web & dashboard (26), backend (31), database (15), testing (15), devops (16), security (12). Plus system rules, knowledge, memory, and references — all in [`.ai/`](.ai/README.md).
+Skills are organized into **8 packs**: core (29), mobile (36), web & dashboard (26), backend (31), database (15), testing (15), devops (16), security (12). Plus system rules, knowledge, memory, and references — all in [`.ai/`](.ai/README.md).
 
 **Find a skill by what you want to do:** [`.ai/skills/SKILLS_INDEX.md`](.ai/skills/SKILLS_INDEX.md) — "I want to add login", "…design the database", "…set up CI".
 

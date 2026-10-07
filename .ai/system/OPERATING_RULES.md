@@ -23,6 +23,7 @@ Every request is classified before anything else (see `ORCHESTRATION_WORKFLOW.md
 
 - Do not assume a project needs a mobile app, web app, dashboard, backend, or database. Evaluate each independently (`APPLICATION_SELECTION_RULES.md`).
 - Do not pick a technology stack silently. Recommend with justification and get approval (`STACK_DECISION_RULES.md`).
+- **New projects:** latest stable, appropriate technology, verified against official version-matched documentation. **Existing projects:** keep the working stack; upgrade or replace only for a concrete reason. Never "always the latest" (`TECHNOLOGY_GOVERNANCE_RULES.md`).
 - A public web app and an admin dashboard are **separate** decisions.
 
 ## 5. Phases are dynamic
@@ -43,6 +44,7 @@ Every request is classified before anything else (see `ORCHESTRATION_WORKFLOW.md
 - Distinguish **done and verified** from **proposed** or **assumed**. Report failures with their output.
 - Never claim something works without running the relevant check, or explicitly mark it "unverified until run."
 - Do not fabricate file paths, commands, or results.
+- **Version-sensitive facts are verified, not remembered** — versions, APIs, configuration, CLI commands, breaking changes, install and deploy steps. Check current official sources; label anything unverifiable "unverified" (`TECHNOLOGY_GOVERNANCE_RULES.md` §2).
 
 ## 9. Do no harm
 

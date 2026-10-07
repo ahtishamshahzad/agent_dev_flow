@@ -48,6 +48,15 @@ A catalog of **optional** MCP/tool servers. None are enabled by default. Each en
 - **Enable when:** debugging data or verifying schema against a **non-production** DB.
 - **Disable when:** production DB without explicit, task-specific approval.
 
+## Documentation lookup (e.g. Context7, or a web-fetch tool)
+
+- **Purpose:** fetch current, version-specific official documentation and release data, so version-sensitive decisions are verified rather than recalled (`../system/TECHNOLOGY_GOVERNANCE_RULES.md`).
+- **Permissions:** read-only network access to documentation sources.
+- **Data exposure:** library names and queries leave the machine; no project code needs to.
+- **Enable when:** choosing technology or versions for a new project, planning an upgrade, or using an API whose behavior differs across versions.
+- **Disable when:** offline-only work, or when policy forbids outbound requests — then label version claims "unverified".
+- **Without it:** the package registry CLI (`npm view <pkg> dist-tags`) and the official site cover the same checks by hand.
+
 ## Docker
 - **Purpose:** build/run containers for reproducible environments and integration tests.
 - **Permissions:** local Docker daemon.

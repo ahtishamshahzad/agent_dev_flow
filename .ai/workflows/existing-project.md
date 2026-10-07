@@ -8,7 +8,8 @@
 
 ## Skills Required (per stage)
 
-- Audit: `../skills/existing-project-audit` (+ `../skills/backend/existing-backend-audit`, `../skills/dependency-audit`, `../skills/environment-audit` as relevant).
+- Audit: `../skills/existing-project-audit` (+ `../skills/backend/existing-backend-audit`, `../skills/dependency-audit`, `../skills/environment-audit` as relevant) — including the technology baseline of installed versions.
+- Technology: `../skills/technology-governance` — **keep the existing stack** where it can deliver; a newer version alone is no reason to upgrade; upgrades need a recorded trigger and go through `migration-planning` or a scope change (`../system/TECHNOLOGY_GOVERNANCE_RULES.md`).
 - Behavior: `../skills/testing/gherkin-specifications` — find the existing scenarios for the area first, then update or add them (`../system/GHERKIN_RULES.md`).
 - Analysis/planning: `../skills/requirements-analysis`, `../skills/feature-planning` or `refactor-planning`/`migration-planning`, `../skills/task-planning`.
 - Build/deliver: the relevant domain packs + `../skills/testing-strategy`, review skills — only what the change touches.

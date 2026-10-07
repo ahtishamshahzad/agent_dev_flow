@@ -39,8 +39,8 @@ Recommend a stack per relevant area, with justification and credible alternative
 1. Take the selected applications.
 2. For each required area, evaluate options against the requirements.
 3. Pair database + data layer correctly.
-4. Build the recommendation table.
-5. Present for Gate 2 approval; record the approved stack.
+4. Build the recommendation table, then the **version baseline** with `technology-governance`: latest stable per area, verified against the registry and official version-matched docs (not memory), compatible across the chain (`../../system/TECHNOLOGY_GOVERNANCE_RULES.md`). In an existing project, the installed technology is the first option for every area it covers.
+5. Present for Gate 2 approval; record the approved stack and baseline.
 6. Do **not** install dependencies here.
 
 ## Decision Rules

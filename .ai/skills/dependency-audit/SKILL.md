@@ -43,7 +43,7 @@ Understand and assess the dependency tree: what's installed, its risk (vulnerabi
 2. Run available advisory tooling; quote results (or mark "unverified until run").
 3. Identify unused/duplicate/abandoned packages.
 4. Assess license/maintenance risk.
-5. Recommend add/remove/upgrade with justification.
+5. Recommend add/remove/upgrade with justification. Report drift as **available vs recommended**: a newer version is not by itself a reason — recommend an upgrade only for a trigger in `../../system/TECHNOLOGY_GOVERNANCE_RULES.md` §4 (vulnerability, end of life, required feature, compatibility, deprecation), with its urgency.
 
 ## Decision Rules
 
