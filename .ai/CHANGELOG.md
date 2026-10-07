@@ -2,7 +2,7 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.3.0] — unreleased
+## [1.3.0] — 2026-10-07
 
 Tooling, tests, and CI for the installer and the repository. No rule or skill removed.
 
