@@ -45,7 +45,7 @@ npx github:ahtishamshahzad/agent_dev_flow init ./my-app --editor claude
 
 > The installer runs straight from GitHub via `npx github:…` — no npm package required.
 
-Flags: `--editor <claude,cursor,windsurf,copilot,codex,all>` (default `all`), `--force` (overwrite existing files), `--dry-run` (preview only), `--help`. Existing files are skipped unless `--force` is passed.
+Flags: `--editor <claude,cursor,windsurf,copilot,codex,all>` (default `all`), `--force` (overwrite existing system files; project data in `.ai/projects/`, `work-items/`, `references/`, `knowledge/`, `memory/` is always kept), `--dry-run` (preview only), `--help`. Existing files are skipped unless `--force` is passed. Requires Node 18+.
 
 This installs the **files** (Approach 1 below, automated). Claude Code's **native skill plugins** are a separate step — see the next section — because plugin installation goes through Claude Code's `/plugin` marketplace, not npm.
 

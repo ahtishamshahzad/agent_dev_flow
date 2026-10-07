@@ -8,13 +8,20 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Lowest entry must equal package.json engines.node — validate.js checks it.
+        node: [18, 20, 22]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ matrix.node }}
       - name: Repo consistency checks
         run: node scripts/validate.js
+      - name: Tests (CLI + install from packed tarball)
+        run: npm test
       - name: Installer smoke test
         run: |
           node bin/cli.js init "$RUNNER_TEMP/smoke" --editor all
