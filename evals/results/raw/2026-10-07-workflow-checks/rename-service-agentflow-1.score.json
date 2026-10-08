@@ -1,0 +1,32 @@
+{
+  "id": "rename-service-agentflow-1",
+  "case": "rename-service",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "So [project rules] says no new Gherkin scenarios are needed, and the approval gates for behavior, stack and tasks don't apply."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Nothing users can see changes: the `/users` and `/login` routes, response fields and function names all stay the same."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Nothing users can see changes: the `/users` and `/login` routes, response fields and function names all stay the same."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "So [project rules] says no new Gherkin scenarios are needed, and the approval gates for behavior, stack and tasks don't apply."
+    }
+  }
+}

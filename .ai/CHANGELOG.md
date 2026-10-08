@@ -2,6 +2,28 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.6.0] — unreleased
+
+Closes the gaps reported after 1.5.0: an automated drift report, machine-checked scenario→test mapping, blind evaluation at a larger sample on two models, live checks with web access and real upgrade triggers, and two behavior fixes the evaluations exposed.
+
+### Added
+
+- `agentflow drift [dir]` (`lib/drift.js`) — installed versions from the lock file, latest **stable** from the registry (a pre-release `latest` tag is skipped), advisories that cover the installed version (checked against each advisory's range, not trusted from the server), deprecations, and Node.js end-of-life from the official schedule. Reports **available vs recommended**, with the **smallest safe version** per advisory (a patch within the same major when one exists). `--json`, `--prod`, `--fail-on security|eol|any` for CI.
+- `agentflow gherkin trace [features] --tests <dirs>` (`lib/gherkin-trace.js`) — test names contain their scenario's title; lists scenarios no test names and exits 1 for an untested `@critical` one.
+- `evals/score.js` — blind judging by a separate model with arm-identifying text masked; `evals/summarize.js` — per-case, per-arm pass rates with run-to-run spread. Both runners stop on a usage limit instead of recording it, and `--resume` continues.
+- Workflow checks with web and `npm view` access (`new-project-versions-web`) and a legacy fixture with real triggers (`existing-project-triggers`: Node 16, `jsonwebtoken` 8.5.1); per-check `tools` and `fixture` files.
+- 7 tests for drift (against a local fake registry — no network in CI) and trace.
+
+### Changed
+
+- **Search before claiming absence** (`OPERATING_RULES` §8): never state that code, tests, or usages don't exist without having searched; say what was searched.
+- **Security findings are escalated, never footnoted** (`OPERATING_RULES` §9): a vulnerability surfaced by any task is opened as its own P0/P1 bug, first in the reply, verified or labelled unverified, with the smallest safe fix. Found by the `existing-project-triggers` check: agents listed the `jsonwebtoken` advisories as a note. A fix in the audit skill alone had no measurable effect; the operating-rule fix did (see `evals/results/`).
+- `existing-project-audit`, the existing-project workflow, and `TECHNOLOGY_GOVERNANCE_RULES` §4 require immediate escalation; dependency audit, technology governance, the Gherkin skill, and the before-release hook use `drift` and `gherkin trace`.
+
+### Totals
+
+- 180 skills · 13 agents · 13 hooks · 12 workflows · 32 templates · 19 prompts · 18 checklists.
+
 ## [1.5.0] — 2026-10-07
 
 Technology governance: context-aware version and documentation decisions instead of "always the latest". Additive.

@@ -50,11 +50,11 @@ Make context-aware technology decisions instead of chasing the newest release. F
 5. Write the baseline (`../../templates/TECHNOLOGY_DECISION.md` — baseline form) and present it with the stack at Gate 2. Anything unverifiable is labelled "unverified".
 
 **Existing project**
-1. Record the technology baseline from lock files and runtime config during the audit (Gate 1).
+1. Record the technology baseline from lock files and runtime config during the audit (Gate 1). For npm projects, run `agentflow drift` (or `npx github:ahtishamshahzad/agent_dev_flow drift`) and quote its table.
 2. Ask: can the existing stack deliver this requirement correctly? Yes → use it, with its own version's documentation.
 3. If a change seems needed, test it against the triggers in rules §4. No trigger → keep the version and record "upgrade available, not recommended".
 4. Trigger present → write the upgrade decision (reason, breaking changes, migration work, regression risk, urgency); protect affected behavior with regression scenarios; inside the task's scope → plan it with `migration-planning`; outside → a separate work item or `SCOPE CHANGE`.
-5. A vulnerability affecting the project → bug intake at P0/P1 (`project-management`), now.
+5. A vulnerability affecting the project → bug intake at P0/P1 (`project-management`), now — fixed with the smallest safe version (same major when one exists).
 
 ## Decision Rules
 

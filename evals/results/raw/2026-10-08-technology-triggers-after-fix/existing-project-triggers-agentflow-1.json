@@ -1,0 +1,71 @@
+{
+  "id": "existing-project-triggers-agentflow-1",
+  "case": "existing-project-triggers",
+  "suite": "workflow-checks",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.5.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 36102,
+  "turns": 5,
+  "costUsd": 0.27883179999999996,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 24653,
+    "cache_read_input_tokens": 70379,
+    "output_tokens": 3375,
+    "output_tokens_details": {
+      "thinking_tokens": 771
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 24653,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2236,
+        "cache_read_input_tokens": 27702,
+        "cache_creation_input_tokens": 5222,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 5222
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    ".nvmrc",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "README.md",
+    "USAGE.md",
+    "package-lock.json",
+    "package.json",
+    "src/app.js",
+    "src/notifications/sendOnStatusChange.js",
+    "src/services/userService.js"
+  ],
+  "extraTools": [
+    "WebFetch",
+    "WebSearch",
+    "Bash(npm view:*)"
+  ],
+  "prompt": "Add an endpoint so a user can delete one of their company's projects.",
+  "result": "I've read the `.ai/` system and audited the repo. This request counts as a feature on an existing project and changes behavior, so the project rules require you to approve the behavior spec before I write any code. Here is the audit and a draft spec for you to approve or change.\n\n## What's in the repo\n\n**Stack (I'll keep it as is):** Express 4.19.2, jsonwebtoken 8.5.1 and bcrypt 5.1.1 (versions from `package-lock.json`), Node 16 (`.nvmrc`), and the built-in `node --test` runner.\n\n- **Several modules the code imports are missing.** `src/` only contains `app.js`, `services/userService.js` and `notifications/sendOnStatusChange.js`. `src/db`, `src/auth`, `src/events` and `src/mailer` are imported and described in the README, but they aren't in the repo. So I can't confirm what `db.projects` can do (for example, whether it has a delete method or a filter by `companyId`).\n- **There are no tests.** I searched for `*.feature` and `*.test.js` and found none.\n- **The existing `GET /projects/:id` has a security bug** (`src/app.js:18`). It finds the project by ID without checking `companyId`, so any logged-in user can read another company's project. The new delete endpoint must not copy this. I'm treating it as a separate bug to log, not part of this change.\n- **Other problems I'll log separately, not fix here:**\n  - `PATCH /orders/:id/status` has the same missing company check.\n  - That same route sends the customer two emails per status change: it emits the event, whose listener sends one, and then calls `notifyStatusChange` directly, which sends another.\n  - jsonwebtoken 8.x has known advisories that are fixed in 9.x.\n  - Node 16 is end-of-life.\n\n## Draft behavior spec (`features/projects/delete-project.feature`)\n\n```gherkin\nFeature: Delete a company project\n  As a member of a company\n  I want to delete one of my company's projects\n  So that projects we no longer need are removed\n\n  Scenario: A member deletes a project belonging to their company\n    Given \"Dana\" is signed in as a member of \"Acme\"\n    And \"Acme\" owns the project \"Website Redesign\"\n    When \"Dana\" deletes the project \"Website Redesign\"\n    Then the deletion succeeds with no content\n    And the project \"Website Redesign\" no longer exists\n\n  @critical\n  Scenario: A member cannot delete another company's project\n    Given \"Dana\" is signed in as a member of \"Acme\"\n    And \"Globex\" owns the project \"Q3 Launch\"\n    When \"Dana\" deletes the project \"Q3 Launch\"\n    Then the project is reported as not found\n    And the project \"Q3 Launch\" still exists\n\n  Scenario: Deleting a project that does not exist\n    Given \"Dana\" is signed in as a member of \"Acme\"\n    When \"Dana\" deletes a project that does not exist\n    Then the project is reported as not found\n\n  @critical\n  Scenario: An unauthenticated caller cannot delete a project\n    Given \"Acme\" owns the project \"Website Redesign\"\n    When an unauthenticated caller deletes the project \"Website Redesign\"\n    Then the request is rejected as unauthenticated\n    And the project \"Website Redesign\" still exists\n\n  Scenario: Deleting an already-deleted project\n    Given \"Dana\" is signed in as a member of \"Acme\"\n    And \"Dana\" has already deleted the project \"Website Redesign\"\n    When \"Dana\" deletes the project \"Website Redesign\" again\n    Then the project is reported as not found\n```\n\n**Planned shape:** `DELETE /projects/:id` with `requireLogin`. It deletes only where `id` and `companyId = req.user.companyId`, in a single query (no fetch-then-check). It returns 204 on success. It returns 404 for a project that doesn't exist or belongs to another company, so it doesn't reveal that the project exists. It doesn't change anything else.\n\n## Questions before you approve\n\n1. **Who can delete?** Should any member of the company be able to, or only certain roles such as admin or owner? I haven't found a role field, but the user model isn't in the repo. The draft assumes any member.\n2. **Hard or soft delete?** The draft assumes a hard delete. If you want soft delete (`deletedAt`), the GET endpoint would also need to stop returning deleted projects.\n3. **Related data:** Do orders or other records point to projects? If they do, should deletion be blocked (409), cascade, or leave them in place?\n4. **The missing modules:** Can you add `src/db` and `src/auth`, or tell me what the projects model offers? Without them I'd be guessing at the data-layer API, and the tests would have to stub it.\n\nOnce you've answered and approved the scenarios, I'll send a short task list (endpoint plus one named test per scenario) for the second approval, then implement. Should I also log the bugs above as separate work items?"
+}

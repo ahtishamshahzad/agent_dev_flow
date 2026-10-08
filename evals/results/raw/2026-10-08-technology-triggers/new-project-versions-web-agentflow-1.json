@@ -1,0 +1,65 @@
+{
+  "id": "new-project-versions-web-agentflow-1",
+  "case": "new-project-versions-web",
+  "suite": "workflow-checks",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.5.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5",
+    "claude-haiku-4-5-20251001"
+  ],
+  "exitCode": 0,
+  "durationMs": 120197,
+  "turns": 36,
+  "costUsd": 0.7478100000000001,
+  "usage": {
+    "input_tokens": 26,
+    "cache_creation_input_tokens": 48290,
+    "cache_read_input_tokens": 431950,
+    "output_tokens": 8406,
+    "output_tokens_details": {
+      "thinking_tokens": 1994
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 48290,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2582,
+        "cache_read_input_tokens": 55496,
+        "cache_creation_input_tokens": 1065,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1065
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "USAGE.md"
+  ],
+  "extraTools": [
+    "WebFetch",
+    "WebSearch",
+    "Bash(npm view:*)"
+  ],
+  "prompt": "Start a new project: a Next.js web app with a PostgreSQL database through Prisma, and Playwright for end-to-end tests. Tell me the exact versions you'd use for everything, including Node.js.",
+  "result": "I've checked every version against the npm registry and the official docs. Now I'm writing up the recommendation.\n\n# Proposed version baseline (not yet approved, nothing installed)\n\nI followed this repo's `.ai/` rules: classified as a **new project** (empty repo, no code), so the rule is \"latest **stable**, checked against registries and official docs, not memory.\" No files were created and no dependencies were installed. Under `.ai/system/QUALITY_GATES.md`, that waits until you approve (Gate 2).\n\n| Area | Package | Exact version | How it was checked |\n|---|---|---|---|\n| Runtime | **Node.js** | **24.21.0** (LTS \"Krypton\") | nodejs.org/dist index + official release schedule |\n| Framework | `next` | **16.4.0** | `npm view next dist-tags` → `latest` |\n| UI | `react` / `react-dom` | **19.3.0** | npm `latest`; fits Next's `^19.0.0` peer range |\n| Language | `typescript` | **6.0.3** (not 7.0.2, see below) | npm; peer range check |\n| Database | **PostgreSQL** | **18.6** | postgresql.org versioning page (supported until Nov 2030) |\n| ORM | `prisma`, `@prisma/client` | **7.10.0** | npm (`latest` points to an RC, see below) |\n| Postgres adapter | `@prisma/adapter-pg` | **7.10.0** | npm; Prisma 7 requires a driver adapter |\n| E2E tests | `@playwright/test` | **1.64.0** | npm `latest`; Next requires `^1.51.1`, Playwright requires Node ≥20 |\n| Lint | `eslint` / `eslint-config-next` | **10.12.0** / **16.4.0** | npm; peer ranges allow ESLint 9 and 10 |\n| Types | `@types/node` / `@types/react` | **24.19.1** / **19.3.0** | npm; matched to Node 24 and React 19.3 |\n\nThe versions work together: Next 16.4.0 needs Node ≥20.9.0, Prisma 7.10.0 needs Node `^20.19 \\|\\| ^22.12 \\|\\| >=24.0`, and Prisma 7's docs list PostgreSQL 9.6–18 as supported.\n\n## Choices that differ from \"just take `latest`\"\n\n1. **Prisma 7.10.0, not 8.** npm's `latest` tag for Prisma currently points to **8.0.0-rc.21**, a release candidate. The rules exclude RCs, so I picked the newest stable release, 7.10.0. Prisma's main docs site now defaults to v8, so we'd need to use the v7 docs.\n2. **TypeScript 6.0.3, not 7.0.2.** Next 16.4 supports TS 7 for type checking during `next build`. But `eslint-config-next@16.4.0` depends on `typescript-eslint`, which requires TypeScript `>=4.8.4 <6.1.0`, so linting would break on TS 7. TS 6.0.3 satisfies both. We can move to TS 7 once typescript-eslint supports it.\n3. **Node 24 rather than 26.** Node 24 is the current Active LTS. Node 26 becomes LTS on **2026-10-28**, 20 days from now, and Prisma only tests LTS releases. Node 24 is supported until April 2028. Switching to 26 after the 28th would be a reasonable later change.\n4. **Next 16.4.0 came out 2 days ago** (2026-10-06). It's a stable release. If you'd rather use something that has been out longer, 16.3.8 is the fallback.\n\n## What I need before Gate 2\n\nThe rules require the planned behavior to be written as Gherkin scenarios and approved together with the stack. So I need:\n\n1. **What the app does:** its main users and the 2–4 main things they do. I'll turn that into scenarios, which also become the Playwright tests.\n2. **Approval or changes** for the table above, especially the TypeScript 6 and Node 24 choices.\n3. **Optional extras** (not included above): styling (e.g. Tailwind), authentication, a unit-test runner (Vitest), and whether you need an admin dashboard. The rules treat a dashboard as a separate decision from the public site.\n\nOnce you answer, I'll write the scenarios and save the approved stack in `.ai/projects/current/`.\n\nSources:\n- [Node.js release schedule](https://raw.githubusercontent.com/nodejs/Release/main/schedule.json) · [Node.js dist index](https://nodejs.org/dist/index.json)\n- [PostgreSQL versioning policy](https://www.postgresql.org/support/versioning/)\n- [Next.js docs: TypeScript (v16.4.0)](https://nextjs.org/docs/app/api-reference/config/typescript) · [next.config.js: useTypeScriptCli](https://nextjs.org/docs/app/api-reference/config/next-config-js/useTypeScriptCli) · [Next.js PR #95831: TypeScript 7 fixes](https://github.com/vercel/next.js/pull/95831) · [Next.js discussion #95633](https://github.com/vercel/next.js/discussions/95633)\n- [Prisma v7 system requirements](https://www.prisma.io/docs/orm/v7/reference/system-requirements) · [Prisma v7 supported databases](https://www.prisma.io/docs/orm/v7/reference/supported-databases) · [Upgrade to Prisma 7](https://www.prisma.io/docs/v6/orm/more/upgrades/to-v7)\n- npm registry (`npm view` for each package above)"
+}

@@ -98,17 +98,37 @@ ${c('bold', 'Gherkin')}
                       Check .feature files against the behavior contract
                       (.ai/system/GHERKIN_RULES.md). Default path: features/
                       Exits 1 on any error; warnings do not fail.
+  npx github:ahtishamshahzad/agent_dev_flow gherkin trace ${c('dim', '[features ...] --tests <dir>')}
+                      List scenarios no test names (test names contain the
+                      scenario title). Exits 1 if an @critical one has no test.
+
+${c('bold', 'Technology drift')}
+  npx github:ahtishamshahzad/agent_dev_flow drift ${c('dim', '[dir] [--prod] [--json] [--fail-on security|eol|any]')}
+                      Installed vs latest stable, advisories, deprecations, Node
+                      end of life. "Available" is information; "recommended"
+                      needs a trigger (.ai/system/TECHNOLOGY_GOVERNANCE_RULES.md).
 `);
 }
 
 function parseArgs(argv) {
-  const opts = { dir: null, editors: null, force: false, dryRun: false, help: false, version: false, cmd: null, args: [] };
+  const opts = { dir: null, editors: null, force: false, dryRun: false, help: false, version: false, cmd: null, args: [],
+    json: false, prod: false, failOn: null, tests: null };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '-h' || a === '--help') opts.help = true;
     else if (a === '-v' || a === '--version') opts.version = true;
     else if (a === '--force') opts.force = true;
     else if (a === '--dry-run') opts.dryRun = true;
+    else if (a === '--json') opts.json = true;
+    else if (a === '--prod') opts.prod = true;
+    else if (a === '--fail-on' || a === '--tests') {
+      const v = argv[++i];
+      if (!v || v.startsWith('-')) { fail(`Missing value for ${a}`); process.exit(1); }
+      if (a === '--fail-on') {
+        if (!['security', 'eol', 'any'].includes(v)) { fail(`--fail-on must be security, eol, or any`); process.exit(1); }
+        opts.failOn = v;
+      } else opts.tests = v;
+    }
     else if (a === '--editor' || a.startsWith('--editor=')) {
       const v = a === '--editor' ? argv[++i] : a.slice('--editor='.length);
       if (!v || v.startsWith('-')) { fail('Missing value for --editor'); process.exit(1); }
@@ -160,8 +180,11 @@ function copyRecursive(src, dest, opts, results) {
   results[exists ? 'overwritten' : 'copied'].push(dest);
 }
 
+let opts0 = null;
+
 function main() {
   const opts = parseArgs(process.argv.slice(2));
+  opts0 = opts;
 
   if (opts.version) {
     log(require(path.join(PKG_ROOT, 'package.json')).version);
@@ -171,7 +194,8 @@ function main() {
     printHelp();
     process.exit(opts.help ? 0 : 1);
   }
-  if (opts.cmd === 'gherkin') return gherkin(opts.args);
+  if (opts.cmd === 'gherkin') return gherkin(opts.args, opts);
+  if (opts.cmd === 'drift') return drift(opts);
   if (opts.cmd !== 'init') {
     fail(`Unknown command: ${opts.cmd}`);
     printHelp();
@@ -242,10 +266,11 @@ function main() {
 }
 
 // `gherkin validate [path ...]` — lint .feature files against the contract.
-function gherkin(args) {
+function gherkin(args, opts = {}) {
   const [sub, ...paths] = args;
+  if (sub === 'trace') return gherkinTrace(paths, opts);
   if (sub !== 'validate') {
-    fail(sub ? `Unknown gherkin command: ${sub}` : 'Missing gherkin command — use: gherkin validate [path ...]');
+    fail(sub ? `Unknown gherkin command: ${sub}` : 'Missing gherkin command — use: gherkin validate|trace [path ...]');
     process.exit(1);
   }
   const { lint } = require(path.join(PKG_ROOT, 'lib', 'gherkin-lint.js'));
@@ -282,9 +307,70 @@ function gherkin(args) {
   log(c('green', summary));
 }
 
-try {
-  main();
-} catch (err) {
-  fail('Install failed: ' + (err && err.message ? err.message : String(err)));
-  process.exit(1);
+// `gherkin trace [features ...] --tests <dir>` — every scenario named by a test.
+function gherkinTrace(paths, opts) {
+  const { trace } = require(path.join(PKG_ROOT, 'lib', 'gherkin-trace.js'));
+  const roots = (paths.length ? paths : ['features']).map((p) => path.resolve(process.cwd(), p));
+  const testRoots = (opts.tests || '.').split(',').map((p) => path.resolve(process.cwd(), p));
+  for (const r of [...roots, ...testRoots]) {
+    if (!fs.existsSync(r)) { fail(`Path not found: ${path.relative(process.cwd(), r) || r}`); process.exit(1); }
+  }
+  const r = trace(roots, testRoots);
+  if (!r.scenarios.length) { fail('No scenarios found'); process.exit(1); }
+  const rel = (p) => path.relative(process.cwd(), p) || p;
+  const missing = r.scenarios.filter((s) => !s.tests.length);
+  const critical = missing.filter((s) => s.tags.includes('@critical'));
+  if (opts.json) log(JSON.stringify({ ...r, scenarios: r.scenarios.map((s) => ({ ...s, file: rel(s.file), tests: s.tests.map(rel) })) }, null, 2));
+  else {
+    for (const s of missing) {
+      log(`${rel(s.file)}:${s.line}  ${s.tags.includes('@critical') ? c('red', 'no test (critical)') : c('yellow', 'no test         ')}  ${s.title}`);
+    }
+    const summary = `${r.scenarios.length} scenario(s), ${r.scenarios.length - missing.length} with a test, ${missing.length} without (${critical.length} @critical) · ${r.tests.length} test file(s) searched`;
+    if (critical.length) fail(summary); else log(missing.length ? c('yellow', summary) : c('green', summary));
+  }
+  if (critical.length) process.exit(1);
 }
+
+// `drift [dir]` — installed vs latest stable, with triggers (TECHNOLOGY_GOVERNANCE_RULES.md).
+async function drift(opts) {
+  const { report } = require(path.join(PKG_ROOT, 'lib', 'drift.js'));
+  const dir = path.resolve(process.cwd(), opts.args[0] || '.');
+  const r = await report(dir, { prod: opts.prod });
+  if (opts.json) {
+    log(JSON.stringify(r, null, 2));
+  } else {
+    const cell = (s, n) => String(s == null ? '—' : s).padEnd(n);
+    log(c('bold', `${cell('package', 28)} ${cell('installed', 12)} ${cell('latest stable', 14)} ${cell('available', 10)} recommended`));
+    for (const row of r.rows) {
+      const rec = row.recommended
+        ? c('red', `YES — ${row.triggers.map((t) => `${t.kind}${t.severity ? ` (${t.severity})` : ''}`).join(', ')}`)
+        : c('dim', row.available ? 'no — newer alone is not a reason' : 'no');
+      log(`${cell(row.name, 28)} ${cell(row.version || `${row.declared} (range)`, 12)} ${cell(row.latest, 14)} ${cell(row.available ? 'yes' : 'no', 10)} ${rec}`);
+      for (const t of row.triggers) log(c('dim', `    ${t.kind}: ${t.detail} · urgency ${t.urgency}`));
+      if (row.fixedIn) {
+        log(c('dim', `    smallest safe version: ${row.fixedIn}${row.fixSameMajor ? ' (same major — no major upgrade needed)' : ' (needs a major upgrade — plan a migration)'}`));
+      } else if (row.triggers.some((t) => t.kind === 'security') && row.version) {
+        log(c('yellow', '    no released version clears every advisory — mitigate or replace'));
+      }
+    }
+    if (r.runtime) {
+      const rt = r.runtime;
+      const rec = rt.recommended ? c('red', `YES — end of life (${rt.end})`) : c('dim', rt.end ? `no — supported until ${rt.end}` : 'no');
+      log(`${cell(`node ${rt.major} (${rt.source})`, 56)} ${cell('', 11)} ${rec}`);
+    }
+    if (r.rows.some((x) => x.source === 'range only')) log(c('yellow', 'Some versions are ranges only — no package-lock.json or node_modules; installed versions unknown.'));
+    for (const e of r.errors) process.stderr.write(`warning: ${e}\n`);
+  }
+  const sec = r.rows.some((x) => x.triggers.some((t) => t.kind === 'security'));
+  const eol = !!(r.runtime && r.runtime.recommended);
+  const any = sec || eol || r.rows.some((x) => x.recommended);
+  if ((opts.failOn === 'security' && sec) || (opts.failOn === 'eol' && eol) || (opts.failOn === 'any' && any)) process.exit(1);
+  if (r.errors.length && !r.rows.some((x) => x.latest)) process.exit(1); // nothing could be checked
+}
+
+Promise.resolve()
+  .then(main)
+  .catch((err) => {
+    fail((opts0 && opts0.cmd === 'drift' ? 'Drift check failed: ' : 'Install failed: ') + (err && err.message ? err.message : String(err)));
+    process.exit(1);
+  });

@@ -215,6 +215,7 @@ Scenarios are permanent — they outlive the work item that created them, which 
 - **Home** — `features/<area>/<behavior>.feature` at the application repository root (one area per folder: `features/authentication/`, `features/billing/`, …), whether or not a Cucumber-family runner is used. An established repo's existing feature folder wins.
 - **Planning** — `../templates/FEATURE.md`, `../templates/TASK.md`, and `../templates/BUG.md` list the scenarios they deliver **by file and title**, rather than copying them; new scenarios are drafted there and moved into `features/` when approved.
 - **Test plan** — `../templates/TEST_PLAN.md` maps each critical scenario to its test, checked at Gate 5.
+- **Trace them** — a test's name contains its scenario's title, so the mapping is checkable: `agentflow gherkin trace features --tests <test dirs>` lists scenarios no test names and exits 1 for an untested `@critical` one (it proves a test exists, not that it passes — CI does that).
 - **Check them** — `agentflow gherkin validate` (or `npx github:ahtishamshahzad/agent_dev_flow gherkin validate`) lints `features/` against this contract; add it to CI. It checks structure, not whether the behavior is right.
 - **Examples** — `examples/gherkin/` in the AgentFlow repository.
 

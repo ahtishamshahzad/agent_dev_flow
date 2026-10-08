@@ -1,7 +1,7 @@
 {
   "name": "agent_dev_flow",
   "description": "The AI Engineering System — 180 reusable skills for planning and building software with AI agents, packaged as installable Claude Code plugins (one per skill pack). The canonical system lives in .ai/; these plugins expose its skills natively.",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "owner": {
     "name": "ahtishamshahzad"
   },

@@ -1,0 +1,19 @@
+{
+  "name": "demo-api",
+  "version": "0.4.0",
+  "private": true,
+  "description": "A small multi-company API.",
+  "main": "src/app.js",
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "start": "node src/app.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^8.5.1"
+  }
+}

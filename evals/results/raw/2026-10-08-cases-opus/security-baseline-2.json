@@ -1,0 +1,55 @@
+{
+  "id": "security-baseline-2",
+  "case": "security",
+  "suite": "cases",
+  "arm": "baseline",
+  "run": 2,
+  "agentflowVersion": "1.5.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 22496,
+  "turns": 1,
+  "costUsd": 0.0948328,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 6841,
+    "cache_read_input_tokens": 7084,
+    "output_tokens": 1934,
+    "output_tokens_details": {
+      "thinking_tokens": 336
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 6841,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1934,
+        "cache_read_input_tokens": 7084,
+        "cache_creation_input_tokens": 6841,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 6841
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [],
+  "extraTools": [],
+  "prompt": "Please review this PR before we merge.\n\n```diff\n+// routes/invoices.js\n+router.get('/invoices/:id', requireLogin, async (req, res) => {\n+  const invoice = await Invoice.findById(req.params.id);\n+  res.json(invoice);\n+});\n+\n+router.post('/invoices/:id/notes', requireLogin, async (req, res) => {\n+  await db.query(`UPDATE invoices SET notes = '${req.body.notes}' WHERE id = ${req.params.id}`);\n+  res.sendStatus(204);\n+});\n+\n+// config.js\n+module.exports = { stripeKey: 'sk_live_51Hx9Qe-placeholder-8f2c' };\n```",
+  "result": "**Don't merge this yet.** There are three blocking security problems and a few correctness issues.\n\n## 🔴 Blocking\n\n### 1. SQL injection in `POST /invoices/:id/notes`\n`req.body.notes` and `req.params.id` go straight into the SQL string. A note like `', notes = (SELECT ...) --` or an id like `1 OR 1=1` lets any logged-in user read or change any row, and possibly do more depending on the database's permissions. Sending `{\"notes\": \"x' WHERE 1=1; --\"}` would overwrite the notes on every invoice.\n\nFix it with a parameterized query (shown below).\n\n### 2. Missing authorization checks (IDOR) on both routes\n`requireLogin` only checks that the user is logged in. It doesn't check that the invoice belongs to them. Any user can:\n- read any invoice by stepping through IDs: `GET /invoices/1`, `/2`, …\n- edit notes on any invoice.\n\nInvoices usually hold customer names, addresses and amounts, so this is a data-exposure bug on its own, even after the injection is fixed. Scope every lookup and update to the current user or account.\n\n### 3. Live Stripe secret key committed to source\n`sk_live_...` is a production secret key prefix. The value says \"placeholder\", but if it's real it's already exposed: it's in the PR diff, in git history, and in any CI logs or forks. To be safe:\n- **Rotate the key in the Stripe dashboard now.** Removing it in a later commit doesn't help, because the history keeps it.\n- Load it from the environment: `stripeKey: process.env.STRIPE_SECRET_KEY`, and fail at startup if it's missing.\n- Consider a secret scanner (gitleaks, GitHub secret scanning) in CI.\n\n## 🟡 Should fix\n\n4. **Missing invoice returns `200 null`.** `findById` returns `null` for an unknown id, and `res.json(null)` sends a 200. It should return a 404.\n5. **Unhandled async errors.** On Express 4, a rejected promise in an `async` handler isn't passed to the error middleware, so the request hangs and you get an unhandled rejection. A malformed id that makes `findById` throw a CastError would trigger this. Wrap the handlers, use `express-async-errors`, or upgrade to Express 5.\n6. **No input validation on `notes`.** Check that it's a string and set a maximum length. Otherwise clients can send objects or arrays, or very large payloads.\n7. **Possible over-sharing in the response.** `res.json(invoice)` sends every field on the document. If the model has internal fields (Stripe IDs, internal flags), return only an allow-listed set.\n8. **Two data-access styles.** The PR uses a Mongoose-style `Invoice.findById` and also raw SQL through `db.query`. Is that intentional? If these really are two different stores, the ID formats may not match. If they're the same store, use one access layer for both routes.\n\n## Suggested version\n\n```js\n// routes/invoices.js\nrouter.get('/invoices/:id', requireLogin, async (req, res, next) => {\n  try {\n    const invoice = await Invoice.findOne({ _id: req.params.id, ownerId: req.user.id });\n    if (!invoice) return res.sendStatus(404);\n    res.json(invoice); // consider selecting only public fields\n  } catch (err) {\n    next(err);\n  }\n});\n\nrouter.post('/invoices/:id/notes', requireLogin, async (req, res, next) => {\n  try {\n    const { notes } = req.body;\n    if (typeof notes !== 'string' || notes.length > 5000) return res.sendStatus(400);\n\n    const result = await db.query(\n      'UPDATE invoices SET notes = $1 WHERE id = $2 AND owner_id = $3',\n      [notes, req.params.id, req.user.id]\n    );\n    if (result.rowCount === 0) return res.sendStatus(404);\n    res.sendStatus(204);\n  } catch (err) {\n    next(err);\n  }\n});\n\n// config.js\nif (!process.env.STRIPE_SECRET_KEY) throw new Error('STRIPE_SECRET_KEY is not set');\nmodule.exports = { stripeKey: process.env.STRIPE_SECRET_KEY };\n```\n\nThe placeholder syntax depends on your driver: `$1` for `pg`, `?` for `mysql2`. The ownership field names (`ownerId` / `owner_id`) are guesses, so swap in whatever your schema uses for tenancy, such as an account or org ID.\n\nBefore re-review, it would help to add tests for these cases:\n- user A requests user B's invoice → 404\n- a notes payload containing `'` and `--` is stored literally\n- a non-string `notes` value → 400"
+}

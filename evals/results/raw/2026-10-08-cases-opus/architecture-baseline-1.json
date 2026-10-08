@@ -1,0 +1,55 @@
+{
+  "id": "architecture-baseline-1",
+  "case": "architecture",
+  "suite": "cases",
+  "arm": "baseline",
+  "run": 1,
+  "agentflowVersion": "1.5.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 33917,
+  "turns": 1,
+  "costUsd": 0.1117168,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 6714,
+    "cache_read_input_tokens": 7084,
+    "output_tokens": 2829,
+    "output_tokens_details": {
+      "thinking_tokens": 790
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 6714,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2829,
+        "cache_read_input_tokens": 7084,
+        "cache_creation_input_tokens": 6714,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 6714
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [],
+  "extraTools": [],
+  "prompt": "We've approved a multi-tenant B2B app: Node API, PostgreSQL, about 30 tables, around 200 tenant companies, a team of two. A few enterprise customers have asked whether their data is \"separated\" from other customers. Design how tenant data is isolated and tell us what you'd do and why. Don't write code yet.",
+  "result": "# Tenant data isolation design\n\n## Recommendation\n\nKeep all tenants in one database and one schema. Every tenant-owned table gets a `tenant_id` column, and PostgreSQL Row-Level Security (RLS) enforces the separation inside the database. The app also filters by tenant, so there are two independent layers.\n\nWith 200 tenants, 30 tables and two engineers, this is the only option you can run safely. It also lets you tell enterprise customers something true: the database itself blocks one customer from reading another's rows, even if the application has a bug.\n\n## Why not the alternatives\n\n| Model | Isolation | Cost for your team | Verdict |\n|---|---|---|---|\n| Database per tenant | Strongest | 200 databases to migrate, back up, monitor and pool connections for | Too much for two people. Offer it later as a paid tier. |\n| Schema per tenant | Medium | About 6,000 tables, every migration runs 200 times, catalog bloat, a schema can get stuck halfway through a migration | Most of the cost of separate databases, with only a little more isolation than RLS |\n| **Shared schema + RLS** | Good, enforced by the database | One schema, one migration, one pool | **Do this** |\n| Shared schema, app filtering only | Weak | Cheapest | One missed `WHERE tenant_id` leaks data. Not acceptable for this question. |\n\n## How it works\n\n**1. Data model**\n- Every tenant-owned table has `tenant_id NOT NULL`, and indexes start with it.\n- Composite keys stop rows from pointing at another tenant's rows. Give each table `UNIQUE (tenant_id, id)`, and have foreign keys reference `(tenant_id, parent_id)`. This takes a minute per table now and is painful to add later.\n- Unique constraints are scoped to the tenant: `UNIQUE (tenant_id, email)`, not `UNIQUE (email)`.\n- Use UUIDs rather than sequential IDs, so IDs don't reveal how many records exist and can't be guessed.\n- Global tables (plans, feature flags) are marked as global on purpose. If a user can belong to more than one company, use a `memberships` table. Decide that now.\n\n**2. RLS policies**\n- Each tenant table has `ENABLE` and `FORCE ROW LEVEL SECURITY` and a policy of the form `tenant_id = current_setting('app.tenant_id')`.\n- Write the policy so it fails closed: if no tenant is set, queries return no rows rather than all rows.\n- The app connects as a role that does **not** own the tables and does **not** have `BYPASSRLS`. RLS doesn't apply to table owners or superusers, and most failed RLS setups fail for this reason.\n\n**3. Request flow (Node)**\n- Middleware takes the tenant from the authenticated session or token, never from a URL or request body the client controls.\n- Each request runs inside a transaction that starts with `SET LOCAL app.tenant_id = …`. `SET LOCAL` matters because pooled connections are reused. A plain `SET` would carry one tenant's ID into the next request on that connection. `SET LOCAL` also works safely with PgBouncer in transaction mode.\n- Hide the raw database pool behind a helper like `withTenant(tenantId, fn)` so normal code can't skip it.\n- Keep the explicit `WHERE tenant_id = …` in queries as well. It helps the query planner and means you have two layers.\n\n**4. Controlled bypass**\n- Use a separate admin/migration role with `BYPASSRLS` for migrations, support tooling and cross-tenant analytics. It has its own credentials, isn't used by the API, and its use is logged.\n- Background jobs carry `tenant_id` in the job payload and go through the same `withTenant` path.\n- Check every view and function: views need `security_invoker`, and `SECURITY DEFINER` functions skip RLS.\n\n**5. Everything outside Postgres** (this is where leaks usually happen)\n- Cache keys start with the tenant ID.\n- File storage uses per-tenant prefixes, and signed URLs are checked against the tenant.\n- Search indexes, exports, emails, webhooks and logs are all tenant-aware. Don't log one tenant's data where support staff could see it under another tenant's context.\n\n**6. Proving it**\n- An automated test creates two tenants and checks that tenant A gets zero results for B's data on every endpoint, including by guessing IDs.\n- A CI check fails if any table has no `tenant_id` and RLS policy and isn't on the explicit list of global tables.\n- Audit logs record who accessed which tenant, especially through the bypass role.\n\n## Performance\n\nAt this size RLS adds almost no overhead if:\n- indexes start with `tenant_id`, and\n- policies are written so the setting is read once per query, not once per row.\n\nIf one huge tenant later slows things down for others, partition by `tenant_id` or move that tenant to its own database. Neither needs a redesign.\n\n## What to tell enterprise customers\n\n> \"Your data is logically isolated in a shared database. Every query is restricted to your organization by database-level row security, independent of application code, and we test cross-tenant isolation automatically. Data is encrypted in transit and at rest, and administrative access is restricted and audited.\"\n\nDon't call it \"physically separated.\" If a customer needs that by contract, offer a **dedicated database tier** at a premium price. To keep that option cheap, look up the database connection through a per-tenant routing layer from day one, even though every tenant points to the same database for now. Per-tenant encryption keys belong in that premium conversation, not the default design.\n\n## Decide before writing code\n\n1. Can a user belong to more than one tenant? This shapes the auth and memberships model.\n2. Do you need any cross-tenant features (internal analytics, shared catalogs)? Each one needs its own explicit design.\n3. Are you using PgBouncer or a managed pooler? It needs transaction mode with `SET LOCAL`, as described above.\n4. Is there already code or a schema? If so, adding `tenant_id` and RLS to existing tables needs a migration plan."
+}

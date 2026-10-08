@@ -1,0 +1,60 @@
+{
+  "id": "architecture-agentflow-1",
+  "case": "architecture",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.5.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 46037,
+  "turns": 7,
+  "costUsd": 0.2605304,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 20480,
+    "cache_read_input_tokens": 63892,
+    "output_tokens": 4194,
+    "output_tokens_details": {
+      "thinking_tokens": 1082
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 20480,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 3223,
+        "cache_read_input_tokens": 24406,
+        "cache_creation_input_tokens": 3158,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 3158
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "USAGE.md"
+  ],
+  "extraTools": [],
+  "prompt": "We've approved a multi-tenant B2B app: Node API, PostgreSQL, about 30 tables, around 200 tenant companies, a team of two. A few enterprise customers have asked whether their data is \"separated\" from other customers. Design how tenant data is isolated and tell us what you'd do and why. Don't write code yet.",
+  "result": "# Tenant data isolation: recommended design\n\nI classified this as an **architecture decision** for an approved stack. I found no `CURRENT_STATUS.md`, so there's no recorded project state yet. I haven't written any code or files.\n\n## Recommendation\n\n**Keep every tenant in one shared database and one shared schema, with a `tenant_id` column on every tenant-owned table. Enforce the separation in two places: the application, and PostgreSQL Row-Level Security (RLS) as a safety net.**\n\n### Why this option\n\n| Option | Separation | Cost for a team of 2 with 200 tenants | Verdict |\n|---|---|---|---|\n| **Shared schema + `tenant_id` + RLS** | Logical, enforced by the database | One schema and one migration path to run | **Choose this** |\n| Schema per tenant | Logical, but each request must switch to the right schema | 200 schemas × 30 tables = **6,000 tables**. Every migration runs 200 times, and partial failures leave tenants on different versions | Only slightly safer, at a much higher running cost |\n| Database per tenant | Physical | 200 databases to back up, monitor, migrate and pool connections for | Too much to run, except as a paid enterprise option (see below) |\n\nSchema-per-tenant also adds less safety than it seems. The app connects with the same database role either way, so one bug in choosing the schema leaks data just as a missing `WHERE` would. RLS gives similar protection without running 200 copies of the schema.\n\n## The design\n\n**1. Data model**\n- Every tenant-owned table gets `tenant_id NOT NULL`, using the same key type as `tenants.id`. Global reference data (e.g. countries, plan definitions) goes in clearly separate tables with no `tenant_id`.\n- **Composite foreign keys:** child tables reference `(tenant_id, id)` rather than just `id`. The database then cannot store an order in tenant A that points at a customer in tenant B. This is cheap to add on day one and hard to add later.\n- Unique constraints include the tenant, e.g. `UNIQUE (tenant_id, email)` rather than `UNIQUE (email)`.\n- Indexes start with `tenant_id`. This keeps queries fast and makes RLS checks cheap.\n\n**2. Application layer (first line of defense)**\n- The tenant always comes from the **authenticated session**. Never take it from the request body, URL or headers. If users can belong to several tenants, check the chosen tenant against a membership table on every request.\n- All tenant-data queries go through one shared data-access layer that is tenant-aware. Ad-hoc queries without a tenant should be impossible, or at least obvious in review.\n\n**3. Database layer (second line of defense: RLS)**\n- Turn on `ENABLE` and `FORCE ROW LEVEL SECURITY` on every tenant table. Each table gets a policy along the lines of `tenant_id = current_setting('app.tenant_id', true)::uuid`.\n- Set the tenant for each transaction with `SET LOCAL` / `set_config(..., true)`. The setting then can't carry over to the next request on a pooled connection, which also works with PgBouncer in transaction mode.\n- **If no tenant is set, the query returns no rows rather than all of them.**\n- Use separate database roles:\n  - The **app role** doesn't own the tables and has no `BYPASSRLS`.\n  - A **migration role** owns the schema.\n  - A narrow, audited **admin role** handles support and cross-tenant operations. Admin access is a deliberate path, not a side effect.\n- Known RLS gaps to close:\n  - Table owners and superusers bypass RLS, which is why the app role must not own the tables.\n  - Views need `security_invoker = true`.\n  - `SECURITY DEFINER` functions need review.\n\n**4. Paths that are easy to miss**\n- **Background jobs, queues and cron:** jobs carry an explicit `tenant_id` and open a tenant-scoped transaction. Never run them as the admin role by default.\n- **Caches, file storage and search indexes:** include the tenant in every key or path, e.g. `tenant/<id>/...`. Signed URLs must check the tenant.\n- **Exports, reports, analytics and logs:** tag them with the tenant, and keep other tenants' data out of error messages.\n\n**5. Proving it works**\nThis is what you'll actually show enterprise customers.\n- **Cross-tenant tests** for every endpoint and job: tenant A's user can't read, update, delete or reference tenant B's data, and a tenant ID supplied by the client is ignored.\n- **A CI check against the live schema** that fails if any table has `tenant_id` but no RLS policy, or has neither and isn't on the global allowlist.\n- An audit log of admin and support access to tenant data.\n\n**6. Upgrade path for enterprise customers (deferred)**\nBecause every row carries `tenant_id`, you can later move one enterprise tenant to its own database by copying its rows. Offer that as a **priced tier** only if a contract truly needs physical separation. Don't build it now.\n\n## What to tell customers who ask\n\n> \"Your data is logically isolated within our shared infrastructure. Every record is tagged with your organization. Isolation is enforced twice: in our application, and by PostgreSQL row-level security at the database layer, so a single application bug can't expose another customer's data. Automated tests check this on every release. Admin access is restricted and audited. Dedicated infrastructure is available on request.\"\n\nDon't say \"physically separated\" or \"fully separate databases\" unless you sell the dedicated tier. Customers often check those claims in security questionnaires.\n\n## Before implementation (per `.ai/` gates)\n\nTenant isolation is observable behavior, so it needs **approved Gherkin scenarios** first. I'd propose a small `@critical` set:\n- Cross-tenant read, update and delete are denied.\n- A tenant ID supplied by the client is ignored.\n- A request with no tenant context returns no data.\n- A background job only touches its own tenant's data.\n- Cross-tenant foreign-key references are rejected.\n- Admin access to tenant data is audited.\n\n**Questions that affect the design:**\n1. **Users in several tenants:** can one user belong to more than one tenant? This decides whether you need the membership table and a tenant-switching flow.\n2. **Data layer:** which ORM or query layer will you use? Prisma, Drizzle and raw SQL wire up per-transaction tenant setting differently.\n3. **Contract requirements:** do any enterprise customers need data residency, per-tenant encryption keys, or dedicated infrastructure? That would bring the dedicated tier forward.\n4. **Existing code:** is anything already built? If so, I'd audit it before these changes.\n\nIf you approve this direction, my next step is to draft the scenarios and record this decision in `.ai/projects/current/`."
+}

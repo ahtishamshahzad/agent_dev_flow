@@ -1,0 +1,47 @@
+{
+  "id": "testing-agentflow-1",
+  "case": "testing",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Scenario: An admin promotes an editor to admin\n    When \"Alice\" changes the role of \"Bob\" in \"Apollo\" to \"admin\"\n    Then the response status is 200\n    And the response is the membership of \"Bob\" in \"Apollo\" with role \"admin\""
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Scenario Outline: An admin's request with an invalid role is rejected ... | {\"role\": \"owner\"} | ... | {} | ... Scenario: The target user is not a member of the project ... Then the response status is 404 ... Scenario: The project does not exist ... Then the response status is 404"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Scenario Outline: A non-admin member cannot change another member's role\n    When \"<caller>\" changes the role of \"<target>\" in \"Apollo\" to \"admin\"\n    Then the response status is 403"
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Scenario: An admin of another project cannot change roles in this project\n    Given the project \"Hermes\" exists\n    And \"Erin\" has the role \"admin\" in \"Hermes\"\n    When \"Erin\" changes the role of \"Bob\" in \"Apollo\" to \"viewer\"\n    Then the response status is 404"
+    },
+    "P5": {
+      "pass": true,
+      "quote": "Scenario Outline: The only admin cannot step down\n    When \"Alice\" changes the role of \"Alice\" in \"Apollo\" to \"<new-role>\"\n    Then the response status is 409\n    And the error states that \"Apollo\" must keep at least one admin"
+    },
+    "P6": {
+      "pass": true,
+      "quote": "| Backend API | **Yes**: the role-change rule on its own | **Yes**: the main suite | No | No | No | ... **Not used, and why:** no UI is in scope, so no component or E2E tests. ... An in-memory or mocked database can't show whether the locking works."
+    },
+    "P7": {
+      "pass": true,
+      "quote": "Scenario: An editor cannot promote themselves to admin\n    When \"Bob\" changes the role of \"Bob\" in \"Apollo\" to \"admin\"\n    Then the response status is 403\n    And \"Bob\" has the role \"editor\" in \"Apollo\""
+    }
+  }
+}

@@ -12,4 +12,7 @@ Five realistic requests run **with AgentFlow installed** against the `../fixture
 | [`keep-existing-stack/`](keep-existing-stack/) | Add a delete endpoint (fixture on Express 4) | build on the existing stack; no unprompted upgrade |
 | [`new-project-versions/`](new-project-versions/) | Exact versions for a new Next.js + Prisma project (empty folder, no web access) | aim for latest stable, and label versions it couldn't verify instead of presenting memory as current |
 
-Each folder has `prompt.md` (sent verbatim) and `expected-properties.md`; an optional `fixture` file names the starting project (`none` = empty). Run with `node evals/run.js --suite workflow-checks`.
+| [`new-project-versions-web/`](new-project-versions-web/) | Same as above, **with** web and `npm view` access | actually verify versions, with sources and compatibility evidence |
+| [`existing-project-triggers/`](existing-project-triggers/) | Add a delete endpoint (fixture on Node 16 + vulnerable `jsonwebtoken`) | build the feature on the existing stack, and escalate the vulnerability and the EOL runtime separately |
+
+Each folder has `prompt.md` (sent verbatim) and `expected-properties.md`; an optional `fixture` file names the starting project (`none` = empty), and an optional `tools` file grants extra tools (one per line). Run with `node evals/run.js --suite workflow-checks`.

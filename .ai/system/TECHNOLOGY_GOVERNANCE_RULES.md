@@ -47,6 +47,8 @@ The existing stack is a **constraint**, recorded in the audit (`../skills/existi
   Upgrade recommended:  no
   Reason:               5.2 is supported, has no known vulnerabilities, and supports the feature
   ```
+
+  For npm projects, `agentflow drift [dir]` produces this report: installed versions from the lock file, latest stable from the registry, advisories that cover the installed version, deprecations, and Node.js end-of-life from the official schedule — with the **smallest safe version** for each advisory, so a patch inside the same major is preferred over a major upgrade. `--fail-on security|eol|any` turns it into a CI gate. Other ecosystems: their audit and outdated tools, reported the same way.
 - **Bug fixes** use the existing architecture and technology. "Fix the login bug" does not become "upgrade the auth framework" unless the framework is the root cause.
 - **Refactors** restructure code; they do not replace technology unless the refactor's stated goal is that change.
 - **Existing projects use the documentation for their installed versions**, not the latest docs.
@@ -57,14 +59,14 @@ Change existing technology only for a concrete reason, stated in the decision:
 
 | Trigger | Urgency |
 |---|---|
-| A known vulnerability that affects how the project uses the dependency | **Critical / High** — escalate through bug intake (`PROJECT_MANAGEMENT_RULES.md`); security outranks stability |
+| A known vulnerability that affects how the project uses the dependency | **Critical / High** — escalate through bug intake at P0/P1 **as soon as it is found**, even mid-way through an unrelated task (`PROJECT_MANAGEMENT_RULES.md`); listing it as a note is not escalation; security outranks stability |
 | The version is end-of-life or no longer receives security fixes | High |
 | A required feature can't be built on the current version | Medium — part of that feature's scope |
 | A compatibility requirement (runtime, platform, app-store or OS policy, infrastructure) forces it | Per the deadline it imposes |
 | Deprecated and scheduled for removal | Low → High as removal approaches |
 | A measured performance problem, a compliance requirement, or a serious limitation | Per impact |
 
-Before any upgrade, answer: why it's needed, what it solves, the breaking changes, the migration work, the regression risk, and whether it's inside the approved scope. Outside the scope → a separate migration work item (`../skills/migration-planning`) or a `SCOPE CHANGE` — never folded silently into the current task. Behavior the upgrade could affect is protected by Gherkin regression scenarios (`GHERKIN_RULES.md`) — the upgrade itself isn't the behavior; what users rely on is.
+For a vulnerability, take the **smallest version that clears it** — a patch or minor within the installed major when one exists — rather than jumping to the latest major. Before any upgrade, answer: why it's needed, what it solves, the breaking changes, the migration work, the regression risk, and whether it's inside the approved scope. Outside the scope → a separate migration work item (`../skills/migration-planning`) or a `SCOPE CHANGE` — never folded silently into the current task. Behavior the upgrade could affect is protected by Gherkin regression scenarios (`GHERKIN_RULES.md`) — the upgrade itself isn't the behavior; what users rely on is.
 
 **Deprecation report:** deprecated (yes/no) · impact · official replacement · migration urgency (low / medium / high / critical). Recommend a migration task; don't migrate unasked.
 
