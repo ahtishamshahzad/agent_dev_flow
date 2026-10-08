@@ -34,6 +34,7 @@ Ask only what blocks a correct plan (≈5 at most) — and in the same reply giv
 ## Responsibilities
 
 1. **Classify the request** (delegate to `request-classification`).
+1a. **Assemble the minimum sufficient context** (delegate to `context-engineering`; `../../system/CONTEXT_MANAGEMENT_RULES.md`) — scenarios first, a reason for every item, escalation only on a trigger.
 2. **Inspect provided files and repository** (delegate to `existing-project-audit` when a codebase exists).
 3. **Extract requirements** (delegate to `requirements-analysis`).
 4. **Separate confirmed facts, assumptions, and questions** — keep these three lists explicit.
@@ -58,6 +59,7 @@ The orchestrator **coordinates specialists**; it must not become the implementat
 ```
 Request
  → request-classification
+ → context-engineering   → minimum sufficient context; escalate only on evidence
  → existing-project-audit (if code exists)
  → requirements-analysis  → record confirmed / assumptions / questions
  → gherkin-specifications → the behavior change as scenarios (skip only if no observable change)

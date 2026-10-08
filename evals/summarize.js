@@ -22,7 +22,18 @@ for (const d of dirs) {
     const rec = JSON.parse(fs.readFileSync(path.join(d, f.replace('.score.json', '.json')), 'utf8'));
     if (!s.verdict) { runs.push({ ...s, unscored: true }); continue; }
     const passed = s.properties.filter((id) => s.verdict[id] && s.verdict[id].pass);
-    runs.push({ ...s, passed, total: s.properties.length, cost: rec.costUsd || 0, turns: rec.turns || 0, ms: rec.durationMs || 0 });
+    const u = rec.usage || {};
+    const ctx = rec.context || {};
+    runs.push({
+      ...s, passed, total: s.properties.length, cost: rec.costUsd || 0, turns: rec.turns || 0, ms: rec.durationMs || 0,
+      // Total input = uncached + cache writes + cache reads (the CLI splits them).
+      inTok: u.input_tokens != null ? (u.input_tokens || 0) + (u.cache_creation_input_tokens || 0) + (u.cache_read_input_tokens || 0) : null,
+      outTok: u.output_tokens != null ? u.output_tokens : null,
+      tools: ctx.toolCalls != null ? ctx.toolCalls : null,
+      files: ctx.filesRead ? ctx.filesRead.length : null,
+      eff: ctx.retrievalEfficiency != null ? ctx.retrievalEfficiency : null,
+      recall: ctx.recall != null ? ctx.recall : null,
+    });
   }
 }
 
@@ -59,13 +70,33 @@ for (const model of models) {
       .map(([id, v]) => `${id} ${arms.map((a) => pct(v[a] ?? 0)).join('→')}`);
     lines.push(`| ${c} | ${cells.join(' | ')} | ${diffs.join(' · ') || '—'} |`);
   }
+  // Means over runs that report the value; "unknown" when none do — never 0.
+  const known = (rs, k) => rs.filter((r) => r[k] != null).map((r) => r[k]);
+  const show = (xs, f) => (xs.length ? f(mean(xs)) : 'unknown');
   const totals = arms.map((arm) => {
     const rs = scored.filter((r) => r.model === model && r.arm === arm);
-    return { arm, rate: mean(rs.map((r) => r.passed.length / r.total)), cost: mean(rs.map((r) => r.cost)),
+    return { arm, rs, rate: mean(rs.map((r) => r.passed.length / r.total)), cost: mean(rs.map((r) => r.cost)),
       turns: mean(rs.map((r) => r.turns)), s: mean(rs.map((r) => r.ms)) / 1000, n: rs.length };
   });
-  lines.push('', `| Arm | Runs | Mean pass rate | Mean cost | Mean turns | Mean time |`, '|---|---|---|---|---|---|');
-  for (const t of totals) lines.push(`| ${t.arm} | ${t.n} | ${pct(t.rate)} | $${t.cost.toFixed(3)} | ${t.turns.toFixed(1)} | ${Math.round(t.s)} s |`);
+  lines.push('', '| Arm | Runs | Mean pass rate | Mean cost | Mean turns | Mean time | Input tokens | Output tokens | Tool calls | Files read |',
+    '|---|---|---|---|---|---|---|---|---|---|');
+  for (const t of totals) {
+    lines.push(`| ${t.arm} | ${t.n} | ${pct(t.rate)} | $${t.cost.toFixed(3)} | ${t.turns.toFixed(1)} | ${Math.round(t.s)} s | ` +
+      `${show(known(t.rs, 'inTok'), (x) => Math.round(x).toLocaleString('en-US'))} | ${show(known(t.rs, 'outTok'), (x) => Math.round(x).toLocaleString('en-US'))} | ` +
+      `${show(known(t.rs, 'tools'), (x) => x.toFixed(1))} | ${show(known(t.rs, 'files'), (x) => x.toFixed(1))} |`);
+  }
+  // Retrieval efficiency only exists for cases that list their relevant files.
+  const effCases = cases.filter((c) => scored.some((r) => r.model === model && r.case === c && r.eff != null));
+  for (const c of effCases) {
+    lines.push('', `**${c} — retrieval** (relevant files read ÷ files read; recall = relevant files read ÷ relevant files; quality alongside):`, '',
+      '| Arm | Pass rate | Files read | Retrieval efficiency | Recall | Tool calls |', '|---|---|---|---|---|---|');
+    for (const arm of arms) {
+      const rs = scored.filter((r) => r.model === model && r.case === c && r.arm === arm);
+      if (!rs.length) continue;
+      lines.push(`| ${arm} | ${pct(mean(rs.map((r) => r.passed.length / r.total)))} | ${show(known(rs, 'files'), (x) => x.toFixed(1))} | ` +
+        `${show(known(rs, 'eff'), pct)} | ${show(known(rs, 'recall'), pct)} | ${show(known(rs, 'tools'), (x) => x.toFixed(1))} |`);
+    }
+  }
   lines.push('');
 }
 if (unscored.length) lines.push(`Unscored (judge returned no verdict): ${unscored.map((r) => r.id).join(', ')}`, '');

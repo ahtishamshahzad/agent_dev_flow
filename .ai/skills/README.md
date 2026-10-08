@@ -19,6 +19,7 @@ Most work starts at **`project-orchestrator`**, which then loads the right speci
 | Skill | Description |
 |-------|-------------|
 | [`project-orchestrator`](project-orchestrator/SKILL.md) | Lead skill; drives the request→approval pipeline and coordinates specialists. Plans and delegates; does not implement every domain. |
+| [`context-engineering`](context-engineering/SKILL.md) | Minimum sufficient context: scenarios first, then skills, files, tests; escalate only on evidence; context packs; stale-summary checks. |
 
 ### Intake & Planning
 | Skill | Description |

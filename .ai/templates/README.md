@@ -52,6 +52,8 @@ Reusable **document templates** — fill-in-the-blank, tool-neutral. They give c
 |----------|---------|
 | [`DECISION_RECORD.md`](DECISION_RECORD.md) | ADR: one decision, options, consequences. |
 | [`TECHNOLOGY_DECISION.md`](TECHNOLOGY_DECISION.md) | New-project version baseline, or an existing project's add/upgrade/replace decision with its trigger. |
+| [`CONTEXT_PACK.md`](CONTEXT_PACK.md) | A task's required/optional/excluded context with reasons, escalations, shared contracts, ownership. |
+| [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md) | One stable project summary with its `sources:` and fingerprint (`agentflow context check`). |
 | [`RISK_REGISTER.md`](RISK_REGISTER.md) | Risks with likelihood/impact/severity/owner/mitigation (`RISKS.md`). |
 | [`PROGRESS.md`](PROGRESS.md) | `CURRENT_STATUS.md`: stage, gates, phase, week, progress, blockers — read first on re-entry. |
 | [`PR_DESCRIPTION.md`](PR_DESCRIPTION.md) | What/why, testing, risks, checklist. |

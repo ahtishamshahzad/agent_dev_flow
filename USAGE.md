@@ -54,7 +54,7 @@ Optional native plugins — adds namespaced, auto-discovered skills:
 
 Then invoke directly: `/ai-core:project-orchestrator`, `/ai-backend:backend-authorization`, `/ai-security:threat-modeling`.
 
-**Install only the packs a project needs.** Every installed pack keeps its skill descriptions in context on every turn — roughly: core ~1.9k, mobile ~2.1k, web ~2.0k, backend ~1.9k, devops ~1.1k, database ~1.0k, testing ~1.1k, security ~0.9k tokens. All eight is ~12.0k tokens of permanent overhead; two or three packs is the sweet spot and matches the system's own "load only what you need" rule.
+**Install only the packs a project needs.** Every installed pack keeps its skill descriptions in context on every turn — roughly: core ~2.1k, mobile ~2.1k, web ~2.0k, backend ~2.0k, devops ~1.1k, database ~1.0k, testing ~1.0k, security ~0.9k tokens. All eight is ~12.2k tokens of permanent overhead; two or three packs is the sweet spot and matches the system's own "load only what you need" rule.
 
 ### Cursor
 
@@ -213,7 +213,7 @@ More starters: [`.ai/prompts/`](.ai/prompts/README.md).
 | Path | Holds |
 |------|-------|
 | `.ai/system/` | Non-negotiable rules — gates, orchestration, security, git, context budget |
-| `.ai/skills/` | 180 capability modules, indexed in [`.ai/skills/README.md`](.ai/skills/README.md) |
+| `.ai/skills/` | 181 capability modules, indexed in [`.ai/skills/README.md`](.ai/skills/README.md) |
 | `.ai/workflows/` | One per request type (new project, existing project, bugfix, release, …) |
 | `.ai/agents/` | 13 roles for multi-agent runs |
 | `.ai/hooks/` · `.ai/checklists/` | Tool-neutral lifecycle gates and verifiable checks |

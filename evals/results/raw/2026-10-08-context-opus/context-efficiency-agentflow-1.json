@@ -1,0 +1,108 @@
+{
+  "id": "context-efficiency-agentflow-1",
+  "case": "context-efficiency",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.7.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 15383,
+  "turns": 5,
+  "costUsd": 0.10983299999999999,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 10040,
+    "cache_read_input_tokens": 38345,
+    "output_tokens": 1091,
+    "output_tokens_details": {
+      "thinking_tokens": 117
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 10040,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 574,
+        "cache_read_input_tokens": 16413,
+        "cache_creation_input_tokens": 711,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 711
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "README.md",
+    "USAGE.md",
+    "package.json",
+    "src/admin/routes.js",
+    "src/app.js",
+    "src/auth/routes.js",
+    "src/billing/routes.js",
+    "src/billing/stripe.js",
+    "src/cart/routes.js",
+    "src/catalog/routes.js",
+    "src/core/db.js",
+    "src/core/events.js",
+    "src/core/logger.js",
+    "src/notifications/emails.js",
+    "src/notifications/mailer.js",
+    "src/notifications/subscribers.js",
+    "src/orders/routes.js",
+    "src/reports/routes.js",
+    "src/reviews/routes.js",
+    "src/search/routes.js",
+    "src/shipping/carriers.js",
+    "src/shipping/routes.js",
+    "src/uploads/routes.js",
+    "src/users/routes.js",
+    "test/auth.test.js",
+    "test/billing.test.js",
+    "test/catalog.test.js",
+    "test/orders.test.js"
+  ],
+  "extraTools": [],
+  "context": {
+    "toolCalls": 4,
+    "byTool": {
+      "Grep": 1,
+      "Glob": 1,
+      "Read": 2
+    },
+    "filesRead": [
+      "src/orders/routes.js",
+      "src/notifications/subscribers.js"
+    ],
+    "systemFilesRead": 0,
+    "repeatedReads": 0,
+    "relevant": [
+      "src/orders/routes.js",
+      "src/notifications/subscribers.js",
+      "src/notifications/emails.js"
+    ],
+    "retrievalEfficiency": 1,
+    "recall": 0.6666666666666666
+  },
+  "prompt": "Customers get two emails when their order ships. Find the cause and tell me the fix. Don't change any files yet.",
+  "result": "The shipped email is being sent twice on every shipment, once by an event subscriber and once directly by the route.\n\n**How it happens:** in `src/orders/routes.js:7-12`, the `POST /:id/ship` handler does both of these:\n\n```js\nevents.emit('order.shipped', order);   // line 9 → subscriber sends email #1\nawait sendShippedEmail(order);         // line 10 → sends email #2 directly\n```\n\n`src/notifications/subscribers.js:4` already listens for `order.shipped` and calls `sendShippedEmail(order)`. The comment on line 3 says customer emails are meant to come from domain events, so the direct call in the route is the extra one. The receipt email (`order.paid`) only goes through the subscriber, which is why it isn't duplicated.\n\n**Fix:** in `src/orders/routes.js`, remove line 10 (`await sendShippedEmail(order);`) and the import on line 4 that is then unused. Keep the `events.emit`. The subscriber stays the only place that sends customer emails, matching how the receipt is handled.\n\n**Things to check when you make the change:**\n- **Return timing changes.** Today the route waits for the email before responding. After the fix it responds without waiting, and the send happens in the background. The subscriber also doesn't catch errors, so a failed send could become an unhandled promise rejection. Add a `.catch` with logging in the subscriber, or use a reliable queue if delivery matters.\n- **Add a test.** Calling `POST /orders/:id/ship` once should trigger `mailer.send` exactly once.\n\nI haven't changed any files, as you asked."
+}

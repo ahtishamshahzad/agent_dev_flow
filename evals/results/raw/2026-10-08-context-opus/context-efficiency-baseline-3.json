@@ -1,0 +1,103 @@
+{
+  "id": "context-efficiency-baseline-3",
+  "case": "context-efficiency",
+  "suite": "cases",
+  "arm": "baseline",
+  "run": 3,
+  "agentflowVersion": "1.7.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 14435,
+  "turns": 5,
+  "costUsd": 0.10174300000000001,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 9184,
+    "cache_read_input_tokens": 36135,
+    "output_tokens": 1051,
+    "output_tokens_details": {
+      "thinking_tokens": 130
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 9184,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 553,
+        "cache_read_input_tokens": 15318,
+        "cache_creation_input_tokens": 950,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 950
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "README.md",
+    "package.json",
+    "src/admin/routes.js",
+    "src/app.js",
+    "src/auth/routes.js",
+    "src/billing/routes.js",
+    "src/billing/stripe.js",
+    "src/cart/routes.js",
+    "src/catalog/routes.js",
+    "src/core/db.js",
+    "src/core/events.js",
+    "src/core/logger.js",
+    "src/notifications/emails.js",
+    "src/notifications/mailer.js",
+    "src/notifications/subscribers.js",
+    "src/orders/routes.js",
+    "src/reports/routes.js",
+    "src/reviews/routes.js",
+    "src/search/routes.js",
+    "src/shipping/carriers.js",
+    "src/shipping/routes.js",
+    "src/uploads/routes.js",
+    "src/users/routes.js",
+    "test/auth.test.js",
+    "test/billing.test.js",
+    "test/catalog.test.js",
+    "test/orders.test.js"
+  ],
+  "extraTools": [],
+  "context": {
+    "toolCalls": 4,
+    "byTool": {
+      "Grep": 2,
+      "Read": 2
+    },
+    "filesRead": [
+      "src/orders/routes.js",
+      "src/notifications/subscribers.js"
+    ],
+    "systemFilesRead": 0,
+    "repeatedReads": 0,
+    "relevant": [
+      "src/orders/routes.js",
+      "src/notifications/subscribers.js",
+      "src/notifications/emails.js"
+    ],
+    "retrievalEfficiency": 1,
+    "recall": 0.6666666666666666
+  },
+  "prompt": "Customers get two emails when their order ships. Find the cause and tell me the fix. Don't change any files yet.",
+  "result": "The shipping route sends the email twice: once directly, and once through the event subscriber.\n\n**Cause**\n\nThe handler for `POST /orders/:id/ship` in `src/orders/routes.js` does both of these:\n\n```js\nevents.emit('order.shipped', order);   // line 9\nawait sendShippedEmail(order);         // line 10\n```\n\n`src/notifications/subscribers.js:4` is loaded at startup (`src/app.js:7`) and already listens for that event:\n\n```js\nevents.on('order.shipped', (order) => sendShippedEmail(order));\n```\n\nSo the `emit` on line 9 sends one email through the subscriber, and line 10 sends a second one directly.\n\n**Fix**\n\nRemove the direct call and leave the email to the subscriber. The comment in `subscribers.js` (\"Customer emails are sent from domain events\") says that's the intended design, and `order.paid` → `sendReceipt` already works that way. In `src/orders/routes.js`:\n- Delete line 10: `await sendShippedEmail(order);`\n- Delete the import on line 4, which nothing else in the file uses.\n\nOne side effect: the route no longer waits for the email to send. The subscriber doesn't `await` or catch anything, so if sending fails, the API call still succeeds and the error becomes an unhandled rejection. To keep that from going unnoticed, add a `.catch(...)` that logs the error in the subscriber.\n\nNo files were changed."
+}

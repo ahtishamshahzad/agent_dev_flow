@@ -11,10 +11,11 @@ current/
 ├── PROJECT.md  ROADMAP.md  CURRENT_STATUS.md  DECISIONS.md  RISKS.md
 ├── phases/PHASE-NN.md      weekly/WEEK-NN.md
 ├── reports/WEEK-NN-REPORT.md   meetings/MEETING-NNN.md
-└── logs/DEVELOPMENT-LOG.md  BUG-LOG.md  CHANGE-LOG.md
+├── logs/DEVELOPMENT-LOG.md  BUG-LOG.md  CHANGE-LOG.md
+└── context/project.md  technology.md  architecture.md  testing.md  security.md   (stable summaries)
 ```
 
-Bugs themselves are work items — `BUG-NNN.md` in `../../work-items/bugs/`, indexed by `logs/BUG-LOG.md`. Create each file when it first has something true to say — never as an empty scaffold. **`CURRENT_STATUS.md` is read first on re-entry**; it holds the stage, gate status, phase, week, and open work.
+Bugs themselves are work items — `BUG-NNN.md` in `../../work-items/bugs/`, indexed by `logs/BUG-LOG.md`. Create each file when it first has something true to say — never as an empty scaffold. **`CURRENT_STATUS.md` is read first on re-entry**; it holds the stage, gate status, phase, week, and open work. `context/` holds short, stable summaries (`../../templates/PROJECT_CONTEXT.md`) — each lists its source files, and `agentflow context check` reports any whose sources changed (`../../system/CONTEXT_MANAGEMENT_RULES.md`).
 
 ## Sections to maintain (create files/entries as work begins)
 

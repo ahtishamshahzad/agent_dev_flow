@@ -37,6 +37,7 @@ Each case lists observable **properties** of a good response. They group into:
 | [`security/`](security/) | Review a change with three planted weaknesses | Diff |
 | [`testing/`](testing/) | Write the test plan for an endpoint | Endpoint spec |
 | [`scope-control/`](scope-control/) | A new requirement arrives mid-implementation | Approved plan + new request |
+| [`context-efficiency/`](context-efficiency/) | Find a planted bug in a 27-file codebase where three files matter | Bug report — measures files read, relevant ÷ read, tool calls, tokens |
 
 Each folder holds `input.md` (the case described for a human), `prompt.md` (exactly what the agent receives), optional `setup*/` files, `expected-properties.md` (pass/fail checks), and `evaluation.md` (how to score, and what a failure looks like).
 

@@ -6,7 +6,7 @@ Context is finite and costly. These rules keep the system lean without losing co
 
 - **Do not load every skill for every task.** Select only skills relevant to the active work (`SKILL_SELECTION_RULES.md`).
 - **Select only relevant skills**, guided by the skill index — not by scanning all files.
-- **Load context in layers:** global → project → phase → work item → task → file (`CONTEXT_MANAGEMENT_RULES.md`). Go only as deep as needed.
+- **Load the minimum sufficient context** and escalate only on evidence (`CONTEXT_MANAGEMENT_RULES.md` — layers, escalation levels, relevance check, budgets). Go only as deep as needed.
 - **Summarize large documents** before loading additional context.
 - **Avoid repeating canonical instructions in adapter files.** Adapters link to `.ai/`; they never restate it.
 - **Prefer links and references over duplicated content.**

@@ -337,7 +337,7 @@ for (const p of docs) {
 const publicDocs = [
   ...fs.readdirSync(ROOT).filter((f) => f.endsWith('.md')).map((f) => path.join(ROOT, f)),
   path.join(ROOT, 'plugins/README.md'),
-  ...['examples', 'evals'].flatMap((d) =>
+  ...['examples', 'evals', 'docs'].flatMap((d) =>
     fs.existsSync(path.join(ROOT, d)) ? [...walk(path.join(ROOT, d))].filter((p) => p.endsWith('.md')) : []),
 ];
 const LINK = /\]\(((?!https?:|mailto:|#)[^)\s]+)\)/g;
@@ -473,6 +473,42 @@ for (const p of [...walk(path.join(ROOT, '.ai'))].filter((x) => x.endsWith('.md'
     const before = l.slice(0, m.index);
     const quoted = /["“'`]\s*$/.test(before) || /\b(never|not|don'?t|no)\b[^.]{0,12}$/i.test(before);
     if (!quoted) fail(`${path.relative(ROOT, p)}:${i + 1}: absolute version rule "${m[0]}" — use the new/existing project policy`);
+  });
+}
+
+// ---- 13. Context engineering: policy, skill, tools, examples, wiring --------
+const cm = read('.ai/system/CONTEXT_MANAGEMENT_RULES.md');
+for (const [section, re] of [
+  ['the principle', /minimum sufficient context/i],
+  ['priority order', /^## Priority order/m],
+  ['escalation levels', /^## Escalation/m],
+  ['relevance check', /^## Relevance check/m],
+  ['stable project context', /^## Stable project context/m],
+  ['insufficient-context handling', /^## When context is insufficient/m],
+  ['multi-agent isolation', /^## Multi-agent isolation/m],
+]) {
+  if (!re.test(cm)) fail(`CONTEXT_MANAGEMENT_RULES.md: ${section} missing`);
+}
+for (const rel of [
+  '.ai/skills/context-engineering/SKILL.md', '.ai/templates/CONTEXT_PACK.md', '.ai/templates/PROJECT_CONTEXT.md',
+  'docs/context-engineering.md', 'lib/context.js',
+  ...['simple-bug', 'medium-feature', 'complex-feature', 'new-project', 'existing-project', 'multi-agent']
+    .map((x) => `examples/context-engineering/${x}.md`),
+]) {
+  if (!fs.existsSync(path.join(ROOT, rel))) fail(`context engineering: ${rel} missing`);
+}
+for (const rel of ['.ai/system/ORCHESTRATION_WORKFLOW.md', '.ai/system/OPERATING_RULES.md', '.ai/skills/project-orchestrator/SKILL.md',
+  '.ai/system/MULTI_AGENT_RULES.md', '.ai/agents/multi-agent-execution.md', 'AGENTS.md', 'CLAUDE.md']) {
+  const t = read(rel);
+  if (!/CONTEXT_MANAGEMENT_RULES\.md|context-engineering/.test(t)) fail(`${rel}: does not point to the context policy`);
+}
+if (!/context-engineering/.test(read('.ai/skills/SKILLS_INDEX.md'))) fail('SKILLS_INDEX.md: context-engineering not discoverable');
+// Savings claims need numbers behind them: a percentage reduction must cite evals/results.
+for (const p of publicDocs.concat([...walk(path.join(ROOT, '.ai'))].filter((x) => x.endsWith('.md')))) {
+  read(path.relative(ROOT, p)).split('\n').forEach((l, i) => {
+    if (/\b\d{1,3}\s?%\s+(fewer|less|reduction|savings?|cheaper)\b|\breduces?\b[^.]{0,30}\btokens?\b[^.]{0,20}\bby\s+\d/i.test(l) && !/evals\/results/.test(l)) {
+      fail(`${path.relative(ROOT, p)}:${i + 1}: token-savings claim without a link to evals/results`);
+    }
   });
 }
 

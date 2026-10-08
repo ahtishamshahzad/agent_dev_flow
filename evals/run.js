@@ -60,12 +60,12 @@ function prepare(c, arm, suite) {
     const r = spawnSync(process.execPath, [path.join(ROOT, 'bin', 'cli.js'), 'init', project, '--editor', 'claude'], { encoding: 'utf8' });
     if (r.status !== 0) throw new Error(`init failed: ${r.stderr}`);
   }
-  if (suite === 'workflow-checks') {
-    // A check may name its fixture in a `fixture` file ("none" = empty project).
-    const named = path.join(c.dir, 'fixture');
-    const fixture = fs.existsSync(named) ? fs.readFileSync(named, 'utf8').trim() : 'node-api';
-    if (fixture !== 'none') copyDir(path.join(EVALS, 'fixtures', fixture), project);
-  }
+  // A case may name its fixture in a `fixture` file ("none" = empty project).
+  // Default: node-api for workflow checks, none for the comparison cases.
+  const named = path.join(c.dir, 'fixture');
+  const fixture = fs.existsSync(named) ? fs.readFileSync(named, 'utf8').trim()
+    : suite === 'workflow-checks' ? 'node-api' : 'none';
+  if (fixture !== 'none') copyDir(path.join(EVALS, 'fixtures', fixture), project);
   copyDir(path.join(c.dir, 'setup'), project);
   copyDir(path.join(c.dir, `setup-${arm}`), project);
   return project;
@@ -81,7 +81,7 @@ function runAgent(project, prompt, model, extra = []) {
     .filter((t) => !grantedBase.has(t) || ['Write', 'Edit', 'NotebookEdit'].includes(t));
   const argv = [
     '-p', prompt,
-    '--output-format', 'json',
+    '--output-format', 'stream-json', '--verbose',
     '--setting-sources', 'project',
     '--allowedTools', allowed.join(','),
     '--disallowedTools', denied.join(','),
@@ -97,9 +97,19 @@ function runAgent(project, prompt, model, extra = []) {
     child.stdout.on('data', (d) => { out += d; });
     child.stderr.on('data', (d) => { err += d; });
     child.on('close', (code) => {
+      // stream-json: one event per line; the last `result` event carries the
+      // usage and final text, assistant events carry the tool calls.
       let json = null;
-      try { json = JSON.parse(out); } catch { /* recorded below */ }
-      resolve({ code, json, raw: json ? null : out, stderr: err.slice(-2000), ms: Date.now() - started });
+      const tools = [];
+      for (const line of out.split('\n')) {
+        let ev;
+        try { ev = JSON.parse(line); } catch { continue; }
+        if (ev.type === 'result') json = ev;
+        if (ev.type === 'assistant' && ev.message && Array.isArray(ev.message.content)) {
+          for (const part of ev.message.content) if (part.type === 'tool_use') tools.push({ name: part.name, input: part.input || {} });
+        }
+      }
+      resolve({ code, json, tools, raw: json ? null : out.slice(-4000), stderr: err.slice(-2000), ms: Date.now() - started });
     });
   });
 }
@@ -162,11 +172,31 @@ async function main() {
         fs.rmSync(project, { recursive: true, force: true });
         break;
       }
+      // Context metrics from the tool calls: what was read, how often, and —
+      // when the case lists its relevant files — how much of it was needed.
+      const rel = (p) => path.relative(fs.realpathSync(project), path.resolve(fs.realpathSync(project), String(p))).split(path.sep).join('/');
+      const reads = res.tools.filter((t) => t.name === 'Read' && t.input.file_path).map((t) => rel(t.input.file_path));
+      const projectReads = reads.filter((p) => !p.startsWith('.ai/') && !p.startsWith('..'));
+      const distinct = [...new Set(projectReads)];
+      const relevantFile = path.join(c.dir, 'relevant.txt');
+      const relevant = fs.existsSync(relevantFile) ? fs.readFileSync(relevantFile, 'utf8').split('\n').map((s) => s.trim()).filter(Boolean) : null;
+      const context = {
+        toolCalls: res.tools.length,
+        byTool: res.tools.reduce((m, t) => ({ ...m, [t.name]: (m[t.name] || 0) + 1 }), {}),
+        filesRead: distinct,
+        systemFilesRead: [...new Set(reads.filter((p) => p.startsWith('.ai/')))].length,
+        repeatedReads: projectReads.length - distinct.length,
+        ...(relevant ? {
+          relevant,
+          retrievalEfficiency: distinct.length ? distinct.filter((f) => relevant.includes(f)).length / distinct.length : null,
+          recall: relevant.filter((f) => distinct.includes(f)).length / relevant.length,
+        } : {}),
+      };
       const record = {
         id, case: c.name, suite: a.suite, arm, run: r, agentflowVersion: version, agent,
         models: Object.keys(j.modelUsage || {}), exitCode: res.code, durationMs: res.ms,
         turns: j.num_turns, costUsd: j.total_cost_usd, usage: j.usage, isError: j.is_error,
-        projectFiles: files, extraTools: extra, prompt, result: j.result ?? res.raw, stderr: res.stderr || undefined,
+        projectFiles: files, extraTools: extra, context, prompt, result: j.result ?? res.raw, stderr: res.stderr || undefined,
       };
       fs.writeFileSync(path.join(out, `${id}.json`), JSON.stringify(record, null, 2));
       fs.writeFileSync(path.join(out, `${id}.md`),
