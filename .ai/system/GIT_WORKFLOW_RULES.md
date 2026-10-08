@@ -9,6 +9,7 @@ How this system uses version control. Tool-neutral; applies to any agent. Remote
 - **No remote repository creation without explicit approval** (`OPERATING_RULES.md` §9). The system never creates a GitHub repository on its own.
 - **Small, coherent commits.** One logical change per commit; message explains the *why*.
 - **No secrets in commits** (`SECURITY_RULES.md`). Respect `.gitignore`; if a secret was ever committed, flag it for rotation.
+- **Work in the project's own checkout.** Worktrees (e.g. `.claude/worktrees/`) are optional — a tool's isolation for background or parallel agents, not a requirement of this system. When one is used, its branch reaches the main checkout only through a normal merge, and the main checkout is updated (`git pull`) afterwards.
 
 ## Commit messages
 

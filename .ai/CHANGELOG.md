@@ -2,6 +2,20 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.8.1] — 2026-10-09
+
+### Changed
+
+- `GIT_WORKFLOW_RULES`: work happens in the project's own checkout; worktrees (e.g. `.claude/worktrees/`) are optional tool isolation for background or parallel agents, not a requirement — merged through a normal PR, then `git pull` in the main checkout.
+
+### Fixed
+
+- A personal local path in `docs/reports/phase-4-web-skills-report.md` replaced with a placeholder.
+
+### Totals
+
+- 181 skills · 13 agents · 13 hooks · 12 workflows · 34 templates · 19 prompts · 18 checklists.
+
 ## [1.8.0] — 2026-10-08
 
 Context engineering: the minimum sufficient context, expanded only on evidence — as an operational part of the workflow, with tooling and measurement. No new rule file: `CONTEXT_MANAGEMENT_RULES.md` became the full policy.

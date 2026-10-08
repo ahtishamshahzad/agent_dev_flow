@@ -46,7 +46,7 @@
 Work was produced in the isolated worktree `.claude/worktrees/phase-4-web-skills` (branch `worktree-phase-4-web-skills`), uncommitted per `OPERATING_RULES.md` §9 (no commit/push without explicit approval). To bring into the main checkout:
 
 ```sh
-cd /Users/apple/Desktop/skills/agent_dev_flow
+cd /path/to/agent_dev_flow
 cp -R .claude/worktrees/phase-4-web-skills/.ai/skills/web .ai/skills/web
 cp -R .claude/worktrees/phase-4-web-skills/.ai/references/web .ai/references/web
 cp .claude/worktrees/phase-4-web-skills/.ai/skills/README.md .ai/skills/README.md

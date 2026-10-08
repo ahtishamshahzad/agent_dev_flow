@@ -10,7 +10,7 @@ npx github:ahtishamshahzad/agent_dev_flow init      # adds .ai/ + your editor's 
 
 Then, in your agent: *"Use the project-orchestrator skill. This is a new project: <what you want>. Do not implement code."* It stops twice for your approval before writing any code.
 
-> Version **1.8.0** · MIT · Node 18+ for the installer · Full guide: [`.ai/README.md`](.ai/README.md)
+> Version **1.8.1** · MIT · Node 18+ for the installer · Full guide: [`.ai/README.md`](.ai/README.md)
 
 **Names:** *AgentFlow* is the product and the `agentflow` installer. The *AI Engineering System* is what it installs — the canonical `.ai/` directory. `agent_dev_flow` is this repository.
 
