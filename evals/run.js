@@ -122,7 +122,10 @@ async function main() {
   console.log(`${jobs.length} run(s) · ${agent} · AgentFlow ${version} · out ${path.relative(ROOT, out)}`);
 
   // A usage-limit reply is not a result: stop the batch rather than record it.
-  const LIMIT = /(session|usage|rate) limit|hit your .*limit/i;
+  // The CLI's limit reply is short ("You've hit your session limit · resets …");
+  // a real answer that merely mentions "rate limits" must not match.
+  const LIMIT_RE = /^\s*(you'?ve hit your [a-z ]*limit|claude ai usage limit reached|[a-z ]*usage limit reached)/i;
+  const LIMIT = { test: (s) => String(s).length < 300 && LIMIT_RE.test(String(s)) };
   const done = (id) => {
     try {
       const j = JSON.parse(fs.readFileSync(path.join(out, `${id}.json`), 'utf8'));

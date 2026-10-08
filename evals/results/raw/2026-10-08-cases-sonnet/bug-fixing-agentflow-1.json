@@ -1,0 +1,61 @@
+{
+  "id": "bug-fixing-agentflow-1",
+  "case": "bug-fixing",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.6.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 29110,
+  "turns": 10,
+  "costUsd": 0.1485184,
+  "usage": {
+    "input_tokens": 14,
+    "cache_creation_input_tokens": 22693,
+    "cache_read_input_tokens": 129142,
+    "output_tokens": 3189,
+    "output_tokens_details": {
+      "thinking_tokens": 810
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 22693,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 822,
+        "cache_read_input_tokens": 28387,
+        "cache_creation_input_tokens": 1390,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1390
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "USAGE.md",
+    "orders.js"
+  ],
+  "extraTools": [],
+  "prompt": "Bug: Customers sometimes get charged twice. It seems to happen when the payment page is slow. Can you fix it? The payment route is in orders.js.",
+  "result": "I couldn't apply the fix: the Write tool is disabled in this session, so `orders.js` is unchanged. I also haven't run or tested anything. I read `orders.js` and the project's bug-fix rules, which require a regression scenario and test.\n\n**Root cause (`orders.js:3-6`):** the route checks `order.status === 'paid'`, then awaits the charge, then writes `paid`. When the page is slow, a double-click or a client retry sends a second request. It reads the order while it's still unpaid, so both requests call `payments.charge`.\n\n**Proposed fix**, replacing the route:\n\n```js\nconst inFlightPayments = new Set();\n\napp.post('/orders/:id/pay', async (req, res) => {\n  const orderId = req.params.id;\n  if (inFlightPayments.has(orderId)) return res.status(409).send('Payment in progress');\n  inFlightPayments.add(orderId);\n  try {\n    const order = await db.orders.find(orderId);\n    if (order.status === 'paid') return res.status(409).send('Already paid');\n    const charge = await payments.charge(order.customerId, order.total, {\n      idempotencyKey: `order-${order.id}-pay`,\n    });\n    await db.orders.update(order.id, { status: 'paid', chargeId: charge.id });\n    res.send({ ok: true });\n  } finally {\n    inFlightPayments.delete(orderId);\n  }\n});\n```\n\n- **In-flight guard:** it only protects a single server process.\n- **Idempotency key:** this covers multiple instances and retries, but only if `payments.charge` accepts an options argument and passes the key to the provider. I couldn't see that code, so I don't know that it does.\n- **Stronger option:** an atomic database claim, such as a conditional update from `unpaid` to `paying`, would be more robust. I don't know your `db` API, so I didn't invent one.\n\nThe project rules also want a Gherkin scenario in `features/billing/order-payment.feature`. It would say that two rapid submissions on a slow provider charge once, return a conflict on the second, and leave the order paid. They also want a regression test that fails before the fix and passes after. There's no test framework in the repo, and choosing one is a stack decision for you, so I didn't add one.\n\nIf you re-enable writes, I'll apply the fix and add the feature file. Tell me whether `payments.charge` supports idempotency keys and what your `db` offers for atomic updates, and I'll switch to the stronger approach."
+}

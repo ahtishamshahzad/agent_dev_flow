@@ -1,0 +1,42 @@
+{
+  "id": "existing-project-triggers-agentflow-1",
+  "case": "existing-project-triggers",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "The endpoint would be `DELETE /projects/:id`, behind `requireLogin`. It deletes only where both the ID and the caller's `companyId` match, and the company always comes from the login token, never from the request."
+    },
+    "P2": {
+      "pass": false,
+      "quote": "**Old versions:** Node 16 is no longer supported. jsonwebtoken 8.x has published security advisories that 9.x fixes; I haven't checked the current advisory list."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Node 16 is no longer supported."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "## Problems I found outside this request (not fixed)"
+    },
+    "P5": {
+      "pass": true,
+      "quote": "Stack (from the lock file and `.nvmrc`): Node 16, express 4.19.2, jsonwebtoken 8.5.1, bcrypt 5.1.1. I'm not proposing any stack change."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "jsonwebtoken 8.x has published security advisories that 9.x fixes; I haven't checked the current advisory list."
+    }
+  }
+}

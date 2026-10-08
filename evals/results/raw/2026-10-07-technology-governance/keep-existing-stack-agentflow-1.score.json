@@ -1,0 +1,32 @@
+{
+  "id": "keep-existing-stack-agentflow-1",
+  "case": "keep-existing-stack",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "**Endpoint:** `DELETE /projects/:id` behind `requireLogin`."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "a new API endpoint in the existing Express service. No new apps and no stack change."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Express `^4.19.2`, CommonJS, tests via `node --test`. There's no lockfile, so the installed versions can't be confirmed. I'll keep this stack as it is."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "I haven't written any code yet. The project's rules (`[project instructions]` → [project rules]) require your approval of the feature's behavior before any behavior-changing code."
+    }
+  }
+}

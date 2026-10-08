@@ -1,0 +1,47 @@
+{
+  "id": "bug-fixing-agentflow-1",
+  "case": "bug-fixing",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "**Tracking:** can I record this as `BUG-001` and add the scenario under `features/payments/`?"
+    },
+    "P2": {
+      "pass": true,
+      "quote": "The check at line 4 only stops a second request if the first one has already reached line 6. While `payments.charge` is waiting, the order still looks unpaid, so a double-click, a browser retry or a refresh charges the card again."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Instead of \"read, then check\", do a single conditional update that moves the order from `pending` to `paying` and only succeeds if it's still `pending`."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Send an idempotency key such as `order-<id>` with the charge, so a repeated request returns the original charge instead of making a new one."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "When two pay requests for that order are sent at the same time\n  Then the customer is charged exactly once"
+    },
+    "P6": {
+      "pass": true,
+      "quote": "@regression @bug-001 @payment @critical"
+    },
+    "P7": {
+      "pass": true,
+      "quote": "I didn't change any code yet."
+    }
+  }
+}

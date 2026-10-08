@@ -1,0 +1,42 @@
+{
+  "id": "existing-project-triggers-agentflow-1",
+  "case": "existing-project-triggers",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "The existing stack (Express 4.19, Node 16) stays as is."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "BUG-003 | **P1** | `jsonwebtoken` 8.5.1 has known advisories (CVE-2022-23529/23539/23540/23541), fixed in 9.0.0."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Node 16 (`.nvmrc`) has been end-of-life since September 2023."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "For BUG-003, upgrade to `jsonwebtoken@^9` and a supported Node LTS. That's a stack change, so it needs your approval."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "The existing stack (Express 4.19, Node 16) stays as is."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "**I checked this from memory, not a live advisory database:** I didn't run `npm audit` and there's no `node_modules`."
+    }
+  }
+}

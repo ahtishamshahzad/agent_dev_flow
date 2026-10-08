@@ -1,0 +1,47 @@
+{
+  "id": "planning-agentflow-1",
+  "case": "planning",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "The rules don't allow code, dependency installs or a stack choice until you've approved the plan at two points: first the behaviour scenarios, apps and stack (approval step), then the phases and tasks (approval step)."
+    },
+    "P2": {
+      "pass": false,
+      "quote": "6. **Constraints:** target launch date, budget, who will build and maintain it, and roughly how many gyms and members at launch."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "## What I'll assume unless you correct me"
+    },
+    "P4": {
+      "pass": false,
+      "quote": "**Out of scope for v1:** shop/merchandise sales, personal-training sessions, door-access hardware, a marketing website, and in-app chat."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "You'll **sell it to several gyms**, so one platform serves many gyms, and each gym's data has to be kept separate."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "(a) Each gym is paid directly into its own account (for example through Stripe Connect), and you optionally take a fee."
+    },
+    "P7": {
+      "pass": false,
+      "quote": "Once you answer, I'll write the Gherkin scenarios (booking, cancelling, waitlist, payment success and failure, keeping each gym's data separate), recommend which apps to build and a stack with checked versions, and bring it all to you for approval step approval."
+    }
+  }
+}

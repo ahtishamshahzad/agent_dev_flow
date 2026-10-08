@@ -1,0 +1,47 @@
+{
+  "id": "architecture-agentflow-1",
+  "case": "architecture",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Schema per tenant | About 200 × 30 = 6,000 tables, and every migration runs 200 times. Connection pooling and catalog bloat get awkward. It's the most operational pain for a two-person team and adds only a modest isolation gain over RLS."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Shared schema + `tenant_id` + RLS | **Chosen.** One migration run and one backup. It's cheap to operate with two people, and RLS makes the enforcement real rather than a convention."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "The tenant ID comes only from verified auth, meaning the token plus a `memberships` table. It never comes from a request body, URL param or header the client controls."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Database layer: Postgres Row-Level Security (RLS) on every tenant table, so a missed `WHERE tenant_id = ?` returns nothing instead of leaking data."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "Cross-tenant test suite: generated per table, it checks that tenant A cannot read, update, delete or reference tenant B's rows."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Don't claim \"physically separate\" unless you build that tier."
+    },
+    "P7": {
+      "pass": true,
+      "quote": "I haven't written any files or code."
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "scope-control-baseline-2",
+  "case": "scope-control",
+  "arm": "baseline",
+  "run": 2,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I haven't changed anything."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "These two requests are new scope, and neither is quick."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Put together, that's probably an extra L or more on a timeline that's already committed."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Let them choose: push the launch date, swap something out (the audit log, for example), or schedule them after launch."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "My recommendation: finish the CSV export first, then take these to the client as change requests with estimates."
+    },
+    "P6": {
+      "pass": false,
+      "quote": ""
+    }
+  }
+}

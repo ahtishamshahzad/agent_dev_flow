@@ -1,0 +1,37 @@
+{
+  "id": "new-project-versions-web-agentflow-2",
+  "case": "new-project-versions-web",
+  "arm": "agentflow",
+  "run": 2,
+  "model": "claude-opus-5-5,claude-haiku-4-5-20251001",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I checked every version below against the npm registry, the official Node.js release schedule, postgresql.org, and the Next.js 16.4.0 and Prisma v7 docs on 2026-10-08."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Prisma's npm `latest` tag is a release candidate (8.0.0-rc.21). Running `npm install prisma` today would install an RC. No stable 8.x exists; the highest stable release is 7.10.0."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "I checked every version below against the npm registry, the official Node.js release schedule, postgresql.org, and the Next.js 16.4.0 and Prisma v7 docs on 2026-10-08."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Current LTS line. Next.js needs ≥20.9.0; Prisma 7 accepts `^20.19 \\|\\| ^22.12 \\|\\| >=24.0`."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "The Next.js 16.4.0 docs explicitly support TypeScript 7 for build-time type checking."
+    }
+  }
+}

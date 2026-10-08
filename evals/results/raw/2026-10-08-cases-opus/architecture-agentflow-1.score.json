@@ -1,0 +1,47 @@
+{
+  "id": "architecture-agentflow-1",
+  "case": "architecture",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Schema per tenant | Logical, but each request must switch to the right schema | 200 schemas × 30 tables = **6,000 tables**. Every migration runs 200 times, and partial failures leave tenants on different versions | Only slightly safer, at a much higher running cost"
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Database per tenant | Physical | 200 databases to back up, monitor, migrate and pool connections for | Too much to run, except as a paid enterprise option (see below)"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "The tenant always comes from the **authenticated session**. Never take it from the request body, URL or headers."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Enforce the separation in two places: the application, and PostgreSQL Row-Level Security (RLS) as a safety net."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "**Cross-tenant tests** for every endpoint and job: tenant A's user can't read, update, delete or reference tenant B's data, and a tenant ID supplied by the client is ignored."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Don't say \"physically separated\" or \"fully separate databases\" unless you sell the dedicated tier. Customers often check those claims in security questionnaires."
+    },
+    "P7": {
+      "pass": true,
+      "quote": "I haven't written any code or files."
+    }
+  }
+}

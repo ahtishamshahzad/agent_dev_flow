@@ -1,0 +1,42 @@
+{
+  "id": "scope-control-agentflow-1",
+  "case": "scope-control",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I haven't started on PDF export or the weekly email."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "**PDF export with the client's logo:** this is a new feature, and it's a scope change, not a small add-on to FEAT-012."
+    },
+    "P3": {
+      "pass": false,
+      "quote": "Both come after the launch date was agreed, so they put pressure on the 6-week plan, and the client should know that."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "You approve them, and we agree where they fit in the schedule."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "Meanwhile I can keep going on FEAT-012."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "I log them as `SCOPE CHANGE` follow-up items, probably FEAT-015 and FEAT-016."
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "existing-project-triggers-agentflow-2",
+  "case": "existing-project-triggers",
+  "arm": "agentflow",
+  "run": 2,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "**Planned design, for after approval:** add `DELETE /projects/:id` behind `requireLogin`."
+    },
+    "P2": {
+      "pass": false,
+      "quote": ""
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Node 16 is end of life."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "**Other things to look at later, not in this scope:**"
+    },
+    "P5": {
+      "pass": true,
+      "quote": "**Request type:** a feature on an existing project. The current stack (Express 4.19.2, jsonwebtoken 8.5.1, bcrypt 5.1.1, Node 16) stays as it is."
+    },
+    "P6": {
+      "pass": false,
+      "quote": ""
+    }
+  }
+}

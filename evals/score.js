@@ -85,7 +85,9 @@ async function main() {
     .map((f) => ({ file: path.join(d, f), rec: JSON.parse(fs.readFileSync(path.join(d, f), 'utf8')) })));
   console.log(`${records.length} transcript(s) to score · judge ${a.judge || 'default model'}`);
 
-  const LIMIT = /(session|usage|rate) limit|hit your .*limit/i;
+  // Only the CLI's short limit reply — never an answer that mentions rate limits.
+  const LIMIT_RE = /^\s*(you'?ve hit your [a-z ]*limit|claude ai usage limit reached|[a-z ]*usage limit reached)/i;
+  const LIMIT = { test: (s) => String(s).length < 300 && LIMIT_RE.test(String(s)) };
   let next = 0;
   let cost = 0;
   let stopped = null;

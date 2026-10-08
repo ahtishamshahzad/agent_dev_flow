@@ -1,0 +1,47 @@
+{
+  "id": "bug-fixing-baseline-1",
+  "case": "bug-fixing",
+  "arm": "baseline",
+  "run": 1,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "The route checks `order.status`, then charges, then marks the order paid. These steps aren't atomic."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "The second request reads the order while it's still unpaid, because the first request hasn't reached `db.orders.update`. Both then call `payments.charge`."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "1. **Idempotency key on the charge.** The payment provider returns the same charge for repeated calls with the same key. This also works across multiple server instances."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "A conditional DB update such as `UPDATE ... SET status='paying' WHERE status='unpaid'` would also work."
+    },
+    "P5": {
+      "pass": false,
+      "quote": ""
+    },
+    "P6": {
+      "pass": false,
+      "quote": ""
+    },
+    "P7": {
+      "pass": true,
+      "quote": "The file-writing tools are disabled in this session, so nothing has been edited."
+    }
+  }
+}

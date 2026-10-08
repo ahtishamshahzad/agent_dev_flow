@@ -1,0 +1,47 @@
+{
+  "id": "security-agentflow-1",
+  "case": "security",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Any logged-in user can read any invoice with `GET /invoices/1`, `/2`, and so on, and add notes to any invoice. Scope both queries to the current user or tenant, and return 404 when there's no match"
+    },
+    "P2": {
+      "pass": true,
+      "quote": "`req.body.notes` and `req.params.id` go straight into the SQL string. ... Use parameterized queries:"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "If any real key has ever been committed, **rotate it in the Stripe dashboard now**. ... Load it from the environment: `stripeKey: process.env.STRIPE_SECRET_KEY`."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "`sk_live_...` is a production secret key."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "## Critical\n\n**1. SQL injection in `POST /invoices/:id/notes`** ... **2. A live Stripe secret key is in source (`config.js`)** ... ## High\n\n**3. Broken access control (IDOR) on both routes**"
+    },
+    "P6": {
+      "pass": false,
+      "quote": "`requireLogin` only checks that the user is logged in. It doesn't check that the invoice is theirs."
+    },
+    "P7": {
+      "pass": true,
+      "quote": "# PR Review: don't merge yet"
+    }
+  }
+}

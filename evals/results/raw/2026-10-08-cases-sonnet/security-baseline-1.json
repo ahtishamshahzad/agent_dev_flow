@@ -1,0 +1,55 @@
+{
+  "id": "security-baseline-1",
+  "case": "security",
+  "suite": "cases",
+  "arm": "baseline",
+  "run": 1,
+  "agentflowVersion": "1.6.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 12316,
+  "turns": 1,
+  "costUsd": 0.0408788,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 6847,
+    "cache_read_input_tokens": 7084,
+    "output_tokens": 1207,
+    "output_tokens_details": {
+      "thinking_tokens": 102
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 6847,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1207,
+        "cache_read_input_tokens": 7084,
+        "cache_creation_input_tokens": 6847,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 6847
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [],
+  "extraTools": [],
+  "prompt": "Please review this PR before we merge.\n\n```diff\n+// routes/invoices.js\n+router.get('/invoices/:id', requireLogin, async (req, res) => {\n+  const invoice = await Invoice.findById(req.params.id);\n+  res.json(invoice);\n+});\n+\n+router.post('/invoices/:id/notes', requireLogin, async (req, res) => {\n+  await db.query(`UPDATE invoices SET notes = '${req.body.notes}' WHERE id = ${req.params.id}`);\n+  res.sendStatus(204);\n+});\n+\n+// config.js\n+module.exports = { stripeKey: 'sk_live_51Hx9Qe-placeholder-8f2c' };\n```",
+  "result": "**Recommendation: don't merge.** There are two critical issues and one high-severity one.\n\n## Critical\n\n**1. SQL injection in `POST /invoices/:id/notes` (`routes/invoices.js`)**\n```js\ndb.query(`UPDATE invoices SET notes = '${req.body.notes}' WHERE id = ${req.params.id}`)\n```\nBoth `notes` and `id` are interpolated straight into the SQL. Any logged-in user can send `notes = \"x'; DROP TABLE invoices; --\"` or `id = \"1 OR 1=1\"`. That lets them overwrite every invoice's notes, or read and modify arbitrary data. Use parameterized queries:\n```js\nawait db.query('UPDATE invoices SET notes = $1 WHERE id = $2 AND owner_id = $3',\n  [req.body.notes, req.params.id, req.user.id]);\n```\nUse the placeholder syntax your driver expects (`?` for mysql2, `$1` for pg).\n\n**2. Hardcoded Stripe live key (`config.js`)**\nThe value is `sk_live_...`, a live-mode secret key. It looks like a placeholder, but if it's real, or if the real key ever replaces it in this file, it ends up in git history.\n- Load it from the environment instead: `process.env.STRIPE_SECRET_KEY`.\n- If a real key was ever committed on this branch, rotate it. Removing it in a later commit doesn't undo the exposure.\n- Add a secret-scanning check (e.g. gitleaks) to CI.\n\n## High\n\n**3. Broken access control (IDOR) on both routes**\n`requireLogin` only checks that someone is logged in. Neither route checks that the invoice belongs to that user. Any authenticated user can read any invoice with `GET /invoices/:id`, and can overwrite any invoice's notes with the POST. Invoices hold financial data, so scope both queries to the owner:\n```js\nconst invoice = await Invoice.findOne({ _id: req.params.id, owner: req.user.id });\nif (!invoice) return res.sendStatus(404);\n```\nReturning 404 rather than 403 avoids revealing which IDs exist.\n\n## Medium / minor\n\n- **No error handling.** Both handlers are `async` with no `try/catch`. On Express 4, a rejected promise leaves the request hanging or causes an unhandled rejection. A malformed `:id` makes `findById` throw a CastError. Wrap the handlers or use an async wrapper.\n- **No input validation.** Validate that `notes` is a string with a length cap, and that `id` has the expected format.\n- **Mixed data access.** The GET route uses an ODM-style `Invoice.findById`, while the POST route uses raw `db.query`. If the same model backs both, use `Invoice` for the update too. That also gives you schema validation, and the injection risk goes away.\n- **Response shape.** `res.json(invoice)` returns the whole document, including any internal fields. Return an explicit projection.\n- **No tests.** Add tests for cross-user access (user A requesting user B's invoice should get a 404) and for an injection payload in `notes`.\n\nI reviewed only the diff you pasted. I didn't check the rest of the repo, for example whether `requireLogin` sets `req.user` or how `db` is configured."
+}

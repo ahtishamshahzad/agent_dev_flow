@@ -1,0 +1,42 @@
+{
+  "id": "existing-project-triggers-agentflow-2",
+  "case": "existing-project-triggers",
+  "arm": "agentflow",
+  "run": 2,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "In HTTP terms, the plan is `DELETE /projects/:id` with `requireLogin`, scoped to `req.user.companyId`."
+    },
+    "P2": {
+      "pass": false,
+      "quote": ""
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Node 16 is past end of life, and I recall jsonwebtoken 8.x having known security advisories (not checked against current sources yet)."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "**Other follow-ups (also out of scope):**"
+    },
+    "P5": {
+      "pass": true,
+      "quote": "Node 16, express 4.19.2, jsonwebtoken 8.5.1, bcrypt 5.1.1. I'm not proposing any stack change."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Node 16 is past end of life, and I recall jsonwebtoken 8.x having known security advisories (not checked against current sources yet)."
+    }
+  }
+}
