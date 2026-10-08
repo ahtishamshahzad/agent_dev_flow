@@ -10,7 +10,7 @@ npx github:ahtishamshahzad/agent_dev_flow init      # adds .ai/ + your editor's 
 
 Then, in your agent: *"Use the project-orchestrator skill. This is a new project: <what you want>. Do not implement code."* It stops twice for your approval before writing any code.
 
-> Version **1.6.0** · MIT · Node 18+ for the installer · Full guide: [`.ai/README.md`](.ai/README.md)
+> Version **1.7.0** · MIT · Node 18+ for the installer · Full guide: [`.ai/README.md`](.ai/README.md)
 
 **Names:** *AgentFlow* is the product and the `agentflow` installer. The *AI Engineering System* is what it installs — the canonical `.ai/` directory. `agent_dev_flow` is this repository.
 
@@ -236,7 +236,7 @@ New work that changes the approved plan is flagged **`SCOPE CHANGE`** and comes 
 
 ## Does it actually help? — evaluation
 
-Validation proves the repo is consistent; it doesn't prove AgentFlow makes an agent better. [`evals/`](evals/README.md) defines how to measure that: six cases (planning, architecture, bug-fixing, security, testing, scope control), each with a planted trap and pass/fail properties, run against a baseline agent and the same agent with AgentFlow — `node evals/run.js` reproduces it. The latest results ([`evals/results/`](evals/results/README.md)) are **judged blind by a separate model** (`evals/score.js`): on Opus 5.5 with 3 runs per arm, AgentFlow passed 90% of properties against the baseline's 83%; on Sonnet 5.5 (1 run per arm) they tied at 83%. AgentFlow's gains are consistent and procedural — regression test first on every bug, scope changes recorded, test levels named — with no technical advantage, at ~2.7× the cost per request. Its consistent weakness: on a fresh planning request it asks blocking questions before proposing applications and a stack. Still a small sample.
+Validation proves the repo is consistent; it doesn't prove AgentFlow makes an agent better. [`evals/`](evals/README.md) defines how to measure that: six cases (planning, architecture, bug-fixing, security, testing, scope control), each with a planted trap and pass/fail properties, run against a baseline agent and the same agent with AgentFlow — `node evals/run.js` reproduces it. The latest results ([`evals/results/`](evals/results/README.md)) are **judged blind by a separate model** (`evals/score.js`): on Opus 5.5 with 3 runs per arm, AgentFlow passed 90% of properties against the baseline's 83%; on Sonnet 5.5 (3 runs per arm) they were close, 85% vs 83%. AgentFlow's gains are consistent and procedural — regression test first on every bug, scope changes recorded, test levels named — with no technical advantage, at ~2.7× the cost per request. Since 1.7.0 it also gives a provisional applications + stack proposal alongside its blocking questions, which raised its planning scores on both models. Still a small sample.
 
 ## Develop and contribute
 

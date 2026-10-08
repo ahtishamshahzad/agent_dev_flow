@@ -1,0 +1,60 @@
+{
+  "id": "testing-agentflow-2",
+  "case": "testing",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 2,
+  "agentflowVersion": "1.6.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 28254,
+  "turns": 6,
+  "costUsd": 0.10649020000000001,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 18185,
+    "cache_read_input_tokens": 38391,
+    "output_tokens": 2606,
+    "output_tokens_details": {
+      "thinking_tokens": 238
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 18185,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1886,
+        "cache_read_input_tokens": 16393,
+        "cache_creation_input_tokens": 8876,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 8876
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "USAGE.md"
+  ],
+  "extraTools": [],
+  "prompt": "Write the test plan for this endpoint. Don't write the tests yet.\n\n`PATCH /projects/:projectId/members/:userId` — changes a member's role in a project. Body: `{ \"role\": \"viewer\" | \"editor\" | \"admin\" }`. Only project admins may call it. A project must always keep at least one admin. Returns the updated membership.",
+  "result": "There's no application code in this repo yet (`.ai/projects/current/` is the empty state, and nothing matches this route). So this plan comes from your spec alone. Under `GHERKIN_RULES.md`, each case below is a scenario title that will map to one named test, and the plan needs your approval before I write the scenarios or tests.\n\n## Test plan: `PATCH /projects/:projectId/members/:userId`\n\n### Questions to settle first\nEach of these changes the expected result, so the plan assumes the default shown and I'll adjust if you say otherwise.\n\n| # | Question | Assumed default |\n|---|---|---|\n| 1 | Can an admin change their own role? This is only blocked if they're the last admin. | Allowed. |\n| 2 | What status code and error body does each failure return? | 401 unauthenticated, 403 non-admin, 404 not found, 400 or 422 invalid body, 409 last admin. |\n| 3 | Is a non-member caller told 403 or 404? A 404 would avoid revealing that the project exists. | 403. |\n| 4 | Is setting a member to their current role a no-op returning 200? | 200 and no change. |\n| 5 | Does a role change take effect on the target's existing sessions immediately? | Yes, because permissions are read per request. |\n| 6 | Is there audit logging or a notification on role change? | Out of scope. |\n\n### 1. Happy path\n- An admin promotes a viewer to editor.\n- An admin promotes an editor to admin.\n- An admin demotes another admin to editor while a third admin remains.\n- An admin demotes an editor to viewer.\n- The response is the updated membership (userId, projectId, new role) and matches what a later read returns.\n- Setting a member to their current role returns 200 with no change (question 4).\n\n### 2. Authorization denial (`@security`)\n- An editor attempts a role change and gets 403, and the role is unchanged.\n- A viewer attempts a role change and gets 403, and the role is unchanged.\n- A user who isn't a member of the project attempts a role change and is refused (question 3).\n- An admin of project A cannot change roles in project B.\n- An unauthenticated request gets 401.\n- A request with an expired or invalid token gets 401.\n- An editor cannot promote themselves to admin.\n- An admin who was just demoted can no longer call the endpoint.\n\n### 3. Last-admin invariant (`@critical`)\n- Demoting the sole admin (self-demotion) is rejected with 409 and the role is unchanged.\n- Demoting the sole admin to each of editor and viewer is rejected for both roles.\n- Demoting one of two admins succeeds, leaving exactly one admin.\n- Two admins demoting each other concurrently never leaves zero admins. Exactly one request succeeds and the other gets 409.\n- An admin changing their own role from admin to admin succeeds when they are the only admin.\n- After a rejected demotion, the project still has at least one admin.\n\n### 4. Invalid input\n- An unknown role such as `\"owner\"` is rejected.\n- A role in the wrong case, such as `\"Admin\"`, is rejected.\n- An empty string, `null`, a number, or an array for `role` is rejected.\n- A missing `role` field is rejected.\n- An empty body or a malformed JSON body is rejected.\n- Extra fields in the body, such as `userId` or `projectId`, are ignored or rejected. They never change the membership's identity.\n- A non-UUID or malformed `projectId` or `userId` is rejected.\n- A wrong content type is handled.\n\n### 5. Not found\n- A nonexistent project returns 404.\n- A nonexistent user returns 404.\n- A user who exists but isn't a member of this project returns 404, and no membership is created.\n- A soft-deleted or removed member returns 404.\n- An archived or deleted project follows the defined behavior.\n\n### 6. Authorization versus validation order\n- A non-admin sending an invalid body gets 403, not 400, so validation errors don't leak to unauthorized callers.\n- A non-admin targeting a nonexistent user gets 403.\n\n### 7. Side effects and isolation\n- Only the target's role changes. Other members' roles and the target's other-project memberships stay the same.\n- A failed request (403, 400, 404 or 409) leaves no partial writes.\n- A repeated identical request is idempotent.\n- Concurrent role changes to the same member leave a valid final state.\n\n### Test layers\n- **Unit:** the last-admin rule, as a pure function over (current members, target, new role).\n- **Integration (API and database):** everything above, using a real database so transactions and concurrency are exercised.\n- **Concurrency tests:** the two cases in sections 3 and 7, run against a real database. Mocks can't show whether the invariant holds under races.\n\n### Test data\n- Project P1 with one admin, one editor and one viewer.\n- Project P2 with two admins.\n- A second project, to test cross-project isolation.\n- A user who isn't a member of any project.\n\n### Not covered\n- Adding or removing members.\n- Project-level permissions that aren't about roles.\n- Rate limiting.\n\nOnce you've answered the questions (or accepted the defaults), I'll draft the Gherkin scenarios in `features/` for your approval. I'll write the tests only after the stack and test framework are chosen, since none exists in the repo yet."
+}

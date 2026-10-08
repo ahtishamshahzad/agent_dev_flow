@@ -1,0 +1,60 @@
+{
+  "id": "planning-agentflow-3",
+  "case": "planning",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 3,
+  "agentflowVersion": "1.7.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 35068,
+  "turns": 10,
+  "costUsd": 0.15938739999999998,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 27518,
+    "cache_read_input_tokens": 78747,
+    "output_tokens": 3355,
+    "output_tokens_details": {
+      "thinking_tokens": 298
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 27518,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1290,
+        "cache_read_input_tokens": 33539,
+        "cache_creation_input_tokens": 1063,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1063
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "USAGE.md"
+  ],
+  "extraTools": [],
+  "prompt": "I want to build a booking app for small gyms. Members book classes on their phones, trainers see their class lists, and gym owners manage the schedule and see attendance. We'll sell it to several gyms. Members pay a monthly membership through the app. Please get started.",
+  "result": "I've classified this as a **new project** and I'm at the \"missing questions\" step. I haven't written any code, picked a stack, or installed anything. The repo is greenfield: I searched it and found only the `.ai/` governance files, `AGENTS.md` and `CLAUDE.md`. I also couldn't save `CURRENT_STATUS.md` because the Write tool is disabled in this session, so nothing is recorded in `.ai/projects/current/` yet.\n\n## Questions that block the plan\n\n1. **Payments and how you earn money.** Does each gym get paid directly (Stripe Connect or similar, with you taking a platform fee), or do you collect everything and pay gyms out? Do you charge gyms a SaaS fee on top? This decides the payments design and your compliance burden.\n2. **Membership model.** Is it one flat monthly price per gym, or several tiers? Do tiers limit classes per month, or is it unlimited? Are there drop-in or class-pack options, or only monthly?\n3. **Booking rules.** What should happen for these?\n   - Class capacity and waitlists.\n   - Cancellation cutoff.\n   - Late cancels and no-shows.\n   - Whether a lapsed or unpaid membership blocks booking.\n4. **Trainer and owner surfaces.** Should trainers and owners use the phone app too, or is a web dashboard acceptable for owners (schedule editing and attendance reports are much easier on a larger screen)? Do owners need to see across several locations?\n5. **Platform, region and branding.**\n   - Do you need iOS and Android, or just one first?\n   - Which countries and currencies?\n   - Do gyms need their own branded app in the stores, or is one shared app where members pick their gym enough? This has a large effect on cost and App Store handling.\n\n## Provisional proposal (not the Gate 2 decision)\n\nThis is what I'd propose if you answer roughly \"one shared app, direct payouts to gyms, web dashboard for owners\":\n\n| Candidate | Provisional call | Why |\n|---|---|---|\n| Mobile app | **Select** (cross-platform) | Members book on phones. |\n| Backend API | **Select** | Multi-tenant rules, roles, bookings and payment webhooks need a server. |\n| Database | **Select** (relational) | Bookings, capacity and attendance need transactional integrity. |\n| Admin dashboard (web) | **Select** | Owners and trainers manage schedules and read reports. It stays separate from any public site. |\n| Background worker | **Select** | Needed for payment webhooks, renewals, and reminders and waitlist promotion. |\n| Payments provider | **Select** (a provider with marketplace support) | Recurring billing across several gyms. |\n| Real-time service | Deferred | Add only if live roster updates become a requirement. |\n| Marketing site, public member web app | Deferred or excluded | Neither is needed for a first release. |\n| File storage | Deferred | Needed only if you add profile photos or class images. |\n\n**How your answers would change it:**\n- If each gym needs its own branded store app, the mobile plan changes a lot.\n- If owners must work from their phones, the web dashboard may shrink or move to a later phase.\n- If you collect all the money yourself, the payments design and compliance work grow.\n\nStack and versions will come only after your answers. Version choices will be checked against current official docs rather than my memory.\n\n## After you answer\n\nI'll write the Gherkin scenarios for the core behaviors:\n- Booking, cancelling and the waitlist.\n- Membership payment, failure and lapse.\n- Role-based access.\n- **Tenant isolation**, so one gym can never see another's data.\n- Attendance.\n\nThen I'll present them with the final applications and stack for your approval (Gate 2). No architecture or code comes before that approval."
+}

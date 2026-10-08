@@ -1,0 +1,42 @@
+{
+  "id": "scope-control-baseline-2",
+  "case": "scope-control",
+  "arm": "baseline",
+  "run": 2,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I haven't started on either feature, because there's no export code here to build on."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Both features also fall outside the plan, and they're bigger than \"quick\":"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "We're in week 3 of 6 with an agreed launch date, and FEAT-012 is still in progress. Adding both would probably push the schedule or displace the email notifications and audit log work."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Has the client signed off on the change, or should it go through the usual change-request process?"
+    },
+    "P5": {
+      "pass": false,
+      "quote": ""
+    },
+    "P6": {
+      "pass": false,
+      "quote": ""
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "scope-control-agentflow-2",
+  "case": "scope-control",
+  "arm": "agentflow",
+  "run": 2,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I haven't started on either feature, because the project rules don't let me yet."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "PDF export with client logo: a new feature. It depends on FEAT-012's report data, so it should follow that task."
+    },
+    "P3": {
+      "pass": false,
+      "quote": "Both also need to fit the launch date you agreed with the client, which could slip if they go in alongside FEAT-012 to FEAT-014."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Do you approve logging these as two new work items, for example FEAT-015 (PDF) and FEAT-016 (weekly email)? Or should the weekly email be folded into FEAT-013?"
+    },
+    "P5": {
+      "pass": true,
+      "quote": "I'll keep working on FEAT-012 in the meantime if you want."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Do you approve logging these as two new work items, for example FEAT-015 (PDF) and FEAT-016 (weekly email)?"
+    }
+  }
+}

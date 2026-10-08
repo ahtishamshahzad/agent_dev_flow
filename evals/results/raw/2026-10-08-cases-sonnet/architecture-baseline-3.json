@@ -1,0 +1,55 @@
+{
+  "id": "architecture-baseline-3",
+  "case": "architecture",
+  "suite": "cases",
+  "arm": "baseline",
+  "run": 3,
+  "agentflowVersion": "1.6.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 27713,
+  "turns": 1,
+  "costUsd": 0.056362800000000005,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 6718,
+    "cache_read_input_tokens": 7084,
+    "output_tokens": 2807,
+    "output_tokens_details": {
+      "thinking_tokens": 857
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 6718,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2807,
+        "cache_read_input_tokens": 7084,
+        "cache_creation_input_tokens": 6718,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 6718
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [],
+  "extraTools": [],
+  "prompt": "We've approved a multi-tenant B2B app: Node API, PostgreSQL, about 30 tables, around 200 tenant companies, a team of two. A few enterprise customers have asked whether their data is \"separated\" from other customers. Design how tenant data is isolated and tell us what you'd do and why. Don't write code yet.",
+  "result": "# Recommendation\n\n**Use one shared database and schema. Put `tenant_id` on every tenant-owned table, and have PostgreSQL enforce isolation with Row-Level Security (RLS). Keep app-level scoping as a second layer.** Keep the option to move a specific customer to a dedicated database later, but don't build that now.\n\n## Why not the alternatives\n\n- **Schema-per-tenant** means about 200 × 30 = 6,000 tables. Every migration runs 200 times, and connection pooling and catalog bloat get awkward. For a team of two, that is permanent operational drag.\n- **Database-per-tenant** gives the strongest isolation story, but it means 200 databases to migrate, back up, monitor and pool. It is too costly at this size, and it's hard to justify before a customer actually requires it.\n- **Shared schema with only `WHERE tenant_id = ?` in app code** is cheap, but one forgotten filter is a cross-tenant breach. That is exactly the failure enterprise customers worry about. RLS removes that class of bug.\n\n## Design\n\n**1. Schema**\n- `tenant_id NOT NULL` on every tenant-owned table, including child tables. Denormalize it rather than reaching it through joins.\n- Use composite keys, `UNIQUE (tenant_id, id)` on parents and composite foreign keys `(tenant_id, parent_id)` on children. The database then can't link a row in tenant A to a row in tenant B.\n- Put `tenant_id` in every unique constraint, and lead indexes with it.\n- Keep a short, explicit list of global tables, such as plans and reference data. These get no tenant data.\n\n**2. RLS**\n- Enable and `FORCE` RLS on every tenant table. The policy is `tenant_id = current_setting('app.tenant_id', true)::uuid`. An unset value yields NULL, so the policy returns no rows and fails closed.\n- Use separate Postgres roles:\n  - The **app role** doesn't own the tables, isn't a superuser, and has no `BYPASSRLS`.\n  - The **migration role** owns the tables.\n  - An **admin/ops role** is used only for deliberate, audited cross-tenant work.\n\n**3. Request flow (the part that usually goes wrong)**\n- Derive the tenant from the authenticated session or token. Never take it from a URL or body parameter.\n- Every request runs inside a transaction that does `set_config('app.tenant_id', …, true)`, which is the same as `SET LOCAL`. Don't use session-level `SET`. With a connection pool, especially PgBouncer in transaction mode, a session-level value leaks to the next request.\n- Put this in one shared data-access wrapper. Route handlers should not be able to get a raw connection without a tenant context.\n- Background jobs, queue workers, webhooks and cron need the same explicit tenant context. Carry `tenant_id` in the job payload and set it the same way.\n\n**4. Leaks outside the database**\nRLS only protects Postgres, so the same discipline applies to everything else that holds tenant data:\n- Cache keys and any search index get a tenant prefix or filter.\n- File storage uses per-tenant prefixes and short-lived signed URLs.\n- Logs, error trackers and analytics must not mix tenant data in ways support staff can casually browse.\n- Exports, reports and emails go through the same tenant-scoped path.\n- Support or admin impersonation needs an audit trail.\n\n**5. Verification**\n- A CI check queries the catalog and fails if any table lacks `tenant_id`, RLS enabled and forced, or a policy.\n- Automated two-tenant tests seed tenants A and B, then try to read and write B's data as A. Cover each API endpoint and each background job.\n- Test with the production app role. If tests run as a superuser, they bypass RLS and prove nothing.\n- Do a periodic manual review of the global-table list and the admin role's usage.\n\n**6. Operational protections**\n- Per-tenant rate limits and `statement_timeout`, so one tenant can't degrade the others.\n- A tenant-scoped delete path for offboarding, and a documented answer for single-tenant restore. This is the weak spot of a shared database. Backups are whole-database, so per-tenant restore means restoring to a scratch instance and extracting the tenant's rows.\n\n## What to tell the enterprise customers\n\nThe honest wording is: *\"Tenant data is logically isolated. Isolation is enforced by the database itself through row-level security, not just by application code. We test it automatically, and all access is audited.\"* Most customers accept that, particularly with SOC 2 or similar evidence behind it.\n\nFor the few who require physical isolation, offer a **dedicated database as a paid tier**. To keep that cheap later, store a `database_id` (or connection config) on the tenant record. Resolve the connection through a single function. The schema is already identical per tenant, so moving one customer is a copy-by-`tenant_id` plus a routing change. Don't build the routing now, but don't hard-code a single global connection either.\n\n## Decisions I'd make now\n1. Shared schema plus forced RLS plus composite foreign keys.\n2. Per-transaction tenant context through a single wrapper.\n3. Separate owner, app and admin roles.\n4. CI catalog check and cross-tenant tests as release gates.\n5. Defer dedicated-database support, but keep connection resolution behind one function.\n\n## Open questions that could change this\n- Any data-residency or regional requirements? Those push toward per-region deployments.\n- Do any customers require customer-managed encryption keys? That would need per-tenant key design.\n- Do you need heavy cross-tenant analytics? If so, build it on a separate, deliberately designed path rather than loosening RLS.\n\nIf you agree with this direction, the next step is to write the policy template, the data-access wrapper design and the CI check, in that order."
+}

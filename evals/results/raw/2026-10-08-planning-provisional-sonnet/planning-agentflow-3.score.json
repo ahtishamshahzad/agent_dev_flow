@@ -1,0 +1,47 @@
+{
+  "id": "planning-agentflow-3",
+  "case": "planning",
+  "arm": "agentflow",
+  "run": 3,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I haven't written any code, picked a stack, or installed anything."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Booking rules. What should happen for these? - Class capacity and waitlists."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "This is what I'd propose if you answer roughly \"one shared app, direct payouts to gyms, web dashboard for owners\":"
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Marketing site, public member web app | Deferred or excluded | Neither is needed for a first release."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "**Tenant isolation**, so one gym can never see another's data."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Does each gym get paid directly (Stripe Connect or similar, with you taking a platform fee), or do you collect everything and pay gyms out? Do you charge gyms a SaaS fee on top? This decides the payments design and your compliance burden."
+    },
+    "P7": {
+      "pass": false,
+      "quote": "Then I'll present them with the final applications and stack for your approval (approval step)."
+    }
+  }
+}

@@ -53,6 +53,20 @@ The validator's rule: **a check that silently stops checking is worse than no ch
 
 Evaluations measure whether AgentFlow improves an agent's work, not whether the repo is consistent. See `evals/README.md` for the format and how baseline comparisons work. Never record a result you did not run.
 
+## Publishing to npm (maintainer, when decided)
+
+The package (`agentflow`) is not published yet; installs use `npx github:ahtishamshahzad/agent_dev_flow`. Publishing is public and outward-facing, so it happens only on an explicit maintainer decision:
+
+```bash
+git checkout main && git pull           # the released, tagged version
+node scripts/validate.js && npm test    # both must pass
+npm pack --dry-run                      # inspect the file list (examples/, evals/, plugins/, test/ must be absent)
+npm login                               # once per machine
+npm publish --access public             # version comes from package.json = .ai/VERSION
+```
+
+Afterwards, add `npx agentflow init` as an install option in `README.md`, `USAGE.md`, and `INSTALLATION.md`, and note it in the changelog.
+
 ## Pull requests
 
 - One concern per PR, on a branch — never commit to `main`.

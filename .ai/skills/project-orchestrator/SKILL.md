@@ -24,7 +24,7 @@ The orchestrator turns a raw request into an approved plan by running the canoni
 
 ## Discovery Questions
 
-Ask only what blocks a correct plan:
+Ask only what blocks a correct plan (≈5 at most) — and in the same reply give a clearly labelled **provisional** apps + stack proposal under your stated assumptions, with how each answer would change it (`../../system/ORCHESTRATION_WORKFLOW.md` §4). Gate 2 still waits for the answers and the scenarios.
 - What outcome does success look like, and for whom?
 - Is there an existing codebase, or is this greenfield?
 - Are there fixed constraints (platforms, deadlines, existing stack, compliance)?

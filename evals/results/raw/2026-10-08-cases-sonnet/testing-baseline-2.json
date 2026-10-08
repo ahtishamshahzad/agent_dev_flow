@@ -1,0 +1,55 @@
+{
+  "id": "testing-baseline-2",
+  "case": "testing",
+  "suite": "cases",
+  "arm": "baseline",
+  "run": 2,
+  "agentflowVersion": "1.6.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 22833,
+  "turns": 1,
+  "costUsd": 0.0461388,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 6722,
+    "cache_read_input_tokens": 7084,
+    "output_tokens": 1783,
+    "output_tokens_details": {
+      "thinking_tokens": 65
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 6722,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1783,
+        "cache_read_input_tokens": 7084,
+        "cache_creation_input_tokens": 6722,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 6722
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [],
+  "extraTools": [],
+  "prompt": "Write the test plan for this endpoint. Don't write the tests yet.\n\n`PATCH /projects/:projectId/members/:userId` — changes a member's role in a project. Body: `{ \"role\": \"viewer\" | \"editor\" | \"admin\" }`. Only project admins may call it. A project must always keep at least one admin. Returns the updated membership.",
+  "result": "# Test plan: `PATCH /projects/:projectId/members/:userId`\n\nI haven't seen the codebase, so this plan comes from the spec alone. I've listed open questions at the end. Their answers decide the expected status codes in several cases.\n\n## 1. Happy path\n- An admin changes a member's role between each pair of roles: viewer→editor, viewer→admin, editor→viewer, editor→admin, admin→editor, admin→viewer. The last two need a second admin.\n- The response is 200 and contains the updated membership: `projectId`, `userId`, and the new `role`, plus any other membership fields. The values match what was stored.\n- The change persists. A follow-up GET or a direct DB read shows the new role.\n- Only the target membership changes. Other members' roles and other projects' memberships are untouched.\n- Setting a member to the role they already have succeeds as an idempotent no-op. It returns 200 and the same membership. (Confirm the intended behavior.)\n- An admin can change their own role when another admin exists.\n\n## 2. Authorization\n- A caller with the `editor` role gets 403, and the role is unchanged.\n- A caller with the `viewer` role gets 403, and the role is unchanged.\n- An authenticated user who isn't a member of the project gets 403 or 404, consistent with the rest of the API. It must not reveal whether the project exists.\n- An unauthenticated request, or one with an invalid or expired token, gets 401.\n- A user who is an admin of project A but only a viewer in project B can't change roles in B. This checks that the permission is scoped per project.\n- A just-demoted admin loses access immediately. Their next call gets 403.\n- A promoted member gains access immediately.\n\n## 3. Last-admin invariant\n- The sole admin demoting themselves to editor or viewer gets 4xx (likely 409 or 400) and stays admin.\n- With two admins, A demotes B and succeeds. A then tries to demote themselves and is rejected, because A is now the last admin.\n- Promote then demote: promote a member to admin, then demote the original admin. This succeeds and leaves exactly one admin.\n- Demoting a non-admin never trips the invariant.\n- The invariant holds under concurrency. With admins A and B, A demotes B while B demotes A at the same moment. At least one admin must remain, so at most one request succeeds. This needs a transaction or lock in the implementation.\n- Demoting the last admin leaves the DB unchanged, with no partial writes.\n\n## 4. Validation\n- The body is missing, empty `{}`, or malformed JSON, and returns 400.\n- `role` is invalid, and returns 400 (or 422). Cases to try: `\"owner\"`, `\"\"`, `null`, a number, an array, an object, wrong casing (`\"Admin\"`), and whitespace (`\" admin\"`).\n- Extra fields in the body, such as `userId`, `projectId`, or `id`, are ignored or rejected. They must never change which membership is updated.\n- `projectId` and `userId` are malformed (not a valid UUID or ID), and return 400 or 404 as the API convention dictates.\n- The wrong Content-Type returns 415 or 400.\n\n## 5. Not-found cases\n- The project doesn't exist. Order of checks matters: a non-member probing a nonexistent project and a real one should see the same response.\n- The user exists but isn't a member of this project, and returns 404. The endpoint must not create a membership.\n- The user doesn't exist, and returns 404.\n- A soft-deleted or archived project, or a deactivated user, behaves per the product rules. (Confirm.)\n\n## 6. Response contract\n- The response schema matches the documented shape, with no sensitive fields such as password hashes or tokens.\n- The Content-Type is JSON.\n- Error responses use the standard error envelope.\n\n## 7. Side effects and integrity\n- An audit log or event is emitted if the system has one, with actor, target, old role, and new role. No event fires on rejected requests.\n- Cached permissions or sessions for the affected user are invalidated.\n- `updatedAt` changes if the model has it.\n\n## 8. Suggested layering\n- **Unit tests** cover the role-change service: the last-admin logic, validation, and permission checks, with the repository mocked.\n- **Integration tests** hit the real HTTP route and a real DB. They cover sections 1–6 and the concurrency test in section 3.\n- **Skip** exhaustive role-pair combinations at the HTTP level. A table-driven test over all six transitions is enough.\n\n## Open questions\n1. Should a non-member get 403 or 404?\n2. What should the last-admin violation return: 400, 409, or 422?\n3. Is a same-role update a 200 no-op or an error?\n4. Can an admin change their own role, or is that always blocked?\n5. Can a user have multiple memberships in one project, or is it unique on `(projectId, userId)`?\n6. Is there a project owner concept beyond admin, such as a creator who can't be demoted?\n7. What do deactivated users and archived projects do here?\n\nWhen you're ready, I can turn this into tests. Tell me the framework (Jest, Vitest, pytest, etc.) or point me to the code."
+}

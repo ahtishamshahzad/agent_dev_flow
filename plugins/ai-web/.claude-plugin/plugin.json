@@ -2,7 +2,7 @@
   "name": "ai-web",
   "displayName": "AI Engineering System — Web & Dashboard",
   "description": "Web and dashboard skills: Next.js vs Vite selection, foundations, routing, design system, state, API, forms, auth/authorization, dashboard architecture/permissions/tables/reporting, SEO, accessibility, performance, testing, and deployment.",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "author": { "name": "ahtishamshahzad" },
   "homepage": "https://github.com/ahtishamshahzad/agent_dev_flow",
   "repository": "https://github.com/ahtishamshahzad/agent_dev_flow",

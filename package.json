@@ -1,6 +1,6 @@
 {
   "name": "agentflow",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "AgentFlow — installer for the AI Engineering System, a tool-neutral operating system for planning, building, and tracking software with AI agents. Installs a canonical .ai/ directory plus thin editor adapters (Claude Code, Codex, Cursor, Windsurf, Copilot).",
   "bin": {
     "agentflow": "bin/cli.js"

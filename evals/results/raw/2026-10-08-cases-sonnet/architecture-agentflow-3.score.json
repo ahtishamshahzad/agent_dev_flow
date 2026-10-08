@@ -1,0 +1,47 @@
+{
+  "id": "architecture-agentflow-3",
+  "case": "architecture",
+  "arm": "agentflow",
+  "run": 3,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Schema per tenant | Rejected for now. It means 200 schemas × 30 tables to migrate and monitor, which is a lot of ongoing work for a team of two."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Rejected for now. It means 200 schemas × 30 tables to migrate and monitor, which is a lot of ongoing work for a team of two."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Tenant identity comes from the verified session or token.** It never comes from a request parameter or body."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Every tenant-owned table gets a `tenant_id`, and Postgres Row-Level Security (RLS) enforces isolation in the database itself. Application-level filtering is the second layer, not the only one."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "An automated cross-tenant test suite runs in CI. It tries reads, writes, updates, joins and ID guessing as tenant A against tenant B's data, and also with the context unset."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Don't say \"physically separated\" or \"separate database.\" That isn't true for this design, and security questionnaires will check."
+    },
+    "P7": {
+      "pass": true,
+      "quote": "I haven't written any code."
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "id": "bug-fixing-baseline-2",
+  "case": "bug-fixing",
+  "suite": "cases",
+  "arm": "baseline",
+  "run": 2,
+  "agentflowVersion": "1.6.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 20179,
+  "turns": 4,
+  "costUsd": 0.0624554,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 8824,
+    "cache_read_input_tokens": 50717,
+    "output_tokens": 1700,
+    "output_tokens_details": {
+      "thinking_tokens": 310
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 8824,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 797,
+        "cache_read_input_tokens": 15095,
+        "cache_creation_input_tokens": 813,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 813
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "orders.js"
+  ],
+  "extraTools": [],
+  "prompt": "Bug: Customers sometimes get charged twice. It seems to happen when the payment page is slow. Can you fix it? The payment route is in orders.js.",
+  "result": "I couldn't apply the fix. The Write tool is disabled in this session and I have no other way to edit files. Below is the change for `orders.js` so you can apply it.\n\n**Cause:** the route checks `status === 'paid'`, then charges, then marks the order paid. When the page is slow, the customer clicks again or the client retries. The second request reads the order before the first one has written `paid`, so it passes the check and charges again.\n\n**Fix:**\n```js\n// orders.js\napp.post('/orders/:id/pay', async (req, res) => {\n  const order = await db.orders.find(req.params.id);\n  if (order.status === 'paid') return res.status(409).send('Already paid');\n\n  // Atomically claim the order so concurrent/retried requests can't both charge.\n  const claimed = await db.orders.updateIf(order.id, { status: order.status }, { status: 'processing' });\n  if (!claimed) return res.status(409).send('Payment already in progress');\n\n  try {\n    // Idempotency key makes the provider dedupe if this call is retried.\n    const charge = await payments.charge(order.customerId, order.total, {\n      idempotencyKey: `order-${order.id}`,\n    });\n    await db.orders.update(order.id, { status: 'paid', chargeId: charge.id });\n    res.send({ ok: true });\n  } catch (err) {\n    await db.orders.update(order.id, { status: order.status }); // release the claim\n    throw err;\n  }\n});\n```\n\n**Assumptions to check:**\n- `db.orders.updateIf(id, where, changes)` doesn't exist in what I could see. It needs to be a single atomic compare-and-set that returns whether a row changed. In SQL that's `UPDATE orders SET status='processing' WHERE id=? AND status=?` and checking the affected row count. A read followed by a write won't fix the race.\n- `payments.charge` needs to accept an idempotency key. Stripe and most providers do, but the option name varies. The key stops duplicate charges even if the process crashes after charging and before the database update.\n- If a crash leaves an order stuck in `processing`, you'll need a way to recover it, such as a timeout or a reconciliation job.\n\nIf you tell me your DB layer and payment provider, or enable editing, I can apply this with the real APIs."
+}

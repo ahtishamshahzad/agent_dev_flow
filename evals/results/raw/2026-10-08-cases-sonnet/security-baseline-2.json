@@ -1,0 +1,55 @@
+{
+  "id": "security-baseline-2",
+  "case": "security",
+  "suite": "cases",
+  "arm": "baseline",
+  "run": 2,
+  "agentflowVersion": "1.6.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 15046,
+  "turns": 1,
+  "costUsd": 0.0429888,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 6847,
+    "cache_read_input_tokens": 7084,
+    "output_tokens": 1418,
+    "output_tokens_details": {
+      "thinking_tokens": 306
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 6847,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1418,
+        "cache_read_input_tokens": 7084,
+        "cache_creation_input_tokens": 6847,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 6847
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [],
+  "extraTools": [],
+  "prompt": "Please review this PR before we merge.\n\n```diff\n+// routes/invoices.js\n+router.get('/invoices/:id', requireLogin, async (req, res) => {\n+  const invoice = await Invoice.findById(req.params.id);\n+  res.json(invoice);\n+});\n+\n+router.post('/invoices/:id/notes', requireLogin, async (req, res) => {\n+  await db.query(`UPDATE invoices SET notes = '${req.body.notes}' WHERE id = ${req.params.id}`);\n+  res.sendStatus(204);\n+});\n+\n+// config.js\n+module.exports = { stripeKey: 'sk_live_51Hx9Qe-placeholder-8f2c' };\n```",
+  "result": "**Recommendation: do not merge.** There are three blocking security issues.\n\n## Blocking\n\n**1. SQL injection in `POST /invoices/:id/notes`** (`routes/invoices.js`)\n```js\n`UPDATE invoices SET notes = '${req.body.notes}' WHERE id = ${req.params.id}`\n```\nBoth `req.body.notes` and `req.params.id` are interpolated straight into the SQL. Any logged-in user can send `notes = \"x', amount = 0 --\"` or put `1 OR 1=1` in the id. That lets them rewrite or corrupt every invoice, and depending on the DB, read other tables. Use parameterized queries:\n```js\nawait db.query('UPDATE invoices SET notes = $1 WHERE id = $2 AND user_id = $3',\n  [req.body.notes, req.params.id, req.user.id]);\n```\nUse the placeholder syntax your driver expects (`?` for MySQL).\n\n**2. Missing authorization (IDOR) on both routes**\n`requireLogin` only checks that someone is logged in. It doesn't check that the invoice belongs to them. Any user can read `GET /invoices/<any id>` and overwrite notes on any invoice by changing the id. Scope both queries to the owner (or their org), for example `Invoice.findOne({ _id: req.params.id, userId: req.user.id })`. Return 404 rather than 403 for invoices that aren't theirs, so ids can't be probed.\n\n**3. Hardcoded Stripe live key in `config.js`**\n`sk_live_...` is a live-mode secret key prefix. The value looks like a placeholder, but a key in this format shouldn't be in source. If it is real, or ever was, treat it as leaked: rotate it in Stripe and scrub it from git history, because deleting it in a later commit doesn't remove it. Read it from the environment instead (`process.env.STRIPE_SECRET_KEY`), and fail at startup if it's missing. Also consider a secret-scanning pre-commit hook or CI check.\n\n## Should fix\n\n- **Unhandled promise rejections.** Both handlers are `async` with no `try/catch`. On Express 4, a DB error leaves the request hanging or crashes the process. Wrap them or use `express-async-errors`. Express 5 handles this itself.\n- **Missing invoices return 200.** `findById` returns `null` when nothing matches, so the GET responds with `200 null`. Return 404. A malformed id may also throw a cast error, which should be a 400.\n- **The POST always returns 204,** even when no row was updated. Check the affected row count and return 404 when it's 0.\n- **No validation on `notes`.** Check that it is a string and set a length limit. Also decide whether the frontend renders notes as HTML, since stored XSS is possible if it does.\n- **Mixed data access.** The GET uses the `Invoice` model and the POST uses raw `db.query`. Using the model for both would avoid the injection class of bug and keep the access checks in one place.\n- **No tests.** Add tests for cross-user access (user A reading or updating user B's invoice) and an injection payload in `notes`.\n\nI only had the diff to go on, so I couldn't check how `requireLogin` populates `req.user` or whether `Invoice` has an owner field. The authorization fix depends on both."
+}

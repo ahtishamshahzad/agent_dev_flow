@@ -1,0 +1,47 @@
+{
+  "id": "planning-agentflow-1",
+  "case": "planning",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I haven't written any code, installed anything or chosen a stack yet."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "**Who gets the money?** Do members pay each gym directly, with you taking a fee or charging gyms a monthly subscription? Or do you collect everything and pay the gyms?"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "This assumes members pay their gym, one shared app, trainers on phones and owners on a computer."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "| Real-time updates, file storage, marketing site, shared code packages | ⏸ Defer | Each waits until a feature needs it: live seat counts, gym logos, selling to gyms, or a second app that shares code. |"
+    },
+    "P5": {
+      "pass": true,
+      "quote": "**Type of project:** a new project, sold to several gyms (each gym's data kept separate) and with recurring payments."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Handles payment notifications, failed-payment follow-up, reminders and moving people off the waitlist."
+    },
+    "P7": {
+      "pass": false,
+      "quote": "## Provisional proposal (not yet for approval)"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "planning-agentflow-1",
+  "case": "planning",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I haven't written any code, and I couldn't save the status file because file writing is disabled in this session."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Can a member book a class that is full (waitlist)?"
+    },
+    "P3": {
+      "pass": false,
+      "quote": ""
+    },
+    "P4": {
+      "pass": true,
+      "quote": "| Marketing site | Deferred | Build it when you start selling to gyms. |"
+    },
+    "P5": {
+      "pass": true,
+      "quote": "They hold the shared data. Each gym's data must be isolated from the others."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "For payments, I'd likely use Stripe Connect, which handles several businesses each receiving their own money."
+    },
+    "P7": {
+      "pass": false,
+      "quote": ""
+    }
+  }
+}

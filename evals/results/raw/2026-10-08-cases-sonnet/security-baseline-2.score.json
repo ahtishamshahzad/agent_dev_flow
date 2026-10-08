@@ -1,0 +1,47 @@
+{
+  "id": "security-baseline-2",
+  "case": "security",
+  "arm": "baseline",
+  "run": 2,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Any user can read `GET /invoices/<any id>` and overwrite notes on any invoice by changing the id."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Both `req.body.notes` and `req.params.id` are interpolated straight into the SQL. ... Use parameterized queries:"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "If it is real, or ever was, treat it as leaked: rotate it in Stripe and scrub it from git history, because deleting it in a later commit doesn't remove it. Read it from the environment instead (`process.env.STRIPE_SECRET_KEY`), and fail at startup if it's missing."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "`sk_live_...` is a live-mode secret key prefix."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "**1. SQL injection in `POST /invoices/:id/notes`** (`routes/invoices.js`) ... **2. Missing authorization (IDOR) on both routes** ... **3. Hardcoded Stripe live key in `config.js`** (all under the 'Blocking' severity heading; no line numbers are given, so this pass is lenient)"
+    },
+    "P6": {
+      "pass": true,
+      "quote": "I only had the diff to go on, so I couldn't check how `requireLogin` populates `req.user` or whether `Invoice` has an owner field. The authorization fix depends on both."
+    },
+    "P7": {
+      "pass": true,
+      "quote": "**Recommendation: do not merge.** There are three blocking security issues."
+    }
+  }
+}

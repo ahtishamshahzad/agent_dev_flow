@@ -1,0 +1,47 @@
+{
+  "id": "planning-agentflow-3",
+  "case": "planning",
+  "arm": "agentflow",
+  "run": 3,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "No code or stack choice happens until you approve at approval step and approval step."
+    },
+    "P2": {
+      "pass": false,
+      "quote": "8. **Any existing pilot gym or competitor to benchmark against?** This is optional."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "If you'd rather skip some of these, I can proceed on stated assumptions. My default would be:"
+    },
+    "P4": {
+      "pass": false,
+      "quote": ""
+    },
+    "P5": {
+      "pass": true,
+      "quote": "**Business model:** multi-tenant SaaS sold to several gyms, with members paying a monthly membership through the app."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "If each gym gets paid directly, with or without a platform fee for you, that needs a marketplace-style payment setup, which adds onboarding, payouts, tax and liability."
+    },
+    "P7": {
+      "pass": false,
+      "quote": ""
+    }
+  }
+}
