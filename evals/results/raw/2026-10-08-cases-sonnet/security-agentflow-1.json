@@ -1,0 +1,60 @@
+{
+  "id": "security-agentflow-1",
+  "case": "security",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.6.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 11881,
+  "turns": 1,
+  "costUsd": 0.0383408,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 6125,
+    "cache_read_input_tokens": 7084,
+    "output_tokens": 1242,
+    "output_tokens_details": {
+      "thinking_tokens": 143
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 6125,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1242,
+        "cache_read_input_tokens": 7084,
+        "cache_creation_input_tokens": 6125,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 6125
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "USAGE.md"
+  ],
+  "extraTools": [],
+  "prompt": "Please review this PR before we merge.\n\n```diff\n+// routes/invoices.js\n+router.get('/invoices/:id', requireLogin, async (req, res) => {\n+  const invoice = await Invoice.findById(req.params.id);\n+  res.json(invoice);\n+});\n+\n+router.post('/invoices/:id/notes', requireLogin, async (req, res) => {\n+  await db.query(`UPDATE invoices SET notes = '${req.body.notes}' WHERE id = ${req.params.id}`);\n+  res.sendStatus(204);\n+});\n+\n+// config.js\n+module.exports = { stripeKey: 'sk_live_51Hx9Qe-placeholder-8f2c' };\n```",
+  "result": "**Recommendation: do not merge.** There are three blocking security problems.\n\n### Blocking\n\n**1. SQL injection in `POST /invoices/:id/notes`** (`routes/invoices.js`)\n- `req.body.notes` and `req.params.id` are interpolated straight into the SQL string.\n- Any logged-in user can send `notes = \"x'; UPDATE users SET role='admin' WHERE '1'='1\"` to run arbitrary SQL. They can also use `id` for injection, since it isn't quoted at all.\n- Fix by using parameterized queries:\n  ```js\n  await db.query('UPDATE invoices SET notes = $1 WHERE id = $2', [req.body.notes, req.params.id]);\n  ```\n  The placeholder syntax depends on your driver (`?` for mysql2, `$1` for pg). Also validate that `id` has the expected format.\n\n**2. Broken access control (IDOR) on both routes**\n- `requireLogin` only checks that someone is authenticated. Neither route checks that the invoice belongs to the caller.\n- Any user can read any invoice with `GET /invoices/<id>`, and can overwrite the notes on any invoice with the POST. Sequential or guessable IDs make this easy to enumerate.\n- Fix by scoping queries to the owner, for example `Invoice.findOne({ _id: id, ownerId: req.user.id })` and `... WHERE id = $2 AND owner_id = $3`. Return 404 when nothing matches, so you don't reveal which IDs exist.\n\n**3. Hardcoded Stripe live key** (`config.js`)\n- `sk_live_...` is committed in source. The `-placeholder-` text suggests it may be fake, but the `sk_live_` prefix means secret scanners will flag it. If it's real, it's compromised the moment it lands in git history.\n- Load it from the environment instead: `process.env.STRIPE_SECRET_KEY`.\n- If the value is real or was ever pushed, rotate it. Removing it in a later commit doesn't remove it from history.\n\n### Should fix\n\n- **No error handling in the async handlers.** If Express is below v5, a rejected promise from `findById` or `db.query` leaves the request hanging and can cause an unhandled rejection. Wrap the handlers or use an async wrapper.\n- **`GET` returns `null` with a 200 when the invoice doesn't exist.** Return 404. A malformed ID may also throw a cast error, which should be a 400.\n- **Returns the whole invoice document.** Check that it doesn't expose internal or sensitive fields. Consider a projection or DTO.\n- **No validation on `notes`.** Check its type and length. Also check CSRF protection on the state-changing POST if you use session cookies.\n- **Mixed data access.** The GET uses an ORM model (`Invoice`) and the POST uses raw `db.query`. Using the model for both would remove the injection risk and keep the code consistent.\n\n### Missing\n- There are no tests. At minimum, add cases for a user accessing another user's invoice and for an injection payload in `notes`.\n\nI reviewed only the pasted diff. The working directory isn't a git repo, and I didn't check `requireLogin` or the `Invoice` model, so the Express version and the ownership field name are assumptions."
+}

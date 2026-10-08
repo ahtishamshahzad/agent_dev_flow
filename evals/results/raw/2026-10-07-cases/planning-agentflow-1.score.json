@@ -1,0 +1,47 @@
+{
+  "id": "planning-agentflow-1",
+  "case": "planning",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "**I haven't written any code or chosen any technology.** The process doesn't allow that until you've approved the plan at two checkpoints."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "**Booking rules:** waitlists? A deadline for cancelling? Penalties for no-shows? How is attendance taken: the trainer ticks names, members scan a QR code, or a check-in screen at the front desk?"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "## 4. What I'll assume unless you say otherwise"
+    },
+    "P4": {
+      "pass": false,
+      "quote": ""
+    },
+    "P5": {
+      "pass": true,
+      "quote": "**Data separation:** no user can ever see another gym's data. Breaking this would block a release."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "**Where does membership money go?** (a) Straight to each gym's own account, possibly with you taking a fee, or (b) to you first, then you pay the gyms? ... This affects your legal and financial obligations, the payment provider setup, and how the system is built. It's the biggest single decision."
+    },
+    "P7": {
+      "pass": false,
+      "quote": ""
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "bug-fixing-agentflow-2",
+  "case": "bug-fixing",
+  "arm": "agentflow",
+  "run": 2,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "The order isn't marked `paid` until step 4, which happens after the slow call to the payment provider. While that call is running, a second request for the same order still sees it as unpaid and charges again."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "The order isn't marked `paid` until step 4, which happens after the slow call to the payment provider. While that call is running, a second request for the same order still sees it as unpaid and charges again."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Claim the order in a single database step before charging. Change its status from `pending` to `processing` only if it's still `pending`. Only one request can win; the others get a 409 and never reach the payment provider."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Send an idempotency key with the charge, e.g. `order-<id>`. This stops duplicates even if two requests somehow get through."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "This would be an API-level test with a fake `payments.charge` that waits before resolving and counts how many times it's called. On the current code the count is 2."
+    },
+    "P6": {
+      "pass": false,
+      "quote": ""
+    },
+    "P7": {
+      "pass": true,
+      "quote": "So I haven't changed anything or run any tests."
+    }
+  }
+}

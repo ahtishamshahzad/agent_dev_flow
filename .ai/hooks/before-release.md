@@ -15,7 +15,8 @@ Before a release, publish, or production deploy (`../system/ORCHESTRATION_WORKFL
 
 - [ ] Gates 1–6 all passed and recorded.
 - [ ] Tests green (or unrun explicitly flagged); required cases covered; smoke path defined (`../skills/testing/smoke-testing`).
-- [ ] Every release-blocking `@critical` scenario is verified by a passing test, and the regression scenarios pass (`../system/GHERKIN_RULES.md`); `agentflow gherkin validate` is clean.
+- [ ] Every release-blocking `@critical` scenario is verified by a passing test, and the regression scenarios pass (`../system/GHERKIN_RULES.md`); `agentflow gherkin validate` is clean and `agentflow gherkin trace` finds no untested `@critical` scenario.
+- [ ] `agentflow drift --fail-on security` (or the ecosystem's audit) passes, or each finding has a recorded decision.
 - [ ] Security & quality review clear — no unresolved critical/high (`../skills/security-review`).
 - [ ] **Production-readiness verified with evidence** (config/secrets, migrations rehearsed, **backups + tested restore**, monitoring/alerts, rollback **rehearsed**, incident readiness) (`../skills/devops/production-readiness`).
 - [ ] Docs + changelog updated; version handled; git workflow followed.

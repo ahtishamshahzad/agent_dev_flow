@@ -1,0 +1,42 @@
+{
+  "id": "scope-control-baseline-1",
+  "case": "scope-control",
+  "arm": "baseline",
+  "run": 1,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I haven't started on either feature."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "**PDF export with the client's logo:** This isn't in the plan."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "**Admin audit log:** This is still unstarted, and the fixed launch date puts it at risk if these two features take its time."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Add the PDF and weekly-email requests to `PLAN.md` as separate items with estimates, and confirm with the client what moves or slips to fit them."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "Finish FEAT-012 first."
+    },
+    "P6": {
+      "pass": false,
+      "quote": ""
+    }
+  }
+}

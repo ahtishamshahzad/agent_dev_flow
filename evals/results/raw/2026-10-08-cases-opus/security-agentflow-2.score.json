@@ -1,0 +1,47 @@
+{
+  "id": "security-agentflow-2",
+  "case": "security",
+  "arm": "agentflow",
+  "run": 2,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Any logged-in user can read other customers' invoices by changing the ID in the URL. Add the owner to the lookup:"
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Both `notes` and `id` are pasted straight into the SQL string. ... Use a parameterized query instead:"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "If a real key was ever committed or pushed to any branch, **rotate it in the Stripe dashboard now**. Deleting it in a later commit doesn't remove it from git history."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "`sk_live_…` is a production secret key. Even if this value is a placeholder, the pattern is wrong:"
+    },
+    "P5": {
+      "pass": true,
+      "quote": "### 4. Live Stripe secret key hardcoded in `config.js`"
+    },
+    "P6": {
+      "pass": false,
+      "quote": "`requireLogin` only checks that the caller is logged in. It doesn't check that the invoice belongs to them."
+    },
+    "P7": {
+      "pass": true,
+      "quote": "# PR Review: do not merge yet"
+    }
+  }
+}

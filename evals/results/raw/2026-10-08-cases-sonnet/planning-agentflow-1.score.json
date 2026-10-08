@@ -1,0 +1,47 @@
+{
+  "id": "planning-agentflow-1",
+  "case": "planning",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I haven't written any Gherkin or picked a stack, and nothing is installed."
+    },
+    "P2": {
+      "pass": false,
+      "quote": "8. **Team and constraints:** who is building it, and what are the timeline, budget and any stack preferences? (The questions do change the plan, but there are 8 of them, well over the limit of about 5.)"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "If you'd rather not answer everything, say \"proceed with assumptions\" and I'll use these defaults:"
+    },
+    "P4": {
+      "pass": false,
+      "quote": "**Defer:** member web app, marketing site and platform-operator console. (It defers apps but never says why.)"
+    },
+    "P5": {
+      "pass": true,
+      "quote": "**Several gyms:** this means multi-tenant, so one gym must never see another's data. I'll treat that as a `@critical` security scenario."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "**Payments:** card data should never touch our servers, and payment webhooks must be idempotent."
+    },
+    "P7": {
+      "pass": false,
+      "quote": "Then I'd bring those, the application selection and a stack recommendation (versions checked against official docs) to you at approval step. (This puts approval off to a later step. It does not ask the user to approve the apps and stack now.)"
+    }
+  }
+}

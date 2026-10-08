@@ -1,0 +1,47 @@
+{
+  "id": "bug-fixing-agentflow-1",
+  "case": "bug-fixing",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "the route checks `order.status === 'paid'`, then awaits the charge, then writes `paid`. When the page is slow, a double-click or a client retry sends a second request."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "It reads the order while it's still unpaid, so both requests call `payments.charge`."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Stronger option: an atomic database claim, such as a conditional update from `unpaid` to `paying`, would be more robust."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Idempotency key: this covers multiple instances and retries, but only if `payments.charge` accepts an options argument and passes the key to the provider."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "It would say that two rapid submissions on a slow provider charge once, return a conflict on the second, and leave the order paid. They also want a regression test that fails before the fix and passes after."
+    },
+    "P6": {
+      "pass": false,
+      "quote": ""
+    },
+    "P7": {
+      "pass": true,
+      "quote": "I couldn't apply the fix: the Write tool is disabled in this session, so `orders.js` is unchanged. I also haven't run or tested anything."
+    }
+  }
+}

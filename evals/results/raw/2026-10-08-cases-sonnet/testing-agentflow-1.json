@@ -1,0 +1,60 @@
+{
+  "id": "testing-agentflow-1",
+  "case": "testing",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.6.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 25233,
+  "turns": 7,
+  "costUsd": 0.1301886,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 22280,
+    "cache_read_input_tokens": 62163,
+    "output_tokens": 2862,
+    "output_tokens_details": {
+      "thinking_tokens": 322
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 22280,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1836,
+        "cache_read_input_tokens": 23437,
+        "cache_creation_input_tokens": 5927,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 5927
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "USAGE.md"
+  ],
+  "extraTools": [],
+  "prompt": "Write the test plan for this endpoint. Don't write the tests yet.\n\n`PATCH /projects/:projectId/members/:userId` — changes a member's role in a project. Body: `{ \"role\": \"viewer\" | \"editor\" | \"admin\" }`. Only project admins may call it. A project must always keep at least one admin. Returns the updated membership.",
+  "result": "# Test plan: `PATCH /projects/:projectId/members/:userId`\n\nThere is no application code or stack in this repo, so this plan is stack-neutral. Following `GHERKIN_RULES.md` and `backend-integration-testing`, each case below becomes one Gherkin scenario and then one named test. Nothing is written yet.\n\n## Approach\n- **Level:** integration tests over real HTTP against the production-engine database. The data layer is not mocked.\n- **Personas:** anonymous, project admin, second project admin, editor, viewer, non-member, admin of a different project.\n- **Isolation:** each test seeds its own project and memberships, so tests don't depend on order.\n- **Unit tests:** a few for the \"last admin\" rule, if it ends up as a standalone function.\n- **Assertions:** check status codes, the error code and the response shape, not exact message strings.\n\n## Cases\n\n**Happy path** (`@critical`)\n1. An admin changes an editor to viewer. The response is 200, returns the updated membership, and a follow-up read shows the new role.\n2. An admin promotes a viewer to editor, and an editor to admin.\n3. An admin demotes another admin to editor when a third admin exists.\n4. An admin sets a member to the role they already have. This is idempotent: 200, nothing changes.\n5. The response contains only the membership fields in the contract (no leaked user data).\n\n**Authorization denial** (`@security @authorization @critical`)\n6. Anonymous request returns 401.\n7. Invalid or expired token returns 401.\n8. Editor and viewer each get 403, and the role is unchanged.\n9. A non-member gets the response chosen under the open question on 403 vs 404 below.\n10. An admin of project A can't change a member of project B, even with a valid guessed `projectId`. This is the cross-tenant check.\n11. An editor can't promote themselves to admin. This is the self-escalation check.\n12. The project ID comes from the path. Any `projectId` or `userId` in the body is ignored.\n13. After a demotion, the demoted admin's next call is rejected, so the demotion takes effect immediately even if claims are cached.\n\n**Last-admin invariant** (`@critical`)\n14. The sole admin demotes themselves to editor or viewer. This is rejected with a 4xx (likely 409 or 422) and they stay admin.\n15. The sole admin is the target and another admin tries to demote them. This can't happen with one admin, so this case is covered by 14.\n16. With two admins, one demotes themselves. This succeeds and one admin remains.\n17. Two admins demote each other at the same time. Exactly one request succeeds and at least one admin remains. This needs a concurrency test and probably a transaction or row lock.\n18. A sole admin \"changes\" themselves to admin. This is a no-op that succeeds.\n\n**Validation** (`Scenario Outline` where the behavior is the same)\n19. Invalid `role` values are rejected with 400 or 422 and no change: `\"owner\"`, `\"ADMIN\"`, `\"\"`, `null`, a number, an array, an object.\n20. A missing `role` field and an empty body are both rejected.\n21. Unknown extra fields (e.g. `{\"role\":\"viewer\",\"isOwner\":true}`) are rejected or ignored, per the contract. The membership never gets the extra field.\n22. A malformed JSON body returns 400.\n23. A malformed `projectId` or `userId` (not a valid ID) returns 400 or 404, per the contract.\n24. An oversized body is rejected.\n\n**Not found**\n25. The `userId` isn't a member of the project (including a real user who isn't a member) returns 404, with no membership created.\n26. The `projectId` doesn't exist returns 404 for an admin-level caller.\n27. A deleted or deactivated user is the target. The behavior follows the answer to the open question below.\n\n**Persistence and side effects**\n28. A rejected request leaves the DB unchanged (check 8, 14 and 19).\n29. Other members' roles don't change.\n30. If role changes are audited (see the `role-permission-design` rule that assignment is audited), an audit record is written on success and none on failure. This case only applies if audit logging is in scope.\n\n## Open questions (they decide the expected values)\n1. **Non-member caller:** 403 or 404? A 404 avoids revealing that the project exists.\n2. **Last-admin violation:** which status and error code (409 or 422)?\n3. **Unknown body fields:** reject (400) or ignore?\n4. **Self-demotion with other admins present:** allowed? I've assumed yes, per case 16.\n5. **Same-role update:** a 200 no-op, as assumed, or a 4xx?\n6. **Roles in tokens:** are roles cached in the JWT or session? If so, case 13 needs a refresh or invalidation story.\n7. **Audit logging:** is it required for this endpoint?\n8. **Stack and test framework:** undecided. This is a stack decision under `STACK_DECISION_RULES.md`, so I won't assume one.\n\n## Next steps\nOnce you answer the open questions, I'd write these as a `features/projects/change-member-role.feature` file with `@critical` tags on 1, 6–11, 13, 14, 16 and 17. That file needs your approval at Gate 2 before any test code. Do you want me to draft it?"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "existing-project-triggers-agentflow-2",
+  "case": "existing-project-triggers",
+  "arm": "agentflow",
+  "run": 2,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I'll keep the existing stack: Express 4.19.2 and `node --test`."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "| BUG-003 | P1 | The lockfile pins `jsonwebtoken@8.5.1`, which is covered by the Dec 2022 advisories fixed in 9.0.0 (CVE-2022-23529 and related)."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "The runtime is Node 16 (`.nvmrc`, `engines`), which has been end-of-life since Sept 2023 (from memory, not checked online)."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "| BUG-003 | P1 | The lockfile pins `jsonwebtoken@8.5.1`, which is covered by the Dec 2022 advisories fixed in 9.0.0 (CVE-2022-23529 and related). **Not checked this session:** running `npm audit` needed your approval and didn't run. **Fix:** upgrade to 9.x."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "I'll keep the existing stack: Express 4.19.2 and `node --test`."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "**Not checked this session:** running `npm audit` needed your approval and didn't run."
+    }
+  }
+}

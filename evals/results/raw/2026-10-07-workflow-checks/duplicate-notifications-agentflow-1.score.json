@@ -1,0 +1,37 @@
+{
+  "id": "duplicate-notifications-agentflow-1",
+  "case": "duplicate-notifications",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Classified as a **bug**. The expected behavior (one email per change) isn't disputed, so the full planning gates don't apply."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "**`src/app.js:27-28`** — the PATCH route emits `order.statusChanged`, then also calls `notifyStatusChange(order)` directly."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Scenario: Customer gets exactly one notification per status change ... On the current code this test should fail with 2 emails sent, and pass after the fix."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "## Regression scenario (`features/orders/status-notifications.feature`) ... @regression @bug-001"
+    },
+    "P5": {
+      "pass": true,
+      "quote": "I haven't run it either way, so treat that as unverified."
+    }
+  }
+}

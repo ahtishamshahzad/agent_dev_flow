@@ -40,7 +40,7 @@ Understand what already exists before changing it. Produce an accurate picture o
 
 1. Scope the audit to the request.
 2. Map structure and entry points.
-3. Detect stack and applications from manifests/config/code, and record the **technology baseline**: installed versions from lock files (not ranges), runtime version (`engines`, `.nvmrc`, Docker/CI images), build tooling. Note what is end-of-life, deprecated, or flagged by advisories — as information; the audit changes nothing (`../../system/TECHNOLOGY_GOVERNANCE_RULES.md` §3).
+3. Detect stack and applications from manifests/config/code, and record the **technology baseline**: installed versions from lock files (not ranges), runtime version (`engines`, `.nvmrc`, Docker/CI images), build tooling. Run `agentflow drift` (npm) or the ecosystem's audit, and quote it. The audit changes no code, but it does **not** leave findings as notes: a **vulnerability affecting the project is escalated at once** — opened through bug intake at P0/P1 with its smallest safe version — and an end-of-life runtime becomes a migration work item, both separate from the current request, which continues (`../../system/TECHNOLOGY_GOVERNANCE_RULES.md` §4). Newer-but-supported versions are reported as available, not recommended.
 4. Survey tests and CI.
 5. Note security-relevant signals (hand deep analysis to `security-review`).
 6. Summarize state and risks in `../../projects/current/` / `../../generated/audits/`.

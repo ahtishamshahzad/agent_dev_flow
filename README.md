@@ -10,7 +10,7 @@ npx github:ahtishamshahzad/agent_dev_flow init      # adds .ai/ + your editor's 
 
 Then, in your agent: *"Use the project-orchestrator skill. This is a new project: <what you want>. Do not implement code."* It stops twice for your approval before writing any code.
 
-> Version **1.5.0** · MIT · Node 18+ for the installer · Full guide: [`.ai/README.md`](.ai/README.md)
+> Version **1.6.0** · MIT · Node 18+ for the installer · Full guide: [`.ai/README.md`](.ai/README.md)
 
 **Names:** *AgentFlow* is the product and the `agentflow` installer. The *AI Engineering System* is what it installs — the canonical `.ai/` directory. `agent_dev_flow` is this repository.
 
@@ -56,7 +56,7 @@ Requirement → Gherkin scenarios (approved) → Architecture → Tasks → Impl
 - **`@critical` scenarios block the release** until verified.
 - Not for renames, formatting, or refactors proven to change nothing.
 
-`npx github:ahtishamshahzad/agent_dev_flow gherkin validate` lints a project's `features/` against the contract. Policy: [`.ai/system/GHERKIN_RULES.md`](.ai/system/GHERKIN_RULES.md) · Examples: [`examples/gherkin/`](examples/gherkin/README.md).
+`npx github:ahtishamshahzad/agent_dev_flow gherkin validate` lints a project's `features/` against the contract; `gherkin trace --tests <dir>` lists scenarios no test names and fails on an untested `@critical` one. Policy: [`.ai/system/GHERKIN_RULES.md`](.ai/system/GHERKIN_RULES.md) · Examples: [`examples/gherkin/`](examples/gherkin/README.md).
 
 ### Technology in context — not "always the latest"
 
@@ -67,7 +67,23 @@ Requirement → Gherkin scenarios (approved) → Architecture → Tasks → Impl
 | Documentation | Official docs for the selected version | Official docs for the **installed** version |
 | Change when | — | A vulnerability (escalated at once), end of life, a required feature, a compatibility requirement, a deprecation — recorded with its trigger, migration plan, and regression scenarios |
 
-Bug fixes and refactors keep the technology unless it is the cause or the goal. Rules: [`.ai/system/TECHNOLOGY_GOVERNANCE_RULES.md`](.ai/system/TECHNOLOGY_GOVERNANCE_RULES.md) · Examples: [`examples/technology-governance/`](examples/technology-governance/README.md).
+Bug fixes and refactors keep the technology unless it is the cause or the goal.
+
+```bash
+npx github:ahtishamshahzad/agent_dev_flow drift            # installed vs latest stable, advisories, Node EOL
+```
+
+```
+package        installed  latest stable  available  recommended
+bcrypt         5.1.1      6.0.0          yes        no — newer alone is not a reason
+express        4.19.2     5.2.1          yes        YES — security (low)
+    smallest safe version: 4.20.0 (same major — no major upgrade needed)
+jsonwebtoken   8.5.1      9.0.3          yes        YES — security (high)
+    smallest safe version: 9.0.0 (needs a major upgrade — plan a migration)
+node 16 (.nvmrc)                                    YES — end of life (2023-09-11)
+```
+
+`--fail-on security|eol|any` makes it a CI gate. Rules: [`.ai/system/TECHNOLOGY_GOVERNANCE_RULES.md`](.ai/system/TECHNOLOGY_GOVERNANCE_RULES.md) · Examples: [`examples/technology-governance/`](examples/technology-governance/README.md).
 
 ### Works with
 
@@ -220,7 +236,7 @@ New work that changes the approved plan is flagged **`SCOPE CHANGE`** and comes 
 
 ## Does it actually help? — evaluation
 
-Validation proves the repo is consistent; it doesn't prove AgentFlow makes an agent better. [`evals/`](evals/README.md) defines how to measure that: six cases (planning, architecture, bug-fixing, security, testing, scope control), each with a planted trap and pass/fail properties, run against a baseline agent and the same agent with AgentFlow — `node evals/run.js` reproduces it. A first **pilot** (Claude Code, Opus 5.5, one run per arm, scored unblinded by the author) is in [`evals/results/`](evals/results/README.md): AgentFlow scored 40/41 properties against the baseline's 34/41, with the gains in process discipline rather than technical findings, at about 3× the cost per request. Too small to conclude anything; it says what to measure next.
+Validation proves the repo is consistent; it doesn't prove AgentFlow makes an agent better. [`evals/`](evals/README.md) defines how to measure that: six cases (planning, architecture, bug-fixing, security, testing, scope control), each with a planted trap and pass/fail properties, run against a baseline agent and the same agent with AgentFlow — `node evals/run.js` reproduces it. The latest results ([`evals/results/`](evals/results/README.md)) are **judged blind by a separate model** (`evals/score.js`): on Opus 5.5 with 3 runs per arm, AgentFlow passed 90% of properties against the baseline's 83%; on Sonnet 5.5 (1 run per arm) they tied at 83%. AgentFlow's gains are consistent and procedural — regression test first on every bug, scope changes recorded, test levels named — with no technical advantage, at ~2.7× the cost per request. Its consistent weakness: on a fresh planning request it asks blocking questions before proposing applications and a stack. Still a small sample.
 
 ## Develop and contribute
 

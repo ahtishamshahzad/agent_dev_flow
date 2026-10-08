@@ -1,0 +1,42 @@
+{
+  "id": "existing-project-triggers-agentflow-1",
+  "case": "existing-project-triggers",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "**Planned shape:** `DELETE /projects/:id` with `requireLogin`. It deletes only where `id` and `companyId = req.user.companyId`, in a single query (no fetch-then-check)."
+    },
+    "P2": {
+      "pass": false,
+      "quote": "jsonwebtoken 8.x has known advisories that are fixed in 9.x."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Node 16 is end-of-life."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "**Other problems I'll log separately, not fix here:**"
+    },
+    "P5": {
+      "pass": true,
+      "quote": "**Stack (I'll keep it as is):** Express 4.19.2, jsonwebtoken 8.5.1 and bcrypt 5.1.1 (versions from `package-lock.json`), Node 16 (`.nvmrc`), and the built-in `node --test` runner."
+    },
+    "P6": {
+      "pass": false,
+      "quote": "jsonwebtoken 8.x has known advisories that are fixed in 9.x."
+    }
+  }
+}

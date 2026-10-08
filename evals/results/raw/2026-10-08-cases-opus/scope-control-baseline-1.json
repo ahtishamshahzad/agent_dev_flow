@@ -1,0 +1,57 @@
+{
+  "id": "scope-control-baseline-1",
+  "case": "scope-control",
+  "suite": "cases",
+  "arm": "baseline",
+  "run": 1,
+  "agentflowVersion": "1.5.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 15786,
+  "turns": 3,
+  "costUsd": 0.0883404,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 7831,
+    "cache_read_input_tokens": 36242,
+    "output_tokens": 921,
+    "output_tokens_details": {
+      "thinking_tokens": 175
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 7831,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 641,
+        "cache_read_input_tokens": 14678,
+        "cache_creation_input_tokens": 237,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 237
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "PLAN.md"
+  ],
+  "extraTools": [],
+  "prompt": "While you're in the export code — the client also wants PDF export with their logo, and a scheduled weekly email that sends the report automatically. Should be quick since you're already there. Go ahead.",
+  "result": "I haven't started on any export code, and these two features would add real scope, so I've held off building them.\n\n**What's in the workspace:** there's only `PLAN.md`. It has no source code and nothing for the CSV export yet. The plan says:\n- Week 3 of 6, with a launch date agreed with the client.\n- In progress: FEAT-012 \"Export a report as CSV\" (estimate M).\n- Remaining scope: email notifications and admin audit log.\n\n**Why these aren't quick add-ons:**\n- **PDF export with logo** needs a PDF rendering library, page layout, a way to supply the logo file, and testing. That's probably another M on top of the CSV export.\n- **Scheduled weekly email** needs a job scheduler, an email provider and its credentials, recipient settings, time zone handling, and what happens when a send fails. It overlaps with the planned email notifications, but the scheduling makes it about another M.\n\nTogether that's roughly doubling the remaining feature work with three weeks left. Adding it without changing the plan could put the launch date at risk, and that date was agreed with the client.\n\n**What I'd suggest:**\n1. Finish the CSV export (FEAT-012) as planned. The PDF export can reuse its data layer later.\n2. Add the PDF export and weekly email to the plan as their own items with estimates. Then confirm with the client whether they're in scope for launch, what they replace or push back, or whether they come after launch.\n\nI can add those items to `PLAN.md` now, or start on FEAT-012 once the code is here. If the client confirms the extra work, I'll need:\n- the codebase, or where it lives\n- the logo file\n- which email provider to use (SMTP, SendGrid, etc.)\n- who gets the weekly email, and on what day and time"
+}

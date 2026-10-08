@@ -1,0 +1,71 @@
+{
+  "id": "existing-project-triggers-agentflow-1",
+  "case": "existing-project-triggers",
+  "suite": "workflow-checks",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.5.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 78546,
+  "turns": 14,
+  "costUsd": 0.44923759999999996,
+  "usage": {
+    "input_tokens": 22,
+    "cache_creation_input_tokens": 29315,
+    "cache_read_input_tokens": 285248,
+    "output_tokens": 7879,
+    "output_tokens_details": {
+      "thinking_tokens": 1317
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 29315,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1630,
+        "cache_read_input_tokens": 37100,
+        "cache_creation_input_tokens": 486,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 486
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    ".nvmrc",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "README.md",
+    "USAGE.md",
+    "package-lock.json",
+    "package.json",
+    "src/app.js",
+    "src/notifications/sendOnStatusChange.js",
+    "src/services/userService.js"
+  ],
+  "extraTools": [
+    "WebFetch",
+    "WebSearch",
+    "Bash(npm view:*)"
+  ],
+  "prompt": "Add an endpoint so a user can delete one of their company's projects.",
+  "result": "I haven't written any code yet. The project rules (`.ai/system/QUALITY_GATES.md`) require you to approve the behavior spec before any implementation, and I found security problems that have to come first.\n\n## ⚠️ Security issues found during the audit (escalated)\n\n| # | Priority | Issue | Where |\n|---|----------|-------|-------|\n| BUG-001 | **P0** | `GET /projects/:id` returns any company's project. It fetches by ID and never checks `companyId`. Any logged-in user can read other companies' projects. | `src/app.js:18-22` |\n| BUG-002 | **P0** | `PATCH /orders/:id/status` updates any company's order and emails that order's customer. It isn't scoped to the caller's company and `status` isn't validated. | `src/app.js:25-30` |\n| BUG-003 | **P1** | `jsonwebtoken` 8.5.1 has known advisories (CVE-2022-23529/23539/23540/23541), fixed in 9.0.0. Node 16 (`.nvmrc`) has been end-of-life since September 2023. **I checked this from memory, not a live advisory database:** I didn't run `npm audit` and there's no `node_modules`. | `package-lock.json`, `.nvmrc` |\n\n**Smallest safe fixes:** for both routes, add `companyId: req.user.companyId` to the lookup or update and return 404 when nothing matches, and validate `status` against a list of allowed values. For BUG-003, upgrade to `jsonwebtoken@^9` and a supported Node LTS. That's a stack change, so it needs your approval.\n\nI tried to log these in `.ai/work-items/bugs/BUG-001..003.md` with a `logs/BUG-LOG.md` ledger, as the rules require. **The file writes weren't approved, so nothing has been saved.** I have the contents ready and will write them once you allow it.\n\nThere's also a non-security bug: each order status change emails the customer **twice**. `app.js:27` emits an event, `sendOnStatusChange.js:9` listens for it and sends an email, and then `app.js:28` sends one directly.\n\n## The delete endpoint\n\n**Audit notes:** I searched `src/**`. It contains only `app.js`, `services/userService.js` and `notifications/sendOnStatusChange.js`. `src/db`, `src/auth`, `src/events` and `src/mailer` are described in the README but aren't in the repo. There are no tests or `.feature` files, though the test script is `node --test`. The existing stack (Express 4.19, Node 16) stays as is.\n\n**Proposed behavior, for your approval:**\n\n```gherkin\nFeature: Delete a company project\n\n  @critical\n  Scenario: A user deletes one of their company's projects\n    Given I am logged in as a user of company \"A\"\n    And project 42 belongs to company \"A\"\n    When I send DELETE /projects/42\n    Then the response status is 204\n    And GET /projects/42 returns 404\n\n  @critical\n  Scenario: A user cannot delete another company's project\n    Given I am logged in as a user of company \"A\"\n    And project 43 belongs to company \"B\"\n    When I send DELETE /projects/43\n    Then the response status is 404\n    And project 43 still exists\n\n  Scenario: Deleting a project that does not exist\n    Given I am logged in\n    When I send DELETE /projects/999999\n    Then the response status is 404\n\n  Scenario: Unauthenticated request\n    Given I am not logged in\n    When I send DELETE /projects/42\n    Then the response status is 401\n    And project 42 still exists\n```\n\nAnother company's project returns 404, not 403, so the endpoint doesn't reveal whether that ID exists. I'll scope the delete with `companyId` in the query itself, so the check and the delete can't drift apart.\n\n**Questions that affect the plan:**\n1. **Who can delete?** I see no roles, so as written any user in the company can. Is that intended, or should it be admins only?\n2. **Hard or soft delete?** Soft delete (a `deletedAt` column) is reversible but needs a schema change.\n3. **Related data:** do orders or other rows reference projects? Should they be deleted with it, blocked (409), or kept?\n4. **Model API:** what does `db.projects` offer for deletes, e.g. `destroy({ where })`? `src/db` isn't in the repo for me to check.\n5. **Order of work:** should I fix BUG-001 alongside this, since it's the same route and the same scoping fix? I recommend it.\n\nOnce you approve the scenarios and answer these, I'll present the task breakdown for the second approval. After that, I'll write the tests first and then the implementation."
+}

@@ -1,0 +1,37 @@
+{
+  "id": "new-project-versions-agentflow-1",
+  "case": "new-project-versions",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "This repo's rules ([project rules] §2) say a new project uses the latest *stable* versions, checked against the package registry and official docs rather than memory."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "## Proposed baseline (unverified — from memory, check before use)"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "npm view next dist-tags"
+    },
+    "P4": {
+      "pass": true,
+      "quote": "If you run these and paste the output, or give me shell/web access, I'll check that the versions work together (Node → Next → React → Prisma → Playwright)."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "Then I'll give you a pinned table with a version-matched docs link for each item."
+    }
+  }
+}

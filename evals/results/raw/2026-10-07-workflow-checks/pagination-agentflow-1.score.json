@@ -1,0 +1,37 @@
+{
+  "id": "pagination-agentflow-1",
+  "case": "pagination",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Scenario: First page uses the default page size\n    When Dana requests the user directory\n    Then Dana receives 50 users ordered from oldest to newest\n    And the response includes a cursor for the next page ... Scenario: The last page has no next cursor ... Then Dana receives 20 users\n    And the response has no cursor for a next page"
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Scenario Outline: An invalid page size is rejected\n    When Dana requests the user directory with a page size of \"<limit>\"\n    Then the request is rejected as invalid ... | 0     |\n      | 101   |\n      | ten   |"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "**Response format (this breaks current clients).** Today the endpoint returns a bare array. My recommendation is `{ \"data\": [...], \"nextCursor\": \"...\" | null }`. If existing clients can't change, the other option is to keep the bare array and send the cursor in a `Link` header instead."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Can you confirm decisions 1–4, or tell me what to change, and approve the scenarios?"
+    },
+    "P5": {
+      "pass": true,
+      "quote": "When Dana follows the next-page cursor until none is returned\n    Then Dana has received all 120 users\n    And no user appears more than once"
+    }
+  }
+}

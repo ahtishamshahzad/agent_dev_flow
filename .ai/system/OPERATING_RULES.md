@@ -44,9 +44,12 @@ Every request is classified before anything else (see `ORCHESTRATION_WORKFLOW.md
 - Distinguish **done and verified** from **proposed** or **assumed**. Report failures with their output.
 - Never claim something works without running the relevant check, or explicitly mark it "unverified until run."
 - Do not fabricate file paths, commands, or results.
+- **Search before claiming absence.** Never state that something doesn't exist — no code, no tests, no config, no usages — without having listed or searched for it; say what was searched (e.g. "searched `src/**` for `userService`").
 - **Version-sensitive facts are verified, not remembered** — versions, APIs, configuration, CLI commands, breaking changes, install and deploy steps. Check current official sources; label anything unverifiable "unverified" (`TECHNOLOGY_GOVERNANCE_RULES.md` §2).
 
 ## 9. Do no harm
+
+- **Security findings are escalated, never footnoted.** If any task surfaces a vulnerability — a dependency with a known advisory, an end-of-life runtime, an authorization gap — open it as its own bug at P0/P1 right away (`../skills/project-management`, bug intake), put it **first** in your reply, check it against a current source (`agentflow drift`, the advisory database) or say it is unverified, and name the smallest safe fix. Then continue the original task. "Noted, not fixed" at the end of a reply is not escalation.
 
 - Confirm before hard-to-reverse or outward-facing actions (creating remote repos, publishing, deleting, mass edits) unless durably authorized.
 - Do not weaken security controls to make something pass (`SECURITY_RULES.md`).

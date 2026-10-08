@@ -116,7 +116,7 @@ Examples of each: `examples/gherkin/` in the AgentFlow repository.
 - [ ] Every `Then` names an observable, checkable outcome.
 - [ ] Concrete, realistic example data; no secrets or production PII.
 - [ ] Formatting: 2-space indent, blank line between scenarios, none between steps, lines under 120 characters.
-- [ ] Each scenario maps to one test at the chosen level, or is explicitly recorded as not yet automated.
+- [ ] Each scenario maps to one test whose name contains the scenario title (`agentflow gherkin trace`), or is explicitly recorded as not yet automated.
 - [ ] Vocabulary matches the rest of the project's scenarios.
 
 ## Definition of Done

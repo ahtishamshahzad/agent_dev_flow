@@ -1,0 +1,37 @@
+{
+  "id": "tenant-isolation-agentflow-2",
+  "case": "tenant-isolation",
+  "arm": "agentflow",
+  "run": 2,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "`GET /projects/:id` (`src/app.js:18`) | ❌ Looks up by ID only | **Cross-company read:** anyone logged in can read any company's project by guessing or listing IDs"
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Scenario: A user cannot view another company's project\n    When \"dana@globex.com\" requests the project \"Website Redesign\"\n    Then the request is refused as not found\n    And no project details are returned"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Scenario: A user can view their own company's project\n    Given the user \"sam@acme.com\" is signed in as a member of the company \"Acme Ltd\"\n    When \"sam@acme.com\" requests the project \"Website Redesign\"\n    Then the project \"Website Redesign\" is returned"
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Until that's resolved, I can't write the required failing regression tests or show that a fix works."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "The project rules don't allow code changes until you approve the behavior (approval step), so here's what I found, the scenarios I propose, and the questions I need answered first."
+    }
+  }
+}

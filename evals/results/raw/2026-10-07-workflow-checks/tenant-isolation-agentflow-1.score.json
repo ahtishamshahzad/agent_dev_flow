@@ -1,0 +1,37 @@
+{
+  "id": "tenant-isolation-agentflow-1",
+  "case": "tenant-isolation",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": false,
+      "quote": "So there's no code where a company check could go, and I've changed nothing."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Scenario: A member cannot view another company's invoice ... When Dana requests invoice \"INV-2001\" Then Dana is told the invoice is not found And no details of invoice \"INV-2001\" are revealed"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Scenario: A member views their own company's invoice ... When Dana requests invoice \"INV-1001\" Then Dana sees invoice \"INV-1001\""
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Every scenario above gets a matching automated test that must pass."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "The project's rules also require you to approve the expected behavior (written as test scenarios) before any code that changes behavior."
+    }
+  }
+}

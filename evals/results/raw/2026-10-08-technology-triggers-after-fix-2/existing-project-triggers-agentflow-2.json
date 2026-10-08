@@ -1,0 +1,71 @@
+{
+  "id": "existing-project-triggers-agentflow-2",
+  "case": "existing-project-triggers",
+  "suite": "workflow-checks",
+  "arm": "agentflow",
+  "run": 2,
+  "agentflowVersion": "1.5.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 79528,
+  "turns": 10,
+  "costUsd": 0.4472936,
+  "usage": {
+    "input_tokens": 18,
+    "cache_creation_input_tokens": 30629,
+    "cache_read_input_tokens": 241848,
+    "output_tokens": 7691,
+    "output_tokens_details": {
+      "thinking_tokens": 1131
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 30629,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1563,
+        "cache_read_input_tokens": 38413,
+        "cache_creation_input_tokens": 487,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 487
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    ".nvmrc",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "README.md",
+    "USAGE.md",
+    "package-lock.json",
+    "package.json",
+    "src/app.js",
+    "src/notifications/sendOnStatusChange.js",
+    "src/services/userService.js"
+  ],
+  "extraTools": [
+    "WebFetch",
+    "WebSearch",
+    "Bash(npm view:*)"
+  ],
+  "prompt": "Add an endpoint so a user can delete one of their company's projects.",
+  "result": "I haven't added the endpoint yet, and I shouldn't until you answer a few things. This project's rules don't allow code until you've approved the behavior. While reviewing the code I also found security problems in what's already there, so those come first.\n\n## ⚠️ Security problems in the existing code\n\n| # | Priority | What I found |\n|---|---|---|\n| BUG-001 | P0 | **Users can read other companies' projects.** `GET /projects/:id` (`src/app.js:18`) looks a project up by ID without checking its company. Any logged-in user can read any company's project. **Fix:** look it up by `{ id, companyId: req.user.companyId }` and return 404 if it isn't found. |\n| BUG-002 | P0 | **Users can change other companies' orders.** `PATCH /orders/:id/status` (`src/app.js:25`) has the same missing check, and it also emails that other company's customer. `status` isn't validated either. **Fix:** filter the update by company, check `status` against the allowed values, and return 404 if not found. Smaller related bug (P2): customers get each status email twice. The route calls `notifyStatusChange` directly (`app.js:28`), and the event listener calls it again (`sendOnStatusChange.js:9`). |\n| BUG-003 | P1 | The lockfile pins `jsonwebtoken@8.5.1`, which is covered by the Dec 2022 advisories fixed in 9.0.0 (CVE-2022-23529 and related). **Not checked this session:** running `npm audit` needed your approval and didn't run. **Fix:** upgrade to 9.x. |\n| BUG-004 | P1 | The runtime is Node 16 (`.nvmrc`, `engines`), which has been end-of-life since Sept 2023 (from memory, not checked online). **Fix:** move to a currently supported Node LTS. |\n\nBUG-001 matters for your request: a delete endpoint written the same way would let anyone delete any company's project.\n\n## Draft behavior for \"delete a project\" (needs your approval)\n\n```gherkin\nFeature: Delete a project\n  As a user of a company\n  I want to delete one of my company's projects\n  So that projects we no longer need are removed\n\n  @critical\n  Scenario: A user deletes one of their company's projects\n    Given I am logged in as a user of company \"Acme\"\n    And company \"Acme\" has a project \"Apollo\"\n    When I delete project \"Apollo\"\n    Then the response status is 204\n    And project \"Apollo\" no longer exists\n\n  @critical @security\n  Scenario: A user cannot delete another company's project\n    Given I am logged in as a user of company \"Acme\"\n    And company \"Globex\" has a project \"Zeus\"\n    When I delete project \"Zeus\"\n    Then the response status is 404\n    And project \"Zeus\" still exists\n\n  Scenario: Deleting a project that does not exist\n    Given I am logged in as a user of company \"Acme\"\n    When I delete a project that does not exist\n    Then the response status is 404\n\n  @security\n  Scenario: Deleting a project without logging in\n    Given I am not logged in\n    And company \"Acme\" has a project \"Apollo\"\n    When I delete project \"Apollo\"\n    Then the response status is 401\n    And project \"Apollo\" still exists\n```\n\nAnother company's project returns 404 rather than 403, so callers can't tell whether that project exists.\n\n## Questions before I plan this\n\n1. **Who can delete?** Any user in the company, or only certain roles? I saw no roles in the code.\n2. **Permanent or recoverable?** Should deleted projects be gone for good, or kept but hidden (and maybe logged)?\n3. **Linked data:** if orders or other records point to a project, should deletion be blocked, delete them too, or unlink them?\n\n## Limits on testing\n\n- `src/db`, `src/auth`, `src/events` and `src/mailer` are used by the code but aren't in this folder (I searched `src/**`). There are also no tests or `.feature` files. I can write the endpoint, but I can't run or test it here until those modules are available.\n- I'll keep the existing stack: Express 4.19.2 and `node --test`.\n\n## Records not saved\n\nI tried to save the four bug reports, a bug log, the feature with these scenarios, and a status file under `.ai/`. Creating those files needed your approval, so none were written. If you approve file writes, I'll save them.\n\n**Next step:** answer the three questions and approve or edit the scenarios. I'll then send a short plan for your second approval and only write code after that. Do you also want BUG-001 fixed alongside this, since it's the same problem on the same resource?"
+}

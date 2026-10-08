@@ -56,7 +56,8 @@ node evals/run.js --suite workflow-checks      # the five lifecycle checks, Agen
 2. **AgentFlow arm:** the same, after `agentflow init --editor claude`, plus `setup-agentflow/`. Same agent, same model, same prompt — the prompt never mentions AgentFlow; the adapters must do the work.
 3. **Isolation:** user settings excluded (no personal hooks or plugins), read-only tools, no session persistence. Read-only is a deliberate constraint — cases score process and judgment from the transcript — and is reported as a deviation from interactive use.
 4. Run each arm **at least 3 times**; models are not deterministic. Transcripts land in `results/raw/<date>-<suite>/` with turns, tokens, cost, and time.
-5. Score every property pass/fail with `SCORESHEET.md`, **blind to the arm** where possible (strip `.ai/` paths first). Record the run in `results/` (format below). Report per-property pass rates per arm, not a single headline number.
+5. Score blind: `node evals/score.js results/raw/<dir> --judge <model>` has a separate model judge each transcript against its properties, with arm-identifying text masked (`.ai/` paths, rule-file names, "AgentFlow", gate numbers) and no arm label — it records pass/fail plus a quote per property in `<id>.score.json`. Masking hides the label, not the style: an AgentFlow answer still tends to stop for approval, so a judge can sometimes infer the arm. `node evals/summarize.js <dirs>` turns scores into per-case, per-arm pass rates with run-to-run spread and the properties that differ. Hand scoring with `SCORESHEET.md` remains valid for spot checks. Record the run in `results/` (format below). Report per-property pass rates per arm, not a single headline number.
+6. **Usage limits:** both scripts stop when the agent reports a session or usage limit — a limit message is never recorded as a result — and `--resume` continues from the last good run or score.
 
 ## What counts as success
 

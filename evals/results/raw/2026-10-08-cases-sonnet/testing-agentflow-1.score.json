@@ -1,0 +1,47 @@
+{
+  "id": "testing-agentflow-1",
+  "case": "testing",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "An admin changes an editor to viewer. The response is 200, returns the updated membership, and a follow-up read shows the new role."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Invalid `role` values are rejected with 400 or 422 and no change: `\"owner\"`, `\"ADMIN\"`, `\"\"`, `null`, a number, an array, an object. ... A missing `role` field and an empty body are both rejected. ... The `projectId` doesn't exist returns 404 for an admin-level caller."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Editor and viewer each get 403, and the role is unchanged."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "An admin of project A can't change a member of project B, even with a valid guessed `projectId`. This is the cross-tenant check."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "The sole admin demotes themselves to editor or viewer. This is rejected with a 4xx (likely 409 or 422) and they stay admin."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "**Level:** integration tests over real HTTP against the production-engine database. The data layer is not mocked."
+    },
+    "P7": {
+      "pass": true,
+      "quote": "Following `[project rules]` and `backend-integration-testing`, each case below becomes one Gherkin scenario and then one named test."
+    }
+  }
+}

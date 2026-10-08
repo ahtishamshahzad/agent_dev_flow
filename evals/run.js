@@ -29,11 +29,12 @@ const EVALS = __dirname;
 const ROOT = path.resolve(EVALS, '..');
 
 function args() {
-  const a = { suite: 'cases', case: null, arms: null, runs: 1, concurrency: 3, model: null, out: null };
+  const a = { suite: 'cases', case: null, arms: null, runs: 1, concurrency: 3, model: null, out: null, resume: false };
   const v = process.argv.slice(2);
   for (let i = 0; i < v.length; i++) {
     const k = v[i].replace(/^--/, '');
     if (!(k in a)) { console.error(`unknown option ${v[i]}`); process.exit(1); }
+    if (k === 'resume') { a.resume = true; continue; }
     a[k] = v[++i];
   }
   a.runs = Number(a.runs) || 1;
@@ -70,13 +71,20 @@ function prepare(c, arm, suite) {
   return project;
 }
 
-function runAgent(project, prompt, model) {
+// A case may grant extra tools in a `tools` file, one per line — e.g. WebFetch,
+// WebSearch, or a narrowed Bash pattern like `Bash(npm view:*)`. Granted tools
+// are removed from the deny list; file writes stay denied.
+function runAgent(project, prompt, model, extra = []) {
+  const allowed = ['Read', 'Glob', 'Grep', ...extra];
+  const grantedBase = new Set(extra.map((t) => t.replace(/\(.*$/, '')));
+  const denied = ['Bash', 'Write', 'Edit', 'NotebookEdit', 'WebFetch', 'WebSearch', 'Agent']
+    .filter((t) => !grantedBase.has(t) || ['Write', 'Edit', 'NotebookEdit'].includes(t));
   const argv = [
     '-p', prompt,
     '--output-format', 'json',
     '--setting-sources', 'project',
-    '--allowedTools', 'Read,Glob,Grep',
-    '--disallowedTools', 'Bash,Write,Edit,NotebookEdit,WebFetch,WebSearch,Agent',
+    '--allowedTools', allowed.join(','),
+    '--disallowedTools', denied.join(','),
     '--max-turns', '30',
     '--no-session-persistence',
   ];
@@ -113,11 +121,24 @@ async function main() {
   for (const c of list) for (const arm of arms) for (let r = 1; r <= a.runs; r++) jobs.push({ c, arm, r });
   console.log(`${jobs.length} run(s) · ${agent} · AgentFlow ${version} · out ${path.relative(ROOT, out)}`);
 
+  // A usage-limit reply is not a result: stop the batch rather than record it.
+  // The CLI's limit reply is short ("You've hit your session limit · resets …");
+  // a real answer that merely mentions "rate limits" must not match.
+  const LIMIT_RE = /^\s*(you'?ve hit your [a-z ]*limit|claude ai usage limit reached|[a-z ]*usage limit reached)/i;
+  const LIMIT = { test: (s) => String(s).length < 300 && LIMIT_RE.test(String(s)) };
+  const done = (id) => {
+    try {
+      const j = JSON.parse(fs.readFileSync(path.join(out, `${id}.json`), 'utf8'));
+      return j.exitCode === 0 && j.result && !LIMIT.test(j.result);
+    } catch { return false; }
+  };
   let next = 0;
+  let stopped = null;
   const worker = async () => {
-    while (next < jobs.length) {
+    while (next < jobs.length && !stopped) {
       const { c, arm, r } = jobs[next++];
       const id = `${c.name}-${arm}-${r}`;
+      if (a.resume && done(id)) { console.log(`skip ${id} (already done)`); continue; }
       const project = prepare(c, arm, a.suite);
       // What the agent could see, outside the installed .ai/ system — recorded so a
       // transcript claiming "there is no code" can be checked against reality.
@@ -131,13 +152,21 @@ async function main() {
       };
       list(project);
       const prompt = fs.readFileSync(path.join(c.dir, 'prompt.md'), 'utf8').trim();
-      const res = await runAgent(project, prompt, a.model);
+      const toolsFile = path.join(c.dir, 'tools');
+      const extra = fs.existsSync(toolsFile)
+        ? fs.readFileSync(toolsFile, 'utf8').split('\n').map((s) => s.trim()).filter(Boolean) : [];
+      const res = await runAgent(project, prompt, a.model, extra);
       const j = res.json || {};
+      if (LIMIT.test(String(j.result || res.raw || ''))) {
+        stopped = `${id}: ${String(j.result || res.raw).trim().slice(0, 120)}`;
+        fs.rmSync(project, { recursive: true, force: true });
+        break;
+      }
       const record = {
         id, case: c.name, suite: a.suite, arm, run: r, agentflowVersion: version, agent,
         models: Object.keys(j.modelUsage || {}), exitCode: res.code, durationMs: res.ms,
         turns: j.num_turns, costUsd: j.total_cost_usd, usage: j.usage, isError: j.is_error,
-        projectFiles: files, prompt, result: j.result ?? res.raw, stderr: res.stderr || undefined,
+        projectFiles: files, extraTools: extra, prompt, result: j.result ?? res.raw, stderr: res.stderr || undefined,
       };
       fs.writeFileSync(path.join(out, `${id}.json`), JSON.stringify(record, null, 2));
       fs.writeFileSync(path.join(out, `${id}.md`),
@@ -149,6 +178,10 @@ async function main() {
     }
   };
   await Promise.all(Array.from({ length: Math.min(a.concurrency, jobs.length) }, worker));
+  if (stopped) {
+    console.error(`STOPPED — usage limit reached (${stopped}). Re-run later with --resume to continue.`);
+    process.exit(2);
+  }
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

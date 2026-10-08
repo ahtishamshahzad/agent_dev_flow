@@ -1,0 +1,47 @@
+{
+  "id": "planning-baseline-2",
+  "case": "planning",
+  "arm": "baseline",
+  "run": 2,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "So I can't scaffold the project yet. What I can do is settle the decisions that are hardest to change later."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "**Membership types:** monthly unlimited only, or also limited plans (say 8 classes a month), class packs or drop-in passes?"
+    },
+    "P3": {
+      "pass": false,
+      "quote": ""
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Avoid a separately branded app per gym: Apple usually rejects near-identical template apps unless each gym submits its own, and it multiplies your release work."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "The database itself should stop one gym from ever seeing another gym's data, rather than relying on the app code to remember."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Stripe notifies your backend when a payment succeeds or fails, and the app uses that to decide whether a member can book. An unpaid member can't book."
+    },
+    "P7": {
+      "pass": false,
+      "quote": ""
+    }
+  }
+}

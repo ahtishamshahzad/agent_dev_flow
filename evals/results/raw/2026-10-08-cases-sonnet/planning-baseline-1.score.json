@@ -1,0 +1,47 @@
+{
+  "id": "planning-baseline-1",
+  "case": "planning",
+  "arm": "baseline",
+  "run": 1,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "So I've written a proposed starting plan and a few questions that change the design. Once you've answered them, I can scaffold the project if write access is available."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Payments: should the money go straight to each gym (Stripe Connect), or through your account with you paying gyms out?"
+    },
+    "P3": {
+      "pass": false,
+      "quote": ""
+    },
+    "P4": {
+      "pass": false,
+      "quote": ""
+    },
+    "P5": {
+      "pass": true,
+      "quote": "Multi-tenancy: every table carries a `gym_id`, and every query is scoped to it. Postgres row-level security enforces this, so one gym can never see another's data."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Payments: a member subscribes to a gym's plan through Stripe Checkout. Stripe webhooks update the membership status, and a failed payment blocks new bookings."
+    },
+    "P7": {
+      "pass": false,
+      "quote": ""
+    }
+  }
+}

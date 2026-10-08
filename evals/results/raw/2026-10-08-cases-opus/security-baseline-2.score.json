@@ -1,0 +1,47 @@
+{
+  "id": "security-baseline-2",
+  "case": "security",
+  "arm": "baseline",
+  "run": 2,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "`requireLogin` only checks that the user is logged in. It doesn't check that the invoice belongs to them. Any user can: - read any invoice by stepping through IDs: `GET /invoices/1`, `/2`, …"
+    },
+    "P2": {
+      "pass": true,
+      "quote": "`req.body.notes` and `req.params.id` go straight into the SQL string. ... Fix it with a parameterized query (shown below)."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "**Rotate the key in the Stripe dashboard now.** Removing it in a later commit doesn't help, because the history keeps it. - Load it from the environment: `stripeKey: process.env.STRIPE_SECRET_KEY`, and fail at startup if it's missing."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "`sk_live_...` is a production secret key prefix."
+    },
+    "P5": {
+      "pass": false,
+      "quote": "Severity is given (\"🔴 Blocking\" / \"🟡 Should fix\") and the route findings name their routes, but no finding gives a line number. The secret finding never names config.js in its own text; the filename only shows up in the suggested code."
+    },
+    "P6": {
+      "pass": false,
+      "quote": "The review says \"`requireLogin` only checks that the user is logged in\" as a fact, even though that depends on code not shown in the diff. It hedges a few side points (\"if it's real\", \"If the model has internal fields\", \"The ownership field names ... are guesses\"), but it never separates confirmed findings from ones that depend on unseen code."
+    },
+    "P7": {
+      "pass": true,
+      "quote": "**Don't merge this yet.** There are three blocking security problems and a few correctness issues."
+    }
+  }
+}

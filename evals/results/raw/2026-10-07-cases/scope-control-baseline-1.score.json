@@ -1,0 +1,42 @@
+{
+  "id": "scope-control-baseline-1",
+  "case": "scope-control",
+  "arm": "baseline",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I haven't built anything yet, and I'd hold off before starting."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "**2. These two requests are new scope, and neither one is small.**"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Together that's roughly another full feature's worth of work on a fixed deadline."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Then go back to the client with estimates for PDF export and the scheduled email, and ask them to choose: push the launch date, drop or defer something already planned (such as the audit log), or schedule these as phase 2 after launch."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "Finish CSV export as planned."
+    },
+    "P6": {
+      "pass": false,
+      "quote": "I can draft that change-request message to the client, or add both items to `PLAN.md` as proposed scope with estimates."
+    }
+  }
+}

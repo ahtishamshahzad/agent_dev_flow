@@ -1,0 +1,60 @@
+{
+  "id": "testing-agentflow-2",
+  "case": "testing",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 2,
+  "agentflowVersion": "1.5.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 55892,
+  "turns": 13,
+  "costUsd": 0.3639624,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 29651,
+    "cache_read_input_tokens": 75812,
+    "output_tokens": 5578,
+    "output_tokens_details": {
+      "thinking_tokens": 1823
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 29651,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 4095,
+        "cache_read_input_tokens": 31135,
+        "cache_creation_input_tokens": 5600,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 5600
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "USAGE.md"
+  ],
+  "extraTools": [],
+  "prompt": "Write the test plan for this endpoint. Don't write the tests yet.\n\n`PATCH /projects/:projectId/members/:userId` — changes a member's role in a project. Body: `{ \"role\": \"viewer\" | \"editor\" | \"admin\" }`. Only project admins may call it. A project must always keep at least one admin. Returns the updated membership.",
+  "result": "# Test plan: `PATCH /projects/:projectId/members/:userId` (change member role)\n\n**Status:** draft, waiting for your approval. I haven't written any tests or files.\n\n**Context check:** I searched the repo for source and feature files (`**/*.{ts,js,py,go,rb,java,feature,json}`) and found none. `.ai/projects/current/` has no `CURRENT_STATUS.md`, so there's no project state yet. That means the stack and test framework aren't decided, and tool names below are placeholders. Under the project's rules (`GHERKIN_RULES.md`), the scenarios below have to be approved as Gherkin before any tests are written. Your approval of this plan counts as that approval.\n\n## 1. Test levels\n\n| Level | What it covers | Why |\n|---|---|---|\n| **Unit** | The role-change rule on its own: whether the role is valid, whether the caller is an admin, and the last-admin check | Fast checks of every combination for the core business rule |\n| **API integration** (real HTTP, real production database engine) | All scenarios below | Authorization, validation and the database are where this endpoint can go wrong. Mocking the database would hide the concurrency risk |\n| **Concurrency** (integration, real database) | The last-admin rule when two requests run at the same time | **The highest-risk item.** A check-then-write done in app code passes every single-request test and still breaks the rule |\n| Contract | Shape of the returned membership | Only if separate consumers exist (open question) |\n| E2E | Not planned | No UI is in scope |\n\n## 2. Test data\n\n- **Project \"Atlas\":** `alice` (admin), `amir` (admin), `erin` (editor), `victor` (viewer)\n- **Project \"Solo\":** `sam` (only admin), `sofia` (editor)\n- **Project \"Beacon\":** `bella` (admin), `ben` (viewer)\n- **Outsiders:** `nadia` (signed in, no membership in any project), an anonymous caller, and a caller with an expired token\n- Every test creates its own data and isolates it, and tests don't depend on run order.\n\n## 3. Scenarios (one test each)\n\nTags: **C** = `@critical` (blocks release), **S** = `@security`.\n\n### A. Happy path\n1. An admin promotes a viewer to editor. Expect 200, the response shows `role: \"editor\"`, and a fresh read returns the same role.\n2. An admin changes roles across all valid transitions (Scenario Outline: viewer→admin, editor→viewer, admin→editor while another admin exists).\n3. An admin demotes another admin while at least two admins exist. Expect 200.\n4. An admin demotes themselves while another admin exists. Expect 200, and their next role-change request gets 403.\n5. Setting the role a member already has returns 200 and changes nothing.\n6. Changing one member's role leaves every other membership unchanged.\n7. The response matches the agreed membership contract (fields and types, no extra internal fields).\n\n### B. Last-admin rule — C\n8. The only admin can't demote themselves to editor or viewer (Outline). Expect a 409-style refusal, and the role stays `admin`.\n9. A request that would leave zero admins is refused, and the error explains why with a stable error code.\n10. **Concurrent:** `alice` demotes `amir` while `amir` demotes `alice`. Exactly one succeeds, and Atlas still has at least one admin.\n11. **Concurrent:** both admins demote themselves at the same moment. At least one admin remains.\n\n### C. Authorization denial — C, S\n12. An anonymous caller gets 401, and nothing changes.\n13. A caller with an expired or tampered token gets 401.\n14. An editor can't change a role. Expect 403, and nothing changes.\n15. A viewer can't change a role. Expect 403.\n16. **Privilege escalation:** a viewer can't promote themselves to admin. Expect 403, and they're still a viewer.\n17. **Cross-project:** `bella` (admin of Beacon) can't change `victor`'s role in Atlas. She gets refused, and nothing changes.\n18. A signed-in non-member (`nadia`) can't change roles in Atlas (403 or 404, see Q1).\n19. **IDs in the body are ignored:** a body containing `projectId`, `userId`, or extra fields like `status` can't redirect the change or modify other fields (rejected or ignored, see Q4).\n\n### D. Invalid input\n20. Invalid role values are rejected with 400 and nothing changes (Outline: `\"owner\"`, `\"Admin\"`, `\"\"`, `null`, `123`, `[\"admin\"]`).\n21. A missing `role`, an empty body, and malformed JSON are each rejected with 400.\n22. Badly formatted `projectId` or `userId` values are rejected (400 or 404, see Q5).\n\n### E. Error path\n23. A project that doesn't exist returns 404.\n24. **A user who isn't a member of the project returns 404, and no membership is created.** PATCH must never create a membership.\n25. A user ID that doesn't exist returns 404.\n26. A database failure during the update returns a safe 500 (no stack trace or internal details), and the role is unchanged. This one needs fault injection; if the stack makes that hard, I'd cover it with a unit test instead.\n\n### Unit-level (no HTTP)\n27. Exhaustive role-rule table: every combination of caller role × current role × new role × admin count (1 or more) → allowed, forbidden, or last-admin violation.\n\n## 4. Coverage by risk\n\n| Critical path | Covered by | Gap |\n|---|---|---|\n| Privilege escalation and cross-project access | 14–19 | None once the scenarios are approved |\n| Last-admin rule | 8–11, 27 | **10–11 only pass if the rule is enforced atomically** (a row lock, a serializable transaction, or a conditional update). This affects the design and needs a decision during architecture |\n| Data integrity (no accidental upsert, no side effects) | 6, 24, 19 | None |\n\n## 5. Open questions\n\nThese change what the tests assert, so I need them answered before writing tests:\n\n1. **Non-member caller (18):** should they get 403, or 404 to hide that the project exists? The same choice applies to the cross-project case (17).\n2. **Last-admin refusal (8–9):** is the status code 409 or 422, and what is the error code? I've assumed 409.\n3. **Self-demotion (4):** is an admin allowed to demote themselves when other admins exist? I've assumed yes.\n4. **Unknown body fields (19):** should they be rejected with 400 (my recommendation) or silently ignored?\n5. **ID format:** are IDs UUIDs or integers? This decides whether 22 expects 400 or 404.\n6. **Response shape:** which fields does the returned membership contain (for example `projectId`, `userId`, `role`, `updatedAt`)?\n7. **Other admin-like roles:** is there an owner or org-level super-admin who can bypass project-admin checks? If so, that role needs its own scenarios.\n8. **Audit:** should a role change be audited or trigger a notification? If so, that's a separate observable behavior and needs its own scenarios.\n\n## Next steps\n\nOnce you approve the scenarios and answer the questions, I'll:\n1. Write the scenarios to `features/project-membership/change-member-role.feature`.\n2. Map each scenario to a named test in the plan's table.\n\nI'll write the tests only after the stack and test framework are decided."
+}

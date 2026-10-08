@@ -1,0 +1,60 @@
+{
+  "id": "architecture-agentflow-1",
+  "case": "architecture",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.6.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 48643,
+  "turns": 5,
+  "costUsd": 0.11225280000000001,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 15808,
+    "cache_read_input_tokens": 39494,
+    "output_tokens": 4111,
+    "output_tokens_details": {
+      "thinking_tokens": 1261
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 15808,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 3529,
+        "cache_read_input_tokens": 17496,
+        "cache_creation_input_tokens": 5396,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 5396
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "USAGE.md"
+  ],
+  "extraTools": [],
+  "prompt": "We've approved a multi-tenant B2B app: Node API, PostgreSQL, about 30 tables, around 200 tenant companies, a team of two. A few enterprise customers have asked whether their data is \"separated\" from other customers. Design how tenant data is isolated and tell us what you'd do and why. Don't write code yet.",
+  "result": "Nothing exists in the repo yet, so this is a greenfield design. Your CLAUDE.md requires approved behavior scenarios before architecture is final, so I've listed proposed scenarios at the end for your approval.\n\n## Recommendation\n\nUse **one shared database and schema, with isolation enforced at two independent layers**:\n\n1. **Application layer:** every request runs inside a tenant context taken from the authenticated session.\n2. **Database layer:** Postgres Row-Level Security (RLS) on every tenant table, so a missed `WHERE tenant_id = ?` returns nothing instead of leaking data.\n\nI'd also build in a **migration path to a dedicated database for individual customers**, in case an enterprise deal requires one.\n\n## Why this over the alternatives\n\n| Option | Verdict |\n|---|---|\n| Shared schema + `tenant_id` + RLS | **Chosen.** One migration run and one backup. It's cheap to operate with two people, and RLS makes the enforcement real rather than a convention. |\n| Schema per tenant | About 200 × 30 = 6,000 tables, and every migration runs 200 times. Connection pooling and catalog bloat get awkward. It's the most operational pain for a two-person team and adds only a modest isolation gain over RLS. |\n| Database per tenant | The strongest isolation, but cost, migrations, monitoring and pooling all multiply by 200. I'd reserve it for the few customers who contractually require it. |\n| `tenant_id` only, no RLS | One forgotten filter in one query is a cross-tenant breach. That's too fragile as your only control. |\n\n## Design\n\n**Schema**\n- Every tenant-owned table gets `tenant_id NOT NULL`, including child tables, even where it could be derived through a join.\n- Use composite foreign keys, `(tenant_id, parent_id)`, so a row can't reference another tenant's row even if the app has a bug.\n- Unique constraints and indexes lead with `tenant_id`. This is also good for performance.\n- Truly global tables, such as plans and country lists, go on an explicit allowlist. A CI check fails if any other table lacks `tenant_id`.\n\n**RLS**\n- On every tenant table, run `ENABLE` and `FORCE ROW LEVEL SECURITY`. The policy compares `tenant_id` to `current_setting('app.tenant_id', true)`.\n- If the setting is unset, the comparison is null and no rows match. The default fails closed.\n- Set the value with a transaction-local `set_config(..., true)`, never a session-level `SET`. This is what prevents leaks through pooled connections, and it works with PgBouncer in transaction mode.\n\n**Database roles**\n- The app role is not a superuser, does not own the tables, and has no `BYPASSRLS`. Owners and superusers skip RLS, so this matters.\n- A separate migration/owner role runs schema changes.\n- A separate, audited ops role handles cross-tenant work such as billing, support and analytics. It's only reachable through a deliberate code path.\n\n**Node API**\n- The tenant ID comes only from verified auth, meaning the token plus a `memberships` table. It never comes from a request body, URL param or header the client controls. If a user can belong to several tenants, they select one and the server verifies the membership.\n- Carry the tenant context with `AsyncLocalStorage`.\n- Expose one data-access entry point, `withTenant(tenantId, fn)`, which opens a transaction, sets the tenant and runs the work. Lint rules should forbid using the pool directly.\n\n**Everything outside Postgres**\n- **Jobs and queues:** put `tenant_id` in the payload and re-establish the context in the worker.\n- **Cache keys:** prefix them with the tenant.\n- **File storage:** use per-tenant prefixes, and serve files through signed URLs issued after an authorization check.\n- **Logs and audit trail:** tag every entry with the tenant, and record access to tenant data.\n- **Exports and search indexes:** scope them by tenant the same way.\n\n**Noisy neighbors**\n- Add per-tenant rate limits and statement timeouts. This is one shared database, so one tenant's heavy query can slow the rest.\n\n**Dedicated-database path**\n- Keep a `tenants` registry with a database-target column from day one.\n- Because the schema is identical and every row carries `tenant_id`, moving one large customer to its own database later is a data copy plus a routing change, not a redesign.\n\n## How we prove it\n\nThis is what answers the enterprise question with evidence rather than assurance:\n- **Cross-tenant test suite:** generated per table, it checks that tenant A cannot read, update, delete or reference tenant B's rows.\n- **Fail-closed test:** a query with no tenant context returns zero rows.\n- **Pool-reuse test:** after tenant A's request, the next request on the same connection sees nothing of A's data.\n- **CI catalog check:** every table with `tenant_id` has RLS enabled, forced and a policy, and the app role has no bypass.\n- **Penetration test:** a third-party test focused on tenant escape before your first enterprise onboarding.\n\n## What to tell customers\n\nSay this: \"Logical isolation, enforced by the database itself (row-level security) and tested continuously. Encryption is in transit and at rest, access is audited, and a dedicated database is available on request.\" Don't claim \"physically separate\" unless you build that tier.\n\nBe upfront about two limits of the shared model. Restoring a single tenant from backup is harder than in a per-tenant database. And \"dedicated\" means a separate paid tier.\n\n## Open questions\n\nThese affect the design but don't block it:\n1. **ORM and data layer:** the stack isn't chosen yet. Prisma and Drizzle both work with RLS, but each needs the per-transaction wrapper.\n2. **Multi-tenant users:** can one person belong to several companies, such as consultants?\n3. **Support access:** will staff need to view tenant data? If so, I'd add impersonation with an audit trail.\n4. **Contract requirements:** do any customers need data residency, a dedicated database, customer-managed keys, or SOC 2 / ISO evidence?\n5. **Hosting:** is it managed Postgres, and does it support the roles and pooling above?\n\n## Proposed scenarios for approval (Gherkin summaries)\n\n- A user in tenant A cannot read, list, update or delete tenant B's records, by ID or by query.\n- A request without a resolved tenant returns no data and an error.\n- A client-supplied tenant ID is ignored in favor of the authenticated one.\n- A record cannot reference another tenant's record.\n- A background job processes only its own tenant's data.\n- File access across tenants is denied.\n- Concurrent requests from different tenants on a pooled connection never see each other's data.\n- Ops access to cross-tenant data is audited.\n\nIf you approve the approach and scenarios, my next step is to record them in `.ai/projects/current/` and move on to phases and tasks. I haven't written any files or code."
+}

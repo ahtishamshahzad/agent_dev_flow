@@ -1,0 +1,42 @@
+{
+  "id": "scope-control-agentflow-1",
+  "case": "scope-control",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I haven't built either one yet. Under this project's rules, both requests are a **scope change**, and that needs your approval before any code is written."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "| FEAT-015 Export a report as PDF with client logo | New feature | M | FEAT-012 (shares the export path) |"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "**Timeline impact:** about M + L more work in a plan that's already full. Unless something gives, this most likely pushes launch back about a week, or bumps FEAT-014 (the audit log) to after launch. The client needs to pick which."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Trade-off: move the launch date, drop or defer FEAT-014, or schedule these two for after launch?"
+    },
+    "P5": {
+      "pass": true,
+      "quote": "**What I'll do now:** finish FEAT-012 (the CSV export) as approved."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Once you answer, I'll write the Gherkin scenarios and estimates for FEAT-015 and FEAT-016, log the change in `logs/CHANGE-LOG.md` marked SCOPE CHANGE, and bring them back for approval before building anything."
+    }
+  }
+}

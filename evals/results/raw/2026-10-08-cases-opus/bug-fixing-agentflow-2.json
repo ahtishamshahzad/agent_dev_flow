@@ -1,0 +1,61 @@
+{
+  "id": "bug-fixing-agentflow-2",
+  "case": "bug-fixing",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 2,
+  "agentflowVersion": "1.5.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 38980,
+  "turns": 12,
+  "costUsd": 0.2432766,
+  "usage": {
+    "input_tokens": 12,
+    "cache_creation_input_tokens": 19549,
+    "cache_read_input_tokens": 108283,
+    "output_tokens": 3259,
+    "output_tokens_details": {
+      "thinking_tokens": 706
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19549,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1503,
+        "cache_read_input_tokens": 25169,
+        "cache_creation_input_tokens": 1464,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1464
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "USAGE.md",
+    "orders.js"
+  ],
+  "extraTools": [],
+  "prompt": "Bug: Customers sometimes get charged twice. It seems to happen when the payment page is slow. Can you fix it? The payment route is in orders.js.",
+  "result": "I found the cause. I couldn't apply the fix, because this session has no file-editing or shell tools (only read and search). So I haven't changed anything or run any tests.\n\n## Why customers get charged twice\n\nThe route at `orders.js:2-8` checks whether the order is paid and only updates it after the charge finishes:\n\n```js\nconst order = await db.orders.find(req.params.id);                     // 1. read\nif (order.status === 'paid') return res.status(409).send('Already paid'); // 2. check\nconst charge = await payments.charge(order.customerId, order.total);    // 3. charge (slow)\nawait db.orders.update(order.id, { status: 'paid', chargeId: charge.id }); // 4. mark paid\n```\n\nThe order isn't marked `paid` until step 4, which happens after the slow call to the payment provider. While that call is running, a second request for the same order still sees it as unpaid and charges again. A slow page makes this likely: people double-click, refresh, or their browser or a proxy retries the request. That's why it shows up when the page is slow.\n\nThe check in step 2 only blocks a second payment after the first one has completely finished.\n\n## Proposed fix (small, only touches this route)\n\n1. **Claim the order in a single database step before charging.** Change its status from `pending` to `processing` only if it's still `pending`. Only one request can win; the others get a 409 and never reach the payment provider.\n2. **Send an idempotency key with the charge**, e.g. `order-<id>`. This stops duplicates even if two requests somehow get through. Stripe, Adyen, Braintree and most other providers support this.\n3. **If the charge fails, set the order back to `pending`** so the customer can try again.\n\n```js\napp.post('/orders/:id/pay', async (req, res) => {\n  const claimed = await db.orders.updateWhere(\n    { id: req.params.id, status: 'pending' },\n    { status: 'processing' }\n  ); // must be a single atomic conditional update\n  if (!claimed) return res.status(409).send('Already paid or in progress');\n\n  const order = await db.orders.find(req.params.id);\n  let charge;\n  try {\n    charge = await payments.charge(order.customerId, order.total, {\n      idempotencyKey: `order-${order.id}`,\n    });\n  } catch (err) {\n    await db.orders.update(order.id, { status: 'pending' });\n    throw err;\n  }\n  await db.orders.update(order.id, { status: 'paid', chargeId: charge.id });\n  res.send({ ok: true });\n});\n```\n\n`updateWhere` and `idempotencyKey` are placeholders. The repo only contains `orders.js`; it doesn't define `db` or `payments`, and there's no `package.json` or tests, so I can't tell which database or payment libraries you use.\n\n## Regression test\n\nThe project rules require a test that fails before the fix and passes after:\n\n```gherkin\n@regression @bug-001\nScenario: Paying the same order twice at once charges the customer only once\n  Given an unpaid order\n  And the payment provider responds slowly\n  When two pay requests for that order arrive at the same time\n  Then the customer is charged exactly once\n  And one request succeeds and the other is rejected with 409\n```\n\nThis would be an API-level test with a fake `payments.charge` that waits before resolving and counts how many times it's called. On the current code the count is 2.\n\n## To finish this I need\n\n1. **Your database and payment libraries**, so the claim step is a real single-step update (for example `UPDATE … WHERE status='pending'` in SQL, or `findOneAndUpdate` in Mongo) and I use the provider's real idempotency option.\n2. **Approval of the scenario above.** It changes what a duplicate request gets: an immediate 409 instead of a second charge.\n3. **Write access**, or you apply the patch yourself. Then I'd also add the bug record `.ai/work-items/bugs/BUG-001.md`, the feature file under `features/payments/`, and the test.\n\nCustomers who were already charged twice will need refunds; you can find them by checking the payment provider for multiple charges on the same order. I won't take any action on that without you asking."
+}

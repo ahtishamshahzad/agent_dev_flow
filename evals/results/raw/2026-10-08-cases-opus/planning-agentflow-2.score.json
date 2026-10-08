@@ -1,0 +1,47 @@
+{
+  "id": "planning-agentflow-2",
+  "case": "planning",
+  "arm": "agentflow",
+  "run": 2,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "No code, installs or tech choices yet; the project's rules require your approval before those."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Where does membership money go? (a) Straight to each gym's own account, with you optionally taking a fee. (b) To you, and you pay the gyms."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "## Assumptions (tell me if any are wrong) 1. Each member and each trainer belongs to one gym, and each gym has one location."
+    },
+    "P4": {
+      "pass": false,
+      "quote": ""
+    },
+    "P5": {
+      "pass": true,
+      "quote": "Gym data separation is enforced on the server, not just hidden in the screens."
+    },
+    "P6": {
+      "pass": false,
+      "quote": ""
+    },
+    "P7": {
+      "pass": false,
+      "quote": ""
+    }
+  }
+}

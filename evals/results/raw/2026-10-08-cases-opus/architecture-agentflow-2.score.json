@@ -1,0 +1,47 @@
+{
+  "id": "architecture-agentflow-2",
+  "case": "architecture",
+  "arm": "agentflow",
+  "run": 2,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Per-schema and per-database isolation add a lot of operational work for a small security gain at this size."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Database per tenant | Strongest (physical) | 200 databases to migrate, back up, monitor and pool. Not realistic for two people"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "The tenant always comes from the **authenticated session** and is checked against the user's membership. It is never taken from a request body or a header the client controls."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "App-level filtering alone fails in the usual way: someone eventually writes a query without the filter. RLS moves the guarantee into the database, where one mistake no longer causes a leak."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "**Cross-tenant tests:** a fixture with tenants A and B. For each endpoint and job, B tries to read, update, delete and reference A's data, and all attempts must fail."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Don't say \"physically separated\" unless you build the dedicated-database option."
+    },
+    "P7": {
+      "pass": false,
+      "quote": "Its policy checks `tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid`, for both reads and writes (`USING` + `WITH CHECK`)."
+    }
+  }
+}
