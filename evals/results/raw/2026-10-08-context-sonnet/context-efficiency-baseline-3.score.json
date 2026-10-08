@@ -1,0 +1,42 @@
+{
+  "id": "context-efficiency-baseline-3",
+  "case": "context-efficiency",
+  "arm": "baseline",
+  "run": 3,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Every call to `POST /:id/ship` therefore sends the email once through the event and once through the direct call."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "`src/orders/routes.js:9` emits `order.shipped`. The subscriber in `src/notifications/subscribers.js:4`, which `src/app.js:7` loads, handles that event by calling `sendShippedEmail(order)`."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Delete line 10 in `src/orders/routes.js`, `await sendShippedEmail(order);`."
+    },
+    "P4": {
+      "pass": false,
+      "quote": ""
+    },
+    "P5": {
+      "pass": true,
+      "quote": "I haven't changed any files. Do you want me to make the edit?"
+    },
+    "P6": {
+      "pass": true,
+      "quote": "The event subscriber stays as the only sender."
+    }
+  }
+}

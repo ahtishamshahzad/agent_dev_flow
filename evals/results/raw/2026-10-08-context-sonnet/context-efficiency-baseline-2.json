@@ -1,0 +1,105 @@
+{
+  "id": "context-efficiency-baseline-2",
+  "case": "context-efficiency",
+  "suite": "cases",
+  "arm": "baseline",
+  "run": 2,
+  "agentflowVersion": "1.8.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 15847,
+  "turns": 6,
+  "costUsd": 0.0541186,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 9094,
+    "cache_read_input_tokens": 35703,
+    "output_tokens": 1059,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 9094,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 479,
+        "cache_read_input_tokens": 14882,
+        "cache_creation_input_tokens": 1296,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1296
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "README.md",
+    "package.json",
+    "src/admin/routes.js",
+    "src/app.js",
+    "src/auth/routes.js",
+    "src/billing/routes.js",
+    "src/billing/stripe.js",
+    "src/cart/routes.js",
+    "src/catalog/routes.js",
+    "src/core/db.js",
+    "src/core/events.js",
+    "src/core/logger.js",
+    "src/notifications/emails.js",
+    "src/notifications/mailer.js",
+    "src/notifications/subscribers.js",
+    "src/orders/routes.js",
+    "src/reports/routes.js",
+    "src/reviews/routes.js",
+    "src/search/routes.js",
+    "src/shipping/carriers.js",
+    "src/shipping/routes.js",
+    "src/uploads/routes.js",
+    "src/users/routes.js",
+    "test/auth.test.js",
+    "test/billing.test.js",
+    "test/catalog.test.js",
+    "test/orders.test.js"
+  ],
+  "extraTools": [],
+  "context": {
+    "toolCalls": 5,
+    "byTool": {
+      "Grep": 1,
+      "Read": 4
+    },
+    "filesRead": [
+      "src/notifications/subscribers.js",
+      "src/orders/routes.js",
+      "src/notifications/emails.js",
+      "src/app.js"
+    ],
+    "systemFilesRead": 0,
+    "repeatedReads": 0,
+    "relevant": [
+      "src/orders/routes.js",
+      "src/notifications/subscribers.js",
+      "src/notifications/emails.js"
+    ],
+    "retrievalEfficiency": 0.75,
+    "recall": 1
+  },
+  "prompt": "Customers get two emails when their order ships. Find the cause and tell me the fix. Don't change any files yet.",
+  "result": "**Cause:** The ship endpoint sends the shipped email twice. In `src/orders/routes.js`, the `POST /:id/ship` handler does both of these:\n\n- Line 9, `events.emit('order.shipped', order)`. The listener in `src/notifications/subscribers.js:4` handles this event and calls `sendShippedEmail(order)`. `src/app.js:7` loads that file, so the listener is registered.\n- Line 10, `await sendShippedEmail(order)`. This calls the same function directly.\n\nEach ship request therefore sends two emails.\n\n**Fix:** Delete line 10 of `src/orders/routes.js`, the direct `await sendShippedEmail(order);` call. Also delete the now-unused import on line 4. The `order.shipped` event and its subscriber then send the one email. This matches how `order.paid` already works, where the email goes out through the subscriber only.\n\nI'd remove the direct call instead of the event. The subscriber is the established pattern for customer emails, and other listeners may rely on the event.\n\nOne side effect: the direct call was awaited, so a mailer failure used to make the request fail. The listener is not awaited, so a failure there would be an unhandled rejection. You may want a `.catch` with logging on the subscriber's `sendShippedEmail` call. I haven't checked whether anything else emits `order.shipped`, for example in `src/shipping/`. I can check that if you want.\n\nI haven't changed any files."
+}

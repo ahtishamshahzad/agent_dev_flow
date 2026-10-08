@@ -1,0 +1,42 @@
+{
+  "id": "context-efficiency-agentflow-1",
+  "case": "context-efficiency",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "`src/orders/routes.js:9` emits `order.shipped`. The subscriber in `src/notifications/subscribers.js:4` handles that event by calling `sendShippedEmail(order)`. That's the first email. `src/orders/routes.js:10` then calls `sendShippedEmail(order)` directly. That's the second email."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "The subscriber in `src/notifications/subscribers.js:4` handles that event by calling `sendShippedEmail(order)`."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Delete line 10 (`await sendShippedEmail(order);`) from `src/orders/routes.js`. Also remove the now-unused import on line 4."
+    },
+    "P4": {
+      "pass": false,
+      "quote": ""
+    },
+    "P5": {
+      "pass": true,
+      "quote": "I haven't confirmed that `subscribers.js` is loaded at app startup. If it isn't, removing line 10 would stop the shipped email entirely."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Delete line 10 (`await sendShippedEmail(order);`) from `src/orders/routes.js`. Also remove the now-unused import on line 4."
+    }
+  }
+}

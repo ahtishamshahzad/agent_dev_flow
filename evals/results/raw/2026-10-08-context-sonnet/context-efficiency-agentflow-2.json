@@ -1,0 +1,107 @@
+{
+  "id": "context-efficiency-agentflow-2",
+  "case": "context-efficiency",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 2,
+  "agentflowVersion": "1.8.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 26315,
+  "turns": 4,
+  "costUsd": 0.055892399999999995,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 9883,
+    "cache_read_input_tokens": 38192,
+    "output_tokens": 871,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 9883,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 452,
+        "cache_read_input_tokens": 16256,
+        "cache_creation_input_tokens": 711,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 711
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "README.md",
+    "USAGE.md",
+    "package.json",
+    "src/admin/routes.js",
+    "src/app.js",
+    "src/auth/routes.js",
+    "src/billing/routes.js",
+    "src/billing/stripe.js",
+    "src/cart/routes.js",
+    "src/catalog/routes.js",
+    "src/core/db.js",
+    "src/core/events.js",
+    "src/core/logger.js",
+    "src/notifications/emails.js",
+    "src/notifications/mailer.js",
+    "src/notifications/subscribers.js",
+    "src/orders/routes.js",
+    "src/reports/routes.js",
+    "src/reviews/routes.js",
+    "src/search/routes.js",
+    "src/shipping/carriers.js",
+    "src/shipping/routes.js",
+    "src/uploads/routes.js",
+    "src/users/routes.js",
+    "test/auth.test.js",
+    "test/billing.test.js",
+    "test/catalog.test.js",
+    "test/orders.test.js"
+  ],
+  "extraTools": [],
+  "context": {
+    "toolCalls": 3,
+    "byTool": {
+      "Grep": 1,
+      "Read": 2
+    },
+    "filesRead": [
+      "src/orders/routes.js",
+      "src/notifications/subscribers.js"
+    ],
+    "systemFilesRead": 0,
+    "repeatedReads": 0,
+    "relevant": [
+      "src/orders/routes.js",
+      "src/notifications/subscribers.js",
+      "src/notifications/emails.js"
+    ],
+    "retrievalEfficiency": 1,
+    "recall": 0.6666666666666666
+  },
+  "prompt": "Customers get two emails when their order ships. Find the cause and tell me the fix. Don't change any files yet.",
+  "result": "**Cause:** Two code paths each send the shipped email, and both run on every ship.\n\n- `src/orders/routes.js:9` emits `order.shipped`. The subscriber at `src/notifications/subscribers.js:4` listens for that event and calls `sendShippedEmail(order)`.\n- `src/orders/routes.js:10` then calls `sendShippedEmail(order)` directly, so the customer gets a second email.\n\n**Fix:** Delete line 10 in `src/orders/routes.js` (`await sendShippedEmail(order);`). Also delete the now-unused import on line 4.\n\nI'd keep the event subscriber. `order.paid` already works this way (`sendReceipt` is sent only through its subscriber), and the comment in `subscribers.js` says customer emails are sent from domain events.\n\n**Side effects of the fix:**\n- The subscriber doesn't `await` or catch errors, so a mail failure no longer reaches the HTTP response. Today it would make the request fail, and after the fix it won't. If you want failures logged, add a `.catch` in the subscriber.\n- Check that `subscribers.js` is loaded at app startup. I didn't check this. If it isn't, removing line 10 would stop the emails entirely. But customers are getting two emails now, so it is probably loaded.\n\nI haven't changed any files. Do you want me to make the edit?"
+}

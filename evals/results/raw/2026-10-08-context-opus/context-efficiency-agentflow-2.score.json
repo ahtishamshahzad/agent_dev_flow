@@ -1,0 +1,42 @@
+{
+  "id": "context-efficiency-agentflow-2",
+  "case": "context-efficiency",
+  "arm": "agentflow",
+  "run": 2,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "So the event triggers one email through the subscriber, and line 10 sends a second one directly."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "In `src/orders/routes.js:9-10`, the `POST /orders/:id/ship` handler does both of these"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "**Fix:** delete the direct call on line 10 of `src/orders/routes.js` and the import it uses on line 4 (`const { sendShippedEmail } = require('../notifications/emails');`). Leave the `events.emit`."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "\"Given a paid order, when it is marked shipped, then exactly one shipped email is sent to the customer\". It should also get a regression test that counts calls to `mailer.send`."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "I haven't changed any files or run anything. I found the cause by reading the code."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "If you want, add a `.catch` with logging in the subscriber at the same time."
+    }
+  }
+}

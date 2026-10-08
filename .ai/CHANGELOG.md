@@ -2,7 +2,7 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.8.0] — unreleased
+## [1.8.0] — 2026-10-08
 
 Context engineering: the minimum sufficient context, expanded only on evidence — as an operational part of the workflow, with tooling and measurement. No new rule file: `CONTEXT_MANAGEMENT_RULES.md` became the full policy.
 

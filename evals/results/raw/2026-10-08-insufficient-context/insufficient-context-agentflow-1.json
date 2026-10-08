@@ -1,0 +1,82 @@
+{
+  "id": "insufficient-context-agentflow-1",
+  "case": "insufficient-context",
+  "suite": "workflow-checks",
+  "arm": "agentflow",
+  "run": 1,
+  "agentflowVersion": "1.8.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 40833,
+  "turns": 14,
+  "costUsd": 0.2709138,
+  "usage": {
+    "input_tokens": 10,
+    "cache_creation_input_tokens": 22185,
+    "cache_read_input_tokens": 87769,
+    "output_tokens": 3792,
+    "output_tokens_details": {
+      "thinking_tokens": 319
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 22185,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2141,
+        "cache_read_input_tokens": 28835,
+        "cache_creation_input_tokens": 434,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 434
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "README.md",
+    "USAGE.md",
+    "package.json",
+    "src/app.js",
+    "src/notifications/sendOnStatusChange.js",
+    "src/services/userService.js"
+  ],
+  "extraTools": [],
+  "context": {
+    "toolCalls": 13,
+    "byTool": {
+      "Glob": 3,
+      "Grep": 2,
+      "Read": 8
+    },
+    "filesRead": [
+      "AGENTS.md",
+      "src/app.js",
+      "src/services/userService.js",
+      "src/notifications/sendOnStatusChange.js",
+      "package.json"
+    ],
+    "systemFilesRead": 3,
+    "repeatedReads": 0
+  },
+  "prompt": "Make deleting a project a soft delete, so a deleted project can be restored later.",
+  "result": "I didn't change any code. There's nothing to turn into a soft delete yet: the app has no way to delete a project at all. And while looking, I found a security problem that comes first.\n\n## ⚠️ Security issue: any logged-in user can read any company's project\n\n`src/app.js:18-22`: `GET /projects/:id` checks that the caller is logged in, but not that the project belongs to their company. Every other place in the app filters by company (for example, `listUsers(req.user.companyId)`). So a user from Company A can read Company B's projects by trying different IDs.\n\n- **Severity:** I'd rate it P1. I've only confirmed it by reading the code, not by running a request.\n- **Smallest safe fix:** look the project up by both `id` and `req.user.companyId`, and return 404 when there's no match. Use 404 rather than 403 so the response doesn't reveal that the project exists.\n- **Why it matters here:** a restore endpoint would copy this same lookup, so this should be fixed before or alongside the soft-delete work.\n\nI'd log this as its own bug and fix it under the bug workflow. Do you want me to do that?\n\n## What's in the code now\n\nI searched everything outside `.ai/` for `delete|destroy|deletedAt|paranoid|restore|archiv` and got no matches. The only files under `src/**` are `app.js`, `services/userService.js` and `notifications/sendOnStatusChange.js`.\n\n- **No delete route or function** for projects.\n- **The database module and schema aren't in the repo.** `./db`, `./auth`, `./events` and `./mailer` are imported but missing, so I can't see the projects table or the ORM. `db.users.findAll({ where, order })` looks like Sequelize, but I'm guessing.\n- **No tests and no Gherkin `.feature` files.** `npm test` runs `node --test`, but there are no test files.\n- **No project status file:** `.ai/projects/current/` is in its empty state.\n- **`package.json` only lists `express`**, but the code also uses `bcrypt` and `jsonwebtoken`.\n\nSo this is a new feature: adding delete, restore and filtering of deleted projects. The project rules require the behaviour scenarios to be approved before any code is written.\n\n## Questions that block a correct plan\n\n1. **Where is the database layer?** Which ORM or driver and which database, and are there migrations? Soft delete is a schema change (for example, a `deletedAt` column), so I need to see how the schema is managed.\n2. **Who can delete and restore?** Any logged-in user in the company, only an admin, or only the project owner? There's no role model in the visible code.\n3. **Is there a time limit on restoring?** Restorable forever, or permanently removed after N days, which would need a cleanup job?\n4. **Can people see deleted projects?** For example, a \"trash\" list endpoint, or are they only reachable through restore?\n5. **What happens to child records** (tasks, files and so on) when a project is deleted? I can't see any.\n\n## Provisional proposal (if you have no strong preferences)\n\n- `DELETE /projects/:id` sets a `deletedAt` timestamp and stores who deleted it.\n- `POST /projects/:id/restore` clears it.\n- All project reads exclude deleted projects by default. If it is Sequelize, `paranoid: true` does this.\n- Every lookup is limited to the caller's company.\n- Any logged-in member of the company can delete and restore, with no time limit and no trash list.\n- No new libraries and no new stack.\n\nIf deleting should be admin-only, that adds a role check. A time limit adds a scheduled cleanup job. Having no ORM means writing the filter by hand on every query.\n\n## Draft scenarios (for your approval)\n\n```gherkin\nFeature: Soft-delete and restore projects\n\n  Background:\n    Given I am logged in as a member of company \"Acme\"\n    And \"Acme\" has a project \"Apollo\"\n\n  @critical\n  Scenario: Deleting a project hides it but keeps its data\n    When I delete \"Apollo\"\n    Then the response is 204\n    And fetching \"Apollo\" returns 404\n    But \"Apollo\" still exists in storage, marked deleted\n\n  @critical\n  Scenario: Restoring a deleted project\n    Given \"Apollo\" has been deleted\n    When I restore \"Apollo\"\n    Then the response is 200\n    And fetching \"Apollo\" returns the project unchanged\n\n  @critical @security\n  Scenario: Cannot delete or restore another company's project\n    Given company \"Globex\" has a project \"Zeus\"\n    When I delete \"Zeus\"\n    Then the response is 404\n    And \"Zeus\" is not marked deleted\n    When \"Zeus\" has been deleted by Globex and I restore it\n    Then the response is 404\n\n  Scenario: Deleting an already-deleted project\n    Given \"Apollo\" has been deleted\n    When I delete \"Apollo\"\n    Then the response is 404\n\n  Scenario: Restoring a project that is not deleted\n    When I restore \"Apollo\"\n    Then the response is 409\n\n  Scenario: Deleting or restoring a project that never existed\n    When I delete project \"does-not-exist\"\n    Then the response is 404\n\n  Scenario: Unauthenticated requests are rejected\n    Given I am not logged in\n    When I delete \"Apollo\"\n    Then the response is 401\n```\n\n**Unchanged:** fetching an existing project that isn't deleted works exactly as it does today, apart from the company check above.\n\n## Unrelated issue I noticed\n\n`src/app.js:27-28` together with `sendOnStatusChange.js:9`: changing an order's status emails the customer twice, once through the event and once through the direct call. That's outside this request, so I've left it as a possible separate bug.\n\nOnce you answer the questions and approve or edit the scenarios, the next steps are the design (schema change and routes), the task list, and then your second approval before any code."
+}

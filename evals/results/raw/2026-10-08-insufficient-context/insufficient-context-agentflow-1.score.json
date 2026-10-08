@@ -1,0 +1,32 @@
+{
+  "id": "insufficient-context-agentflow-1",
+  "case": "insufficient-context",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "**The database module and schema aren't in the repo.** `./db`, `./auth`, `./events` and `./mailer` are imported but missing, so I can't see the projects table or the ORM."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "`db.users.findAll({ where, order })` looks like Sequelize, but I'm guessing."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "**Where is the database layer?** Which ORM or driver and which database, and are there migrations? Soft delete is a schema change (for example, a `deletedAt` column), so I need to see how the schema is managed."
+    },
+    "P4": {
+      "pass": false,
+      "quote": "`src/app.js:27-28` together with `sendOnStatusChange.js:9`: changing an order's status emails the customer twice, once through the event and once through the direct call. That's outside this request, so I've left it as a possible separate bug."
+    }
+  }
+}

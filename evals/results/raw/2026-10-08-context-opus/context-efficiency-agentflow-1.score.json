@@ -1,0 +1,42 @@
+{
+  "id": "context-efficiency-agentflow-1",
+  "case": "context-efficiency",
+  "arm": "agentflow",
+  "run": 1,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "`src/notifications/subscribers.js:4` already listens for `order.shipped` and calls `sendShippedEmail(order)`."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "in `src/orders/routes.js:7-12`, the `POST /:id/ship` handler does both of these:"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "**Fix:** in `src/orders/routes.js`, remove line 10 (`await sendShippedEmail(order);`) and the import on line 4 that is then unused."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Calling `POST /orders/:id/ship` once should trigger `mailer.send` exactly once."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "I haven't changed any files, as you asked."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Keep the `events.emit`. The subscriber stays the only place that sends customer emails, matching how the receipt is handled."
+    }
+  }
+}

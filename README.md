@@ -96,7 +96,7 @@ npx github:ahtishamshahzad/agent_dev_flow context suggest "customers get two ema
 npx github:ahtishamshahzad/agent_dev_flow context check    # are the stable project summaries still true?
 ```
 
-Deterministic — path and content matches plus the import graph, no embeddings. Guide: [`docs/context-engineering.md`](docs/context-engineering.md) · Rules: [`.ai/system/CONTEXT_MANAGEMENT_RULES.md`](.ai/system/CONTEXT_MANAGEMENT_RULES.md).
+Deterministic — path and content matches plus the import graph, no embeddings. **Measured so far, honestly:** on a 27-file codebase it did **not** reduce tokens (AgentFlow used 7–20% more input, mostly its own rules) — it bought a more complete fix on Opus and tied on Sonnet ([`evals/results/2026-10-08-context-efficiency.md`](evals/results/2026-10-08-context-efficiency.md)). It's designed to cut *unnecessary* context; savings at scale are not yet measured. Guide: [`docs/context-engineering.md`](docs/context-engineering.md) · Rules: [`.ai/system/CONTEXT_MANAGEMENT_RULES.md`](.ai/system/CONTEXT_MANAGEMENT_RULES.md).
 
 ### Works with
 

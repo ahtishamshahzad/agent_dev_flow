@@ -33,7 +33,7 @@ agentflow context check                                                 # are th
 
 ## What is measured, and what isn't
 
-`evals/` runs the same tasks with and without AgentFlow and records, per run: input and output tokens and cost (as reported by the agent CLI), tool calls, files read, and — for the context case — **retrieval efficiency** (relevant files ÷ files read), alongside blind-scored task quality. A smaller context that gets the task wrong is not efficient, so the two are always reported together. No savings figure is claimed beyond what those runs show; see [`evals/results/`](../evals/results/README.md).
+`evals/` runs the same tasks with and without AgentFlow and records, per run: input and output tokens and cost (as reported by the agent CLI), tool calls, files read, and — for the context case — **retrieval efficiency** (relevant files ÷ files read), alongside blind-scored task quality. A smaller context that gets the task wrong is not efficient, so the two are always reported together. No savings figure is claimed beyond what those runs show. The first measurement ([`evals/results/2026-10-08-context-efficiency.md`](../evals/results/2026-10-08-context-efficiency.md)) found **no token saving** on a small codebase — AgentFlow used 7–20% more input tokens, mostly its own rules — with a more complete fix on Opus and a tie on Sonnet.
 
 ## Examples
 

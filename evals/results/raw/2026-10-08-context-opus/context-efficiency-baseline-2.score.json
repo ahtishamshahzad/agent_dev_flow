@@ -1,0 +1,42 @@
+{
+  "id": "context-efficiency-baseline-2",
+  "case": "context-efficiency",
+  "arm": "baseline",
+  "run": 2,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Line 9 fires the `order.shipped` event. The handler in `src/notifications/subscribers.js:4` listens for it and calls `sendShippedEmail(order)`. ... Line 10 then calls `sendShippedEmail(order)` directly. That's email #2."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "In `POST /orders/:id/ship` (`src/orders/routes.js:9-10`), the route does both of these:"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Delete the direct call on line 10 and the `sendShippedEmail` import on line 4 that only it uses. The event handler then becomes the only place the email is sent."
+    },
+    "P4": {
+      "pass": false,
+      "quote": ""
+    },
+    "P5": {
+      "pass": true,
+      "quote": "I haven't changed any files."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "If you want failures logged, add a `.catch(...)` in the subscriber (`subscribers.js:4`)."
+    }
+  }
+}
