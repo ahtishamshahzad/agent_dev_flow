@@ -2,7 +2,7 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.6.0] — unreleased
+## [1.6.0] — 2026-10-08
 
 Closes the gaps reported after 1.5.0: an automated drift report, machine-checked scenario→test mapping, blind evaluation at a larger sample on two models, live checks with web access and real upgrade triggers, and two behavior fixes the evaluations exposed.
 
