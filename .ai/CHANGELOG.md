@@ -2,6 +2,31 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.8.0] — 2026-10-08
+
+Context engineering: the minimum sufficient context, expanded only on evidence — as an operational part of the workflow, with tooling and measurement. No new rule file: `CONTEXT_MANAGEMENT_RULES.md` became the full policy.
+
+### Changed
+
+- `CONTEXT_MANAGEMENT_RULES.md` is now the context-engineering policy: the principle (*context is an engineering resource — retrieve the minimum sufficient context, expand only when evidence requires it, never trade correctness for token savings*), a priority order with token efficiency last, layers 0–5, escalation levels 1–5 with valid and invalid triggers, stepwise file retrieval (1 → 3 → 8 → module), a "why do I need this?" relevance check with explanations, Gherkin as the primary anchor, adaptive semantic budgets, deduplication and safe compression, stable project summaries with staleness checks, insufficient-context handling (retrieve or ask, never guess), multi-agent isolation, and what is measured. `TOKEN_OPTIMIZATION_RULES` links to it; the principle is in `OPERATING_RULES` §6.
+- The workflow assembles minimum sufficient context right after classification; `project-orchestrator`, multi-agent execution (shared baseline + per-agent context pack; refresh on contract change), and the multi-agent checklist apply it. `.ai/projects/current/context/` holds stable summaries.
+
+### Added
+
+- `skills/context-engineering` (core, 181 skills); templates `CONTEXT_PACK.md` (required / optional / excluded with reasons, escalations, shared contracts, ownership) and `PROJECT_CONTEXT.md` (a stable summary with `sources:` and a fingerprint).
+- `agentflow context suggest "<task>"` (`lib/context.js`) — deterministic: matching scenarios, skills from the intent index, files (path and content matches), their tests, and direct imports, each with the reason; no embeddings or index to maintain. `agentflow context check [--update]` — fingerprints each summary's sources and reports stale summaries (exit 1).
+- `docs/context-engineering.md` and six examples in `examples/context-engineering/`.
+- Evals: the runner records tool calls, files read, repeated reads, and — for cases listing their relevant files — retrieval efficiency and recall; `summarize.js` reports tokens (uncached + cache writes + cache reads), tool calls, and files read per arm, "unknown" where not exposed. New case `context-efficiency` on a 27-file fixture (`node-shop`); new workflow check `insufficient-context`.
+- Validator: the policy's sections, skill, templates, docs, examples, and wiring; **token-savings percentages must cite `evals/results/`**; `docs/` links are now checked too. 5 new tests.
+
+### Fixed
+
+- A blank line split the workflow-checks table in `evals/workflow-checks/README.md`.
+
+### Totals
+
+- 181 skills · 13 agents · 13 hooks · 12 workflows · 34 templates · 19 prompts · 18 checklists.
+
 ## [1.7.0] — 2026-10-08
 
 ### Changed

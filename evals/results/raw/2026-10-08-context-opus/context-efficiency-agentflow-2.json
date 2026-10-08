@@ -1,0 +1,109 @@
+{
+  "id": "context-efficiency-agentflow-2",
+  "case": "context-efficiency",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 2,
+  "agentflowVersion": "1.7.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 18403,
+  "turns": 6,
+  "costUsd": 0.11526,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 10204,
+    "cache_read_input_tokens": 37920,
+    "output_tokens": 1301,
+    "output_tokens_details": {
+      "thinking_tokens": 142
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 10204,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 711,
+        "cache_read_input_tokens": 15988,
+        "cache_creation_input_tokens": 1300,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1300
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "README.md",
+    "USAGE.md",
+    "package.json",
+    "src/admin/routes.js",
+    "src/app.js",
+    "src/auth/routes.js",
+    "src/billing/routes.js",
+    "src/billing/stripe.js",
+    "src/cart/routes.js",
+    "src/catalog/routes.js",
+    "src/core/db.js",
+    "src/core/events.js",
+    "src/core/logger.js",
+    "src/notifications/emails.js",
+    "src/notifications/mailer.js",
+    "src/notifications/subscribers.js",
+    "src/orders/routes.js",
+    "src/reports/routes.js",
+    "src/reviews/routes.js",
+    "src/search/routes.js",
+    "src/shipping/carriers.js",
+    "src/shipping/routes.js",
+    "src/uploads/routes.js",
+    "src/users/routes.js",
+    "test/auth.test.js",
+    "test/billing.test.js",
+    "test/catalog.test.js",
+    "test/orders.test.js"
+  ],
+  "extraTools": [],
+  "context": {
+    "toolCalls": 5,
+    "byTool": {
+      "Grep": 1,
+      "Read": 4
+    },
+    "filesRead": [
+      "src/notifications/subscribers.js",
+      "src/app.js",
+      "src/orders/routes.js",
+      "src/notifications/emails.js"
+    ],
+    "systemFilesRead": 0,
+    "repeatedReads": 0,
+    "relevant": [
+      "src/orders/routes.js",
+      "src/notifications/subscribers.js",
+      "src/notifications/emails.js"
+    ],
+    "retrievalEfficiency": 0.75,
+    "recall": 1
+  },
+  "prompt": "Customers get two emails when their order ships. Find the cause and tell me the fix. Don't change any files yet.",
+  "result": "**Cause:** the shipped email gets sent twice for every shipment. In `src/orders/routes.js:9-10`, the `POST /orders/:id/ship` handler does both of these:\n\n```js\nevents.emit('order.shipped', order);   // line 9\nawait sendShippedEmail(order);         // line 10\n```\n\n`src/notifications/subscribers.js:4` (loaded by `src/app.js:7`) already listens for that event and sends the email:\n\n```js\nevents.on('order.shipped', (order) => sendShippedEmail(order));\n```\n\nSo the event triggers one email through the subscriber, and line 10 sends a second one directly.\n\n**Fix:** delete the direct call on line 10 of `src/orders/routes.js` and the import it uses on line 4 (`const { sendShippedEmail } = require('../notifications/emails');`). Leave the `events.emit`. The comment in `subscribers.js` says customer emails are meant to be sent from domain events, and `order.paid` → `sendReceipt` already works that way, so the subscriber should be the only place that sends this email.\n\n**Side effect:** right now the route waits for the email to send. After the fix, the subscriber sends it without waiting, so a mail failure will no longer fail the request. It will also be an unhandled promise rejection unless the subscriber catches it. If you want, add a `.catch` with logging in the subscriber at the same time.\n\n**Under this project's rules** (`.ai/system/GHERKIN_RULES.md`), this fix changes behavior, so it needs an approved scenario first, something like: \"Given a paid order, when it is marked shipped, then exactly one shipped email is sent to the customer\". It should also get a regression test that counts calls to `mailer.send`.\n\nI haven't changed any files or run anything. I found the cause by reading the code."
+}

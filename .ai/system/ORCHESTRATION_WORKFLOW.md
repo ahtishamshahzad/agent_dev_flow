@@ -7,6 +7,7 @@ The end-to-end flow every piece of work follows, from request to release. The or
 ```
 Request
   → Request classification
+  → Minimum sufficient context       (scenarios first, then skills, files, tests; escalate on evidence)
   → Requirement analysis
   → Existing repository audit        (when a repo/codebase already exists)
   → Missing questions                (ask only what blocks progress)
@@ -32,6 +33,8 @@ Request
 
 ### 1. Request classification
 Classify the request as exactly one primary type (see list below). Note secondary types if relevant. The type selects the workflow variant and gates.
+
+**Then assemble the minimum sufficient context** (`CONTEXT_MANAGEMENT_RULES.md`, `../skills/context-engineering`): set a budget from the task, check stable summaries are fresh (`agentflow context check`), anchor on the matching Gherkin scenarios, then load the relevant skills, files, and tests — escalating a level only on a named trigger. Every stage below reuses this context and adds to it only with a reason.
 
 **Request types:**
 - new project

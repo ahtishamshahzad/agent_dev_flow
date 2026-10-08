@@ -1,0 +1,32 @@
+{
+  "id": "insufficient-context-agentflow-2",
+  "case": "insufficient-context",
+  "arm": "agentflow",
+  "run": 2,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "The data layer isn't in the repo. `src/db` is imported and described in the README, but there are no files under it, no migrations or schema, and no ORM listed in `package.json`. So I can't see how `projects` is stored or how to add a `deletedAt` column."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "What is the data layer? Is it Sequelize (the `findAll({ where, order })` calls suggest so), Knex, or raw `pg`? Where does `src/db` live, and how are migrations handled?"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "What is the data layer? Is it Sequelize (the `findAll({ where, order })` calls suggest so), Knex, or raw `pg`? Where does `src/db` live, and how are migrations handled?"
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Searching `src/**` for `delete|destroy|deletedAt|paranoid` found nothing. The only project route is `GET /projects/:id`."
+    }
+  }
+}

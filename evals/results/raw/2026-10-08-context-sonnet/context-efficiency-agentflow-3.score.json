@@ -1,0 +1,42 @@
+{
+  "id": "context-efficiency-agentflow-3",
+  "case": "context-efficiency",
+  "arm": "agentflow",
+  "run": 3,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "`src/orders/routes.js:9` emits `order.shipped`. The subscriber at `src/notifications/subscribers.js:4` listens for that event and calls `sendShippedEmail(order)`. That is the first email. ... `src/orders/routes.js:10` then calls `sendShippedEmail(order)` directly. That is the second email."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "The subscriber at `src/notifications/subscribers.js:4` listens for that event and calls `sendShippedEmail(order)`."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "**Fix:** Delete line 10 in `src/orders/routes.js`, `await sendShippedEmail(order);`. Also delete the now-unused import on line 4."
+    },
+    "P4": {
+      "pass": false,
+      "quote": ""
+    },
+    "P5": {
+      "pass": true,
+      "quote": "I also haven't run anything, so this comes from reading the code."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "You may want a `.catch` that logs in the subscriber."
+    }
+  }
+}

@@ -9,6 +9,7 @@ On a tracked project, whatever you run is recorded by [`project-management`](pro
 | I want to… | Start with |
 |---|---|
 | Start a project, or plan anything non-trivial | [`project-orchestrator`](project-orchestrator/SKILL.md) |
+| Work out what to read for a task — and what not to | [`context-engineering`](context-engineering/SKILL.md) |
 | Work in an existing codebase | [`existing-project-audit`](existing-project-audit/SKILL.md) → [`project-orchestrator`](project-orchestrator/SKILL.md) |
 | Understand the requirements | [`requirements-analysis`](requirements-analysis/SKILL.md) |
 | Decide which apps and which stack | [`application-selection`](application-selection/SKILL.md) → [`stack-recommendation`](stack-recommendation/SKILL.md) → [`technology-governance`](technology-governance/SKILL.md) (versions) |

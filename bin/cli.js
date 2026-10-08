@@ -102,6 +102,14 @@ ${c('bold', 'Gherkin')}
                       List scenarios no test names (test names contain the
                       scenario title). Exits 1 if an @critical one has no test.
 
+${c('bold', 'Context')}
+  npx github:ahtishamshahzad/agent_dev_flow context suggest ${c('dim', '"<task>" [--dir <project>] [--json]')}
+                      Scenarios, skills, files, tests, and direct dependencies
+                      that match a task — each with the reason. A starting set.
+  npx github:ahtishamshahzad/agent_dev_flow context check ${c('dim', '[dir] [--update] [--json]')}
+                      Report stable summaries in .ai/projects/current/context/
+                      whose source files changed. Exits 1 if any are stale.
+
 ${c('bold', 'Technology drift')}
   npx github:ahtishamshahzad/agent_dev_flow drift ${c('dim', '[dir] [--prod] [--json] [--fail-on security|eol|any]')}
                       Installed vs latest stable, advisories, deprecations, Node
@@ -112,7 +120,7 @@ ${c('bold', 'Technology drift')}
 
 function parseArgs(argv) {
   const opts = { dir: null, editors: null, force: false, dryRun: false, help: false, version: false, cmd: null, args: [],
-    json: false, prod: false, failOn: null, tests: null };
+    json: false, prod: false, failOn: null, tests: null, update: false, cwd: null };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '-h' || a === '--help') opts.help = true;
@@ -121,6 +129,12 @@ function parseArgs(argv) {
     else if (a === '--dry-run') opts.dryRun = true;
     else if (a === '--json') opts.json = true;
     else if (a === '--prod') opts.prod = true;
+    else if (a === '--update') opts.update = true;
+    else if (a === '--dir') {
+      const v = argv[++i];
+      if (!v || v.startsWith('-')) { fail('Missing value for --dir'); process.exit(1); }
+      opts.cwd = v;
+    }
     else if (a === '--fail-on' || a === '--tests') {
       const v = argv[++i];
       if (!v || v.startsWith('-')) { fail(`Missing value for ${a}`); process.exit(1); }
@@ -196,6 +210,7 @@ function main() {
   }
   if (opts.cmd === 'gherkin') return gherkin(opts.args, opts);
   if (opts.cmd === 'drift') return drift(opts);
+  if (opts.cmd === 'context') return context(opts);
   if (opts.cmd !== 'init') {
     fail(`Unknown command: ${opts.cmd}`);
     printHelp();
@@ -329,6 +344,55 @@ function gherkinTrace(paths, opts) {
     if (critical.length) fail(summary); else log(missing.length ? c('yellow', summary) : c('green', summary));
   }
   if (critical.length) process.exit(1);
+}
+
+// `context check|suggest` — stable-summary freshness and a starting context set.
+function context(opts) {
+  const lib = require(path.join(PKG_ROOT, 'lib', 'context.js'));
+  const [sub, ...rest] = opts.args;
+  const root = path.resolve(process.cwd(), opts.cwd || (sub === 'check' && rest[0]) || '.');
+  if (!fs.existsSync(root)) { fail(`Path not found: ${opts.cwd || rest[0]}`); process.exit(1); }
+
+  if (sub === 'check') {
+    const r = lib.check(root, { update: opts.update });
+    if (opts.json) { log(JSON.stringify(r, null, 2)); }
+    else if (!r.summaries.length) {
+      log(c('dim', `No stable context summaries in ${path.relative(process.cwd(), r.dir) || r.dir} — nothing to check.`));
+    } else {
+      for (const s of r.summaries) {
+        const color = { fresh: 'green', updated: 'green', stale: 'red', unfingerprinted: 'yellow', 'no-sources': 'yellow' }[s.status];
+        log(`${c(color, s.status.padEnd(16))} ${s.name}${s.sources ? c('dim', `  (${s.sources.length} source file(s)${s.missing.length ? `, missing: ${s.missing.join(', ')}` : ''})`) : ''}`);
+      }
+      const stale = r.summaries.filter((s) => s.status === 'stale');
+      if (stale.length) fail(`${stale.length} stale summary(ies): re-read the sources, update the summary, then run with --update`);
+    }
+    if (r.summaries.some((s) => s.status === 'stale')) process.exit(1);
+    return;
+  }
+
+  if (sub === 'suggest') {
+    const task = rest.join(' ').trim();
+    if (!task) { fail('Usage: context suggest "<task in a few words>" [--dir <project>]'); process.exit(1); }
+    const r = lib.suggest(root, task);
+    if (opts.json) { log(JSON.stringify(r, null, 2)); return; }
+    const section = (title, items, fmt) => {
+      if (!items.length) return;
+      log(c('bold', title));
+      for (const it of items) log(`  ${fmt(it)}  ${c('dim', `— ${it.why}`)}`);
+    };
+    log(c('dim', `terms: ${r.terms.join(', ') || '(none)'}`));
+    section('Level 1 · scenarios (behavior anchor)', r.scenarios, (s) => `${s.path}  "${s.title}"`);
+    section('Level 1 · skills', r.skills, (s) => s.name);
+    section('Level 2 · files', r.files, (f) => f.path);
+    section('Level 2 · tests', r.tests, (t) => t.path);
+    section('Level 3 · direct dependencies (only if level 2 is not enough)', r.dependencies, (d) => d.path);
+    if (!r.scenarios.length) log(c('yellow', 'No matching scenario — for behavior work, find or write one first (GHERKIN_RULES.md).'));
+    log(c('dim', 'A starting set to verify by reading — not a substitute for it. Escalate only on a trigger (CONTEXT_MANAGEMENT_RULES.md).'));
+    return;
+  }
+
+  fail(sub ? `Unknown context command: ${sub}` : 'Missing context command — use: context check [dir] [--update] | context suggest "<task>"');
+  process.exit(1);
 }
 
 // `drift [dir]` — installed vs latest stable, with triggers (TECHNOLOGY_GOVERNANCE_RULES.md).

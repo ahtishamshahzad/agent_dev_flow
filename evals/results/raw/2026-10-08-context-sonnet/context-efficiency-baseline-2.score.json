@@ -1,0 +1,42 @@
+{
+  "id": "context-efficiency-baseline-2",
+  "case": "context-efficiency",
+  "arm": "baseline",
+  "run": 2,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Line 9, `events.emit('order.shipped', order)`. The listener in `src/notifications/subscribers.js:4` handles this event and calls `sendShippedEmail(order)`. ... Line 10, `await sendShippedEmail(order)`. This calls the same function directly."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "In `src/orders/routes.js`, the `POST /:id/ship` handler does both of these:"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "Delete line 10 of `src/orders/routes.js`, the direct `await sendShippedEmail(order);` call. Also delete the now-unused import on line 4."
+    },
+    "P4": {
+      "pass": false,
+      "quote": ""
+    },
+    "P5": {
+      "pass": true,
+      "quote": "I haven't checked whether anything else emits `order.shipped`, for example in `src/shipping/`. I can check that if you want."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "You may want a `.catch` with logging on the subscriber's `sendShippedEmail` call."
+    }
+  }
+}

@@ -32,6 +32,7 @@ Every request is classified before anything else (see `ORCHESTRATION_WORKFLOW.md
 
 ## 6. Load only what the task needs
 
+- **Context is an engineering resource. Retrieve the minimum sufficient context, expand only when evidence requires it, and never trade correctness for token savings** (`CONTEXT_MANAGEMENT_RULES.md`). Every non-global item loaded has a reason; escalate on a trigger, not by habit.
 - Do not load every skill, reference, or work item for every task. Select relevance (`SKILL_SELECTION_RULES.md`, `CONTEXT_MANAGEMENT_RULES.md`, `TOKEN_OPTIMIZATION_RULES.md`).
 - Prefer links/summaries over duplicated content.
 

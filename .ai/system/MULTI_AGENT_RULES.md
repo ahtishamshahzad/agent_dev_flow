@@ -33,6 +33,7 @@ The orchestrator (lead agent) remains responsible for:
 Before splitting work, confirm:
 - [ ] Each agent's file/module scope is disjoint.
 - [ ] Interfaces/contracts between slices are defined first — including the approved Gherkin scenarios as the shared behavioral contract (`GHERKIN_RULES.md`).
+- [ ] Each agent has its own context pack on a shared baseline — not the whole repository (`CONTEXT_MANAGEMENT_RULES.md`).
 - [ ] Dependency order is respected (no agent waits on another mid-flight in a way that deadlocks).
 - [ ] Each slice has independent acceptance criteria.
 - [ ] A single agent will integrate and validate the whole.

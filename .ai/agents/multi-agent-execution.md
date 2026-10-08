@@ -33,8 +33,9 @@ Multiple agents work **concurrently on independent workstreams**. Permitted **on
 
 1. **Non-overlapping file ownership.** The orchestrator produces a file-ownership map where each agent owns a **disjoint** set of files/directories. No file appears under two agents. A file both would change is assigned to **one** owner; the other requests the change through the orchestrator.
 2. **Explicit shared contracts.** Interfaces that cross workstreams (API contract, database schema/data-access contract, shared types) are **defined and agreed first**, so no agent must edit another's files to integrate. **The approved Gherkin scenarios are the behavioral contract every agent builds against** — no agent reinterprets them. An agent that finds the behavior must change stops, proposes the scenario change to the orchestrator, and waits for approval (`../system/GHERKIN_RULES.md`).
-3. **Synchronization point.** A defined point where parallel streams rejoin and are reconciled against the contracts.
-4. **Final integration review.** A single agent (orchestrator or code-reviewer) reviews the **combined** output end-to-end before handoff — parallel pieces are never shipped un-integrated.
+3. **Isolated context, shared baseline.** Every agent gets the same baseline — global rules, the approved scenarios, the architecture and API contracts, the scope — plus **its own context pack** (`../templates/CONTEXT_PACK.md`) for its slice and file ownership; never the whole repository. When a shared contract changes: stop the affected agents, update it, refresh their packs, continue (`../system/CONTEXT_MANAGEMENT_RULES.md`).
+4. **Synchronization point.** A defined point where parallel streams rejoin and are reconciled against the contracts.
+5. **Final integration review.** A single agent (orchestrator or code-reviewer) reviews the **combined** output end-to-end before handoff — parallel pieces are never shipped un-integrated.
 
 ### Typical safe split
 
