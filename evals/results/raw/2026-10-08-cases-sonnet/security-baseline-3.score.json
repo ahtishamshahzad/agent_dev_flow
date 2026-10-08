@@ -1,0 +1,47 @@
+{
+  "id": "security-baseline-3",
+  "case": "security",
+  "arm": "baseline",
+  "run": 3,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Any logged-in user can read any invoice with `GET /invoices/<any id>`, and can overwrite its notes with the POST route."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Both `notes` and `:id` are interpolated straight into the SQL. ... Use parameterized queries instead."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "If it's real, rotate it in Stripe now. In either case, load it from the environment (`process.env.STRIPE_KEY`) and keep it out of the repo."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "The value is labeled \"placeholder\", but the `sk_live_` prefix means it will be treated as a live secret."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "**1. SQL injection in `POST /invoices/:id/notes` (`routes/invoices.js`)** ... **3. Hardcoded Stripe live key in `config.js`** (all three under the \"## Blocking\" heading; lesser issues under \"## Should fix\"; no line numbers given)"
+    },
+    "P6": {
+      "pass": false,
+      "quote": "`requireLogin` only checks that the caller is logged in. It doesn't check that they own the invoice. (This states requireLogin's behaviour as certain even though that code isn't shown. The only hedges, \"If it's real\" and \"I haven't seen the rest of the repo\", cover the key and the fix, not the findings.)"
+    },
+    "P7": {
+      "pass": true,
+      "quote": "**Don't merge this yet.** There are three blocking security issues and a few smaller ones."
+    }
+  }
+}

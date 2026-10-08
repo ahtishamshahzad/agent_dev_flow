@@ -1,0 +1,47 @@
+{
+  "id": "planning-agentflow-3",
+  "case": "planning",
+  "arm": "agentflow",
+  "run": 3,
+  "model": "claude-opus-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "They don't allow any code, installs or stack choices until you approve two plans, so this first step is understanding what you need."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Where does the money go? Does each gym get paid straight into its own account, with you charging a fee or subscription? Or do you collect everything and pay the gyms?"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "This assumes: each gym is paid directly, unlimited monthly membership, trainers mark attendance, one shared app, owners on a computer, and a small team that works in TypeScript."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "| Marketing site | ⏸ Later | Needed once you start selling to gyms |"
+    },
+    "P5": {
+      "pass": true,
+      "quote": "Each gym's data must stay separate from the others; I'll treat that as a must-pass check before release."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "| Payments | Stripe Billing + Stripe Connect; card details never touch your servers | One central Stripe account if you collect the money yourself (question 1) |"
+    },
+    "P7": {
+      "pass": false,
+      "quote": "Then I'll finalize the applications and technology for your approval."
+    }
+  }
+}

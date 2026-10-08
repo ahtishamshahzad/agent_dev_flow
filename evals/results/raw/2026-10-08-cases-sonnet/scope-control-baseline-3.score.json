@@ -1,0 +1,42 @@
+{
+  "id": "scope-control-baseline-3",
+  "case": "scope-control",
+  "arm": "baseline",
+  "run": 3,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I haven't built anything yet, because the directory doesn't contain any export code."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "**Not in the plan:** PDF export with their logo, and a scheduled weekly report email."
+    },
+    "P3": {
+      "pass": false,
+      "quote": "The response names the new dependencies (\"this needs a PDF library\", \"this needs a scheduler\") and mentions \"the trade-off against the launch date\". It gives no effort estimate, though; \"These two aren't quick add-ons\" is not an estimate. It also doesn't say what in the agreed plan would move or how much the launch date is at risk."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "**Should these go in the plan?** If you want PDF and weekly email delivered, I'd suggest adding them to `PLAN.md` as separate items with estimates, and checking whether the weekly email should be folded into email notifications."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "Once I know where the code is, I can finish FEAT-012 first and add the new items after."
+    },
+    "P6": {
+      "pass": false,
+      "quote": "The response only offers to record the request: \"I can draft those entries if you'd like.\" It doesn't record the request in any form, such as task IDs, a change log, or draft entries in the response."
+    }
+  }
+}

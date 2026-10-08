@@ -1,0 +1,47 @@
+{
+  "id": "planning-baseline-2",
+  "case": "planning",
+  "arm": "baseline",
+  "run": 2,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "A few early decisions are expensive to change later, so I'd like your input before I scaffold."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Do you want one white-labeled app per gym, or one shared app where members pick their gym? A shared app is much cheaper to build and maintain. White-label means a separate store listing for each gym."
+    },
+    "P3": {
+      "pass": false,
+      "quote": ""
+    },
+    "P4": {
+      "pass": false,
+      "quote": ""
+    },
+    "P5": {
+      "pass": true,
+      "quote": "Multi-tenancy: every row carries a `gym_id`, and access is enforced with Postgres row-level security. This matters most because you're selling to several gyms."
+    },
+    "P6": {
+      "pass": false,
+      "quote": ""
+    },
+    "P7": {
+      "pass": true,
+      "quote": "If you'd rather not decide now, I'll go with the stack above, a shared app, monthly plans only, and USD. I'll start with a monorepo containing the database schema with RLS, the API, and the booking logic, because that's the riskiest part. Should I proceed on those defaults?"
+    }
+  }
+}

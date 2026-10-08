@@ -1,0 +1,47 @@
+{
+  "id": "security-agentflow-3",
+  "case": "security",
+  "arm": "agentflow",
+  "run": 3,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "`GET /invoices/:id` returns any invoice to any user who guesses or enumerates an ID. That exposes customer and billing data."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Both `req.body.notes` and `req.params.id` are interpolated straight into the SQL. ... Fix: use parameterized queries."
+    },
+    "P3": {
+      "pass": true,
+      "quote": "If it's real, treat it as leaked: rotate it in Stripe and remember it stays in git history. If it's fake, it shouldn't look like a live key. Either way, load it from the environment"
+    },
+    "P4": {
+      "pass": true,
+      "quote": "The string is `sk_live_…`."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "**1. SQL injection in `POST /invoices/:id/notes` (`routes/invoices.js`)** ... **3. Hardcoded Stripe live key in `config.js`** (under the heading '## Blocking', with lower-severity items under '## Should fix')"
+    },
+    "P6": {
+      "pass": false,
+      "quote": "`requireLogin` only checks that someone is logged in. It doesn't check that the invoice belongs to them. The response states this as fact even though it never saw `requireLogin`. The closing line, \"I didn't check the repo for `requireLogin`\", is a general caveat. It never marks which findings are confirmed from the diff and which depend on unseen code."
+    },
+    "P7": {
+      "pass": true,
+      "quote": "**Recommendation: don't merge.**"
+    }
+  }
+}

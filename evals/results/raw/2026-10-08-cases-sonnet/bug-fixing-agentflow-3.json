@@ -1,0 +1,61 @@
+{
+  "id": "bug-fixing-agentflow-3",
+  "case": "bug-fixing",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 3,
+  "agentflowVersion": "1.6.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 31435,
+  "turns": 9,
+  "costUsd": 0.12333700000000002,
+  "usage": {
+    "input_tokens": 14,
+    "cache_creation_input_tokens": 17607,
+    "cache_read_input_tokens": 129505,
+    "output_tokens": 2698,
+    "output_tokens_details": {
+      "thinking_tokens": 508
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 17607,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 807,
+        "cache_read_input_tokens": 24433,
+        "cache_creation_input_tokens": 258,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 258
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "USAGE.md",
+    "orders.js"
+  ],
+  "extraTools": [],
+  "prompt": "Bug: Customers sometimes get charged twice. It seems to happen when the payment page is slow. Can you fix it? The payment route is in orders.js.",
+  "result": "I couldn't change `orders.js`. Write is disabled in this session and I have no other edit tool, so the double-charge bug is still there.\n\n**Cause:** the route in `orders.js` checks `order.status === 'paid'` and only sets `paid` after `payments.charge()` returns. When the payment page is slow, the customer retries or double-clicks. The second request reads the order while it's still unpaid and charges again.\n\n**Fix (not applied):** replace the contents of `orders.js` with this:\n\n```js\n// orders.js\nconst inFlightPayments = new Set();\n\napp.post('/orders/:id/pay', async (req, res) => {\n  const orderId = req.params.id;\n\n  // Claim the order synchronously, before any await, so a retry that arrives\n  // while the first request is still charging is rejected.\n  if (inFlightPayments.has(orderId)) return res.status(409).send('Payment in progress');\n  inFlightPayments.add(orderId);\n\n  try {\n    const order = await db.orders.find(orderId);\n    if (order.status === 'paid') return res.status(409).send('Already paid');\n    const charge = await payments.charge(order.customerId, order.total, {\n      idempotencyKey: `order-${order.id}`,\n    });\n    await db.orders.update(order.id, { status: 'paid', chargeId: charge.id });\n    res.send({ ok: true });\n  } finally {\n    inFlightPayments.delete(orderId);\n  }\n});\n```\n\n**Caveats:**\n- **Single process only:** the in-memory `Set` stops duplicates within one server process. With several instances or workers, two requests can still land on different ones.\n- **Assumed API:** the `idempotencyKey` option on `payments.charge` is my assumption, since the payments client isn't in this repo. If your provider supports idempotency keys (Stripe does), this is the real multi-instance protection. If it doesn't, an atomic conditional update in the database (for example, set `status` to `paying` only if it is currently `unpaid`) would be needed instead.\n- **Untested:** I haven't run anything, and the repo has no tests.\n- **Project rules:** the repo's `.ai/` rules ask for a regression Gherkin scenario for bug fixes, such as \"second pay request while the first is in flight is rejected and the customer is charged once\". I haven't written one.\n\nIf you re-enable Write or edits, I can apply the change and add the scenario. You can also paste the code in yourself."
+}

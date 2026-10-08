@@ -1,0 +1,60 @@
+{
+  "id": "testing-agentflow-3",
+  "case": "testing",
+  "suite": "cases",
+  "arm": "agentflow",
+  "run": 3,
+  "agentflowVersion": "1.6.0",
+  "agent": "2.1.292 (Claude Code)",
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "exitCode": 0,
+  "durationMs": 39370,
+  "turns": 9,
+  "costUsd": 0.1352776,
+  "usage": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 21502,
+    "cache_read_input_tokens": 61468,
+    "output_tokens": 3696,
+    "output_tokens_details": {
+      "thinking_tokens": 478
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 21502,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2485,
+        "cache_read_input_tokens": 21734,
+        "cache_creation_input_tokens": 6852,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 6852
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "isError": false,
+  "projectFiles": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "QUICK_START.md",
+    "USAGE.md"
+  ],
+  "extraTools": [],
+  "prompt": "Write the test plan for this endpoint. Don't write the tests yet.\n\n`PATCH /projects/:projectId/members/:userId` — changes a member's role in a project. Body: `{ \"role\": \"viewer\" | \"editor\" | \"admin\" }`. Only project admins may call it. A project must always keep at least one admin. Returns the updated membership.",
+  "result": "The repo has no application code or stack yet. So this plan follows `.ai/templates/TEST_PLAN.md` and `GHERKIN_RULES.md`, and it assumes nothing about the framework.\n\n# Test Plan — `PATCH /projects/:projectId/members/:userId`\n\n**Date:** 2026-10-08 · **Status:** draft (needs your approval before any scenarios or tests are written)\n\n## Selection\n\n| Level | Use |\n|---|---|\n| API integration (Supertest if the stack is Node, otherwise the stack's equivalent) | Almost everything: auth, validation, last-admin invariant, response shape |\n| Unit (Jest/Vitest or equivalent) | The role-change policy only: \"would this leave zero admins?\" |\n| Concurrency integration | The last-admin race (see Risks) |\n\n- **Not adopted:** Playwright and Maestro, since this is a backend endpoint. A contract test is also out for now, because there's no consumer yet.\n- **Stack is undecided.** Tool choice waits on `STACK_DECISION_RULES.md`. The test levels above don't depend on it.\n\n## Required cases, one Gherkin scenario each\n\nScenarios go in `features/projects/change-member-role.feature`. Each test name contains its scenario title. Items marked `@critical` block release.\n\n**Happy path**\n1. `@critical` An admin changes an editor to viewer and receives the updated membership.\n2. An admin promotes a viewer to admin.\n3. An admin demotes another admin when a second admin remains.\n4. An admin demotes themself when another admin remains.\n5. Setting a member to the role they already have leaves it unchanged. This is idempotent and returns 200 with the membership. *(Open question 3.)*\n6. The response contains the updated membership: `projectId`, `userId`, and the new `role`. The change is also persisted, which a follow-up read confirms.\n\n**Invalid input** (a `Scenario Outline` for the role values)\n7. A role outside `viewer | editor | admin` is rejected. Examples: `\"owner\"`, `\"ADMIN\"`, `\"\"`, `null`, `123`, `[\"admin\"]`.\n8. A missing `role` field is rejected.\n9. An empty or non-JSON body is rejected.\n10. Unknown body fields (`userId`, `projectId`, `isOwner`) are ignored and never applied (mass assignment).\n11. A malformed `projectId` or `userId` is rejected as a validation error, not a 500.\n\n**Error paths**\n12. `@critical` Demoting the only admin, even when they demote themself, is rejected with a conflict. The role is unchanged.\n13. The target user is not a member of the project, so the response is not found.\n14. The project does not exist, so the response is not found.\n15. The error body uses the central safe error shape, with no stack traces or SQL.\n16. A failure partway through (simulated datastore error) leaves the role unchanged and returns a safe 500.\n\n**Authorization denial** (`@security @authorization`, each states the actor, the action, and the refusal)\n17. `@critical` An editor cannot change a role, and the role stays the same.\n18. `@critical` A viewer cannot change a role.\n19. `@critical` An admin of project A cannot change roles in project B (cross-project and cross-tenant).\n20. A user who isn't a project member gets the decided refusal (403 or 404). *(Open question 1.)*\n21. An unauthenticated request, or one with an invalid or expired token, gets 401.\n22. An editor cannot promote themself to admin (privilege escalation through role mutation).\n23. A `userId` or `projectId` in the body does not override the path or the session scope.\n24. A removed or suspended admin can no longer call the endpoint. *(Applies if such states exist.)*\n\n**Regression**\n25. `@critical @regression` Two admins demote each other at the same time. At least one admin remains, and one request fails with a conflict. This needs a transaction or row lock, and the test runs both requests in parallel.\n26. Two concurrent promotions or demotions of the same member end in a consistent final state.\n27. Placeholder: every bug found later gets its own `@bug-NNN` scenario.\n\n**Environment and config**\n28. If the roles are configurable or enum-backed, the app fails fast at startup on a mismatch between the API enum and the DB enum. If neither is configurable, this case is marked \"not applicable\" explicitly.\n\n## Coverage by risk\n\n| Critical path | Level | Gap |\n|---|---|---|\n| Last-admin invariant (data integrity) | Unit (policy) plus API integration | The race (#25) must hit a real DB with real transactions. A mocked repository can't prove it. |\n| Privilege escalation and role authorization | API integration | Query-level scoping is only verifiable against the real schema. |\n| Cross-project isolation | API integration, two projects with different admins | None planned |\n| Input validation | API integration (outline) | None planned |\n\nNo coverage-percentage target.\n\n## Data and environment\n\n- **Personas (factories):** `adminA1`, `adminA2`, `editorA`, `viewerA` (all in project A); `adminB` (project B); `outsider` (no memberships); `soleAdminC` (project C, only admin).\n- **Environment:** the production-engine datastore, not SQLite as a stand-in. Auth is real middleware with signed test tokens. Externals are faked.\n- **Isolation:** each scenario builds its own data and runs in any order. The concurrency tests use separate projects, so they can't affect other tests.\n\n## Open questions (they change the scenarios)\n\n1. **Non-member or wrong-project caller:** 403 or an existence-hiding 404? This affects #13, #14, and #20.\n2. **Last-admin status code:** 409 or 422? Also, does demoting yourself get a distinct message?\n3. **No-op role change:** 200 or 204, and does it still write an audit or `updatedAt` entry?\n4. **Can an admin change the role of the project's creator or owner?** The spec says nothing about this.\n5. **Do pending, invited, or suspended memberships exist,** and are they in scope?\n6. **Exact response shape.** Does it include user details or only IDs, and does it include `updatedAt`?\n7. **Rate limiting or audit logging** on role changes. If either is required, it needs scenarios.\n\n## Next steps\n\nI need answers to the open questions, at least 1–3. Then I'll draft the `.feature` file for your approval at Gate 2. I haven't written a file, scenario, or test. I can also save this plan to `.ai/projects/current/` if you want it there."
+}

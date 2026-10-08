@@ -1,0 +1,47 @@
+{
+  "id": "planning-agentflow-2",
+  "case": "planning",
+  "arm": "agentflow",
+  "run": 2,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "I haven't written any code or chosen a stack, and the rules don't allow either before your approval."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Who collects the money? Does each gym receive its own membership payments (a marketplace model, probably Stripe Connect or similar), or do you collect everything and pay gyms out?"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "This assumes one shared app, gyms paid directly, and a small team. It is a starting point for you to react to."
+    },
+    "P4": {
+      "pass": true,
+      "quote": "Marketing site | **Defer** | It matters when you start selling to gyms, not for the first build."
+    },
+    "P5": {
+      "pass": true,
+      "quote": "Secondary concerns are payments and subscriptions, and multi-tenancy, because you'll sell to several gyms."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Does each gym receive its own membership payments (a marketplace model, probably Stripe Connect or similar), or do you collect everything and pay gyms out? ... This is the biggest decision, and it affects the legal and compliance work."
+    },
+    "P7": {
+      "pass": false,
+      "quote": "If you'd rather I proceed on stated assumptions than wait on all five, tell me which ones to assume and I'll list them for your sign-off."
+    }
+  }
+}

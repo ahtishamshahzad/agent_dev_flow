@@ -1,0 +1,47 @@
+{
+  "id": "planning-agentflow-2",
+  "case": "planning",
+  "arm": "agentflow",
+  "run": 2,
+  "model": "claude-sonnet-5-5",
+  "judge": "claude-opus-5-5",
+  "properties": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "verdict": {
+    "P1": {
+      "pass": true,
+      "quote": "Until you approve the behavior, applications and stack, and then the phases and tasks, the rules allow no code, no dependency installs and no stack choice."
+    },
+    "P2": {
+      "pass": true,
+      "quote": "Is there a class capacity, and a waitlist when a class is full?"
+    },
+    "P3": {
+      "pass": true,
+      "quote": "I can proceed on defaults if you'd rather not answer everything. I'd assume:"
+    },
+    "P4": {
+      "pass": false,
+      "quote": ""
+    },
+    "P5": {
+      "pass": true,
+      "quote": "You'll sell this to several gyms, so each gym's data has to be strictly isolated from the others."
+    },
+    "P6": {
+      "pass": true,
+      "quote": "Does a member's payment go to each gym's own account (marketplace-style, such as Stripe Connect), or to you, with you paying gyms out? This drives the payments design, compliance and your fees."
+    },
+    "P7": {
+      "pass": true,
+      "quote": "I'll pair those with a recommended list of applications and a stack, verified against current official docs. You approve that package first (approval step), then the phases and tasks (approval step)."
+    }
+  }
+}

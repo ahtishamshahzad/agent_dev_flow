@@ -2,6 +2,21 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.7.0] — 2026-10-08
+
+### Changed
+
+- **Provisional proposal with blocking questions** (`ORCHESTRATION_WORKFLOW` §4, `project-orchestrator`, the new-project prompt): on a new project, the reply that asks blocking questions (about five at most) also gives a clearly labelled provisional applications + stack proposal under the stated assumptions, with how each answer would change it. Gate 2 still waits for the answers and the behavior scenarios. Addresses the planning weakness the blind evaluation found (AgentFlow failed "asks to approve applications and stack" in every run); re-measured in `evals/results/`.
+
+### Added
+
+- Sonnet 5.5 evaluation brought to 3 runs per arm, judged blind.
+- Maintainer steps for publishing to npm in `CONTRIBUTING.md` (not published — awaiting a decision).
+
+### Totals
+
+- 180 skills · 13 agents · 13 hooks · 12 workflows · 32 templates · 19 prompts · 18 checklists.
+
 ## [1.6.0] — 2026-10-08
 
 Closes the gaps reported after 1.5.0: an automated drift report, machine-checked scenario→test mapping, blind evaluation at a larger sample on two models, live checks with web access and real upgrade triggers, and two behavior fixes the evaluations exposed.

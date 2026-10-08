@@ -57,7 +57,9 @@ Extract goals, constraints, users, non-functional requirements, and success crit
 If a codebase exists, audit structure, stack, applications present, tests, security posture, and state **before** proposing changes. Record the **technology baseline** — installed versions from lock files and runtime config — which the work must then respect (`TECHNOLOGY_GOVERNANCE_RULES.md` §3). Record findings; do not edit yet.
 
 ### 4. Missing questions
-Ask only the questions that **block** a correct plan. If enough is known, proceed with documented best-practice assumptions and list them.
+Ask only the questions that **block** a correct plan — at most about five, most decisive first. If enough is known, proceed with documented best-practice assumptions and list them.
+
+**Don't make the user wait a round for something concrete.** In the same reply as the questions, give a **provisional proposal**: the applications and stack you'd recommend *if* the stated assumptions hold, and how each pending answer would change it. Label it provisional; it is not the Gate 2 decision. Gate 2 is still approved only after the answers and the behavior scenarios — the proposal just lets the user react to something real while answering.
 
 ### 4a. Behavior specification
 Does the request change observable behavior? If not (formatting, renames, proven zero-change refactors), record that and skip. If it does — or it's unclear — answer: what behavior changes, who is affected, what success and failure look like, which edge cases matter (invalid, unauthorized, duplicate, concurrent, offline, timeout, external failure), and what must stay unchanged. Find the existing scenarios first; then write or update them (`GHERKIN_RULES.md`, `../skills/testing/gherkin-specifications`). Acceptance criteria are these scenarios.
