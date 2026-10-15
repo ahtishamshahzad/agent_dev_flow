@@ -10,7 +10,7 @@ npx github:ahtishamshahzad/agent_dev_flow init      # adds .ai/ + your editor's 
 
 Then, in your agent: *"Use the project-orchestrator skill. This is a new project: <what you want>. Do not implement code."* It stops twice for your approval before writing any code.
 
-> Version **1.8.0** · MIT · Node 18+ for the installer · Full guide: [`.ai/README.md`](.ai/README.md)
+> Version **1.9.0** · MIT · Node 18+ for the installer · Full guide: [`.ai/README.md`](.ai/README.md)
 
 **Names:** *AgentFlow* is the product and the `agentflow` installer. The *AI Engineering System* is what it installs — the canonical `.ai/` directory. `agent_dev_flow` is this repository.
 
@@ -121,7 +121,7 @@ Skills load one at a time, only when needed. What stays in context every turn is
 
 | Layer | Count | Where |
 |-------|-------|-------|
-| **Skills** (reusable capability modules) | **181** | [`.ai/skills/`](.ai/skills/README.md) |
+| **Skills** (reusable capability modules) | **182** | [`.ai/skills/`](.ai/skills/README.md) |
 | **Agents** (roles for multi-agent runs) | 13 | [`.ai/agents/`](.ai/agents/README.md) |
 | **Hooks** (tool-neutral lifecycle checklists) | 13 | [`.ai/hooks/`](.ai/hooks/README.md) |
 | **Workflows** (per request type) | 12 | [`.ai/workflows/`](.ai/workflows/README.md) |
@@ -129,7 +129,7 @@ Skills load one at a time, only when needed. What stays in context every turn is
 | **Prompts** (tool-neutral starters) | 19 | [`.ai/prompts/`](.ai/prompts/README.md) |
 | **Checklists** (verifiable gate/hook checks) | 18 | [`.ai/checklists/`](.ai/checklists/README.md) |
 
-Skills are organized into **8 packs**: core (30), mobile (36), web & dashboard (26), backend (31), database (15), testing (15), devops (16), security (12). Plus system rules, knowledge, memory, and references — all in [`.ai/`](.ai/README.md).
+Skills are organized into **8 packs**: core (31), mobile (36), web & dashboard (26), backend (31), database (15), testing (15), devops (16), security (12). Plus system rules, knowledge, memory, and references — all in [`.ai/`](.ai/README.md).
 
 **Find a skill by what you want to do:** [`.ai/skills/SKILLS_INDEX.md`](.ai/skills/SKILLS_INDEX.md) — "I want to add login", "…design the database", "…set up CI".
 

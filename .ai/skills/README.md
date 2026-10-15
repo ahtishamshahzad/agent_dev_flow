@@ -67,6 +67,7 @@ Most work starts at **`project-orchestrator`**, which then loads the right speci
 | [`documentation`](documentation/SKILL.md) | Write canonically and concisely inside `.ai/`; keep adapters thin; archive stale reports. |
 | [`application-documentation`](application-documentation/SKILL.md) | The product's `docs/` tree: a folder per app, an index per level, a file per screen/page/endpoint/job. |
 | [`auth-form-validation`](auth-form-validation/SKILL.md) | Login/signup/reset field rules: one credential schema through the RHF resolver, re-enforced server-side, enumeration-safe copy. |
+| [`client-guide`](client-guide/SKILL.md) | Client-facing, screenshot-backed guide to a running product: questions first, real captures, Markdown + optional PDF / presentation / end-user guide. |
 
 ### Delivery & Ops
 | Skill | Description |
