@@ -2,6 +2,18 @@
 
 All notable changes to **this system** (not to any application built with it) are documented here. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.9.0] — 2026-10-15
+
+A reusable client guide: one run turns a running product into a non-technical, screenshot-backed package.
+
+### Added
+
+- `skills/client-guide` (core, 182 skills) — asks the blocking questions first (product and audience, environment and test accounts, surfaces and roles, formats, branding, location), inventories the real app, captures genuine screenshots per role, and writes a Markdown guide with a main document, a section per real user type and surface, a limitations-and-questions list, and a coverage overview. PDF, a presentation artifact, and a separate end-user guide are produced only when requested. Unreachable workflows are recorded as product or environment limitations, never faked.
+
+### Totals
+
+- 182 skills · 13 agents · 13 hooks · 12 workflows · 34 templates · 19 prompts · 18 checklists.
+
 ## [1.8.1] — 2026-10-09
 
 ### Changed

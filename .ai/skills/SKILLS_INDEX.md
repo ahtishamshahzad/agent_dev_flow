@@ -37,6 +37,7 @@ On a tracked project, whatever you run is recorded by [`project-management`](pro
 | Run background or scheduled work | [`background-jobs`](backend/background-jobs/SKILL.md), [`queues`](backend/queues/SKILL.md), [`scheduled-jobs`](backend/scheduled-jobs/SKILL.md) |
 | Add realtime features | [`realtime-communication`](backend/realtime-communication/SKILL.md) |
 | Document what was built | [`application-documentation`](application-documentation/SKILL.md) |
+| Explain the product to a client, with screenshots | [`client-guide`](client-guide/SKILL.md) |
 
 ## Test
 
